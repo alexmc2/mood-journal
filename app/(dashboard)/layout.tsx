@@ -3,17 +3,17 @@ import { UserButton } from '@clerk/nextjs';
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="h-screen w-screen relative">
-      <aside className="absolute w-[200px] top-0 left-0 h-full border-r border-black/10">
+    <div className="min-h-screen w-screen">
+      <aside className="absolute w-[200px] top-0 left-0 h-full border-r border-slate-700">
         Mood
       </aside>
       <div className="ml-[200px]">
-        <header className="h-[60px] border-b border-black/10">
+        <header className="h-[60px] border-b border-slate-700">
           <div className="h-full w-full px-6 flex items-center justify-end">
             <UserButton />
           </div>
         </header>
-        <div>{children}</div>
+        <div className="min-h-screen">{children}</div>
       </div>
     </div>
   );
