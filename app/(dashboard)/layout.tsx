@@ -3,7 +3,7 @@ import { UserButton } from '@clerk/nextjs';
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="min-h-screen w-screen">
+    <div className="min-h-screen w-full">
       <aside className="absolute w-[200px] top-0 left-0 h-full border-r border-slate-700">
         Mood
       </aside>

@@ -4,6 +4,7 @@ import { getUserByClerkId } from '@/utils/auth';
 import NewEntryCard from '@/components/NewEntryCard';
 import EntryCard from '@/components/EntryCard';
 import Link from 'next/link';
+import { analyse } from '@/utils/ai';
 
 const getEntries = async () => {
   const user = await getUserByClerkId();
@@ -16,6 +17,10 @@ const getEntries = async () => {
       createdAt: 'desc',
     },
   });
+
+  await analyse(
+    'Today I went to the park and played fetch with Cora, a golden labradoodle. Cora is a wonderful dog. She is very friendly and loves to play. She is also very smart. She knows how to sit, stay, and roll over. I love Cora very much.'
+  );
 
   return entries;
 };
