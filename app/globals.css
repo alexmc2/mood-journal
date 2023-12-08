@@ -7,8 +7,4 @@ body {
   @apply text-slate-100;
 
   @apply bg-slate-800;
-
-  @apply prose;
-
-  
 }
