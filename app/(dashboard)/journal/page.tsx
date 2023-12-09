@@ -18,10 +18,6 @@ const getEntries = async () => {
     },
   });
 
-  await analyse(
-    'Today I went to the park and played fetch with Cora, a golden labradoodle. Cora is a wonderful dog. She is very friendly and loves to play. She is also very smart. She knows how to sit, stay, and roll over. I love Cora very much.'
-  );
-
   return entries;
 };
 const JournalPage = async () => {
