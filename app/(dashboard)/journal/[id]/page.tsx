@@ -48,7 +48,7 @@ const EntryPage = async ({ params }) => {
       </div>
       <div className="border-l h-full border-slate-700 p-8">
         <div
-          className="flex w-full h-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 p-8 card"
+          className="flex w-full h-full flex-wrap md:flex-nowrap mb-6 md:mb-0 gap-4 p-8 card "
           style={{ backgroundColor: color, color: textColor }}
         >
           <h2 className="text-2xl ">Analysis</h2>
@@ -56,7 +56,7 @@ const EntryPage = async ({ params }) => {
           <ul>
             {dataAnalysis.map((item) => (
               <li key={item.name} className="flex items-center justify-between">
-                <span className="">{item.name}</span>
+                <div className="">{item.name}</div>
                 <div className="divider"></div>
                 <span>{item.value}</span>
               </li>
