@@ -10,19 +10,20 @@ export const POST = async () => {
     data: {
       userId: user.id,
 
-      content: 'Write about your day...',
+      content: '',
     },
   });
 
-    const analysis = await analyse(entry.content);
-    await prisma.analysis.create({
-      data: {
-        entryId: entry.id,
-        ...analysis,
-      },
-    });
-
- 
+  // Check if content is not empty
+  // if (entry.content && entry.content.trim() !== '') {
+  const analysis = await analyse(entry.content);
+  await prisma.analysis.create({
+    data: {
+      entryId: entry.id,
+      ...analysis,
+    },
+  });
+  // }
 
   return NextResponse.json({ data: entry });
 };
