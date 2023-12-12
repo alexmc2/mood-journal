@@ -21,10 +21,8 @@ const NewEntryCard = () => {
   return (
     <Card className="cursor-pointer overflow-hidden bg-slate-50 text-slate-800 shadow-md px-4 py-5 sm:p-6 ">
       <div className="" onClick={handleOnClick}>
-        <CardHeader className="text-3xl font-semibold">New Entry</CardHeader>
-        <CardBody className="text-lg">
-          Write about your day
-        </CardBody>
+        <CardHeader className="text-3xl font-semibold text-slate-600">New Entry</CardHeader>
+    
       </div>
     </Card>
   );

@@ -25,7 +25,7 @@ const JournalPage = async () => {
 
   return (
     <div className="p-10">
-      <h2 className="text-2xl font-bold pl-5 sm:pl-7">Journal</h2>
+      <h2 className="text-3xl pl-5 sm:pl-7">Journal</h2>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 p-8">
         <NewEntryCard />
 
