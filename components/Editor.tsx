@@ -69,15 +69,15 @@ const Editor = ({ entry }) => {
 
   return (
     <div className="h-full w-full grid md:grid-cols-3 gap-8 p-8">
-      <div className="absolute left-2 top-2 p-2">
-        {isSaving ? (
-          <Spinner />
-        ) : (
-          <div className="w-[24px] h-[24px] rounded-full bg-green-500"></div>
-        )}
-      </div>
       <div className="md:col-span-2">
         <Card className="flex h-full w-full">
+          <div className="absolute left-1 top-1 p-2">
+            {isSaving ? (
+              <Spinner />
+            ) : (
+              <div className="w-[16px] h-[16px] rounded-full bg-green-500"></div>
+            )}
+          </div>
           <TextareaAutosize
             cacheMeasurements
             className=" h-full w-full p-8 text-slate-700 border-none shadow-none outline-none"

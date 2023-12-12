@@ -1,7 +1,6 @@
 import React from 'react';
 import { UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
-import Buttons from '../../components/Button';
 
 const links = [
   { name: 'JOURNALS', href: '/journal' },
@@ -19,8 +18,10 @@ const DashboardLayout = ({ children }) => {
           {links.map((link) => (
             <div key={link.name} className="text-xl my-4">
               <Link href={link.href}>
-                <div className='px-5 py-1 '>
-                  <Buttons>{link.name}</Buttons>
+                <div className="px-5 py-1 ">
+                  <button className="btn btn-xs sm:btn-sm md:btn-md w-[150px] text-center bg-blue-200 hover:bg-blue-400 border-none ">
+                    {link.name}
+                  </button>
                 </div>
               </Link>
             </div>
