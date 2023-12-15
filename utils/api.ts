@@ -15,7 +15,6 @@ export const updateEntry = async (id, content) => {
 };
 
 export const newEntry = async () => {
-  console.log(createURL('/api/question'));
   const res = await fetch(
     new Request(createURL(`/api/journal`), {
       method: 'POST',

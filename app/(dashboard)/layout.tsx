@@ -3,13 +3,14 @@ import { UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
 
 const links = [
+  { name: 'HOME', href: '/' },
   { name: 'JOURNALS', href: '/journal' },
   { name: 'HISTORY', href: '/history' },
 ];
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="min-h-screen w-full">
+    <div className="w-screen h-screen relative">
       <aside className="absolute w-[200px] top-0 left-0 h-full border-r border-slate-700">
         <div className="px-4 my-4">
           <span className="text-3xl">MOOD</span>
@@ -28,13 +29,13 @@ const DashboardLayout = ({ children }) => {
           ))}
         </div>
       </aside>
-      <div className="ml-[200px]">
+      <div className="ml-[200px] ">
         <header className="h-[60px] border-b border-slate-700">
           <div className="h-full w-full px-6 flex items-center justify-end">
             <UserButton />
           </div>
         </header>
-        <div className="min-h-screen">{children}</div>
+        <div className="p-8 h-[calc(100vh-60px)] w-[calc(100vw-200px)] ">{children}</div>
       </div>
     </div>
   );
