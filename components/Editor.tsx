@@ -70,7 +70,7 @@ const Editor = ({ entry }) => {
   });
 
   return (
-    <div className="h-full w-full grid md:grid-cols-3 gap-8 p-8">
+    <div className="h-full w-full grid md:grid-cols-3 gap-8 p-8 pt-4">
       <div className="md:col-span-2">
         <Card className="flex h-full w-full">
           <div className="absolute left-1 top-1 p-2">
@@ -82,7 +82,7 @@ const Editor = ({ entry }) => {
           </div>
           <TextareaAutosize
             cacheMeasurements
-            className=" h-full w-full p-8 text-slate-700 border-none shadow-none outline-none"
+            className=" h-full w-full p-8 text-slate-700 border-none shadow-none outline-none no-scrollbar "
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />

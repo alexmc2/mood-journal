@@ -25,7 +25,7 @@ const JournalPage = async () => {
   const entries = await getEntries();
 
   return (
-    <div className="p-10">
+    <div className="p-10 pt-6">
       <h2 className="text-3xl pl-5 sm:pl-7">Journal</h2>
       <div className="pl-5 sm:pl-7 py-2 ">
         <Question />
