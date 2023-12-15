@@ -61,7 +61,7 @@ export default function Sidebar() {
   }, [breakpoint]);
 
   return (
-    <div className={`min-w-fit ${sidebarExpanded ? 'sidebar-expanded' : ''}`}>
+    <div className={`min-w-fit ${sidebarExpanded ? 'sidebar-expanded' : ''} `} >
       {/* Sidebar backdrop (mobile only) */}
       <Transition
         className="fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto"
@@ -82,97 +82,92 @@ export default function Sidebar() {
         as="div"
         id="sidebar"
         ref={sidebar}
-        className="flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-slate-800 p-4 transition-all duration-200 ease-in-out"
+        className="flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-slate-900 p-4 transition-all duration-200 ease-in-out"
         enterFrom="-translate-x-full"
         enterTo="translate-x-0"
         leaveFrom="translate-x-0"
         leaveTo="-translate-x-full"
       >
         {/* Sidebar header */}
-        <div className="flex justify-between mb-10 pr-3 sm:px-2">
-          {/* Close button */}
-          <button
-            className="lg:hidden text-slate-500 hover:text-slate-400"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            aria-controls="sidebar"
-            aria-expanded={sidebarOpen}
-          >
-            <span className="sr-only">Close sidebar</span>
-            <svg
-              className="w-6 h-6 fill-current"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+        <div>
+          <div className="flex justify-between mb-10 pr-3 sm:px-2">
+            {/* Close button */}
+            <button
+              className="lg:hidden text-slate-500 hover:text-slate-400"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-controls="sidebar"
+              aria-expanded={sidebarOpen}
             >
-              <path d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z" />
-            </svg>
-          </button>
-          {/* Logo */}
-          <Logo />
-        </div>
+              <span className="sr-only">Close sidebar</span>
+              <svg
+                className="w-6 h-6 fill-current"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z" />
+              </svg>
+            </button>
+            {/* Logo */}
+            <Logo />
+          </div>
 
-        {/* Links */}
-        <div className="space-y-8">
-          {/* Pages group */}
-          <div>
-            <h3 className="text-xs uppercase text-slate-500 font-semibold pl-3">
-          
-              <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                Pages
-              </span>
-            </h3>
-            <ul className="mt-3">
-              {/* Dashboard */}
-              <SidebarLinkGroup open={segments.includes('dashboard')}>
-                {(handleClick, open) => {
-                  return (
-                    <>
-                      <div
-                        onClick={(e) => {
-                          e.preventDefault();
-                          expandOnly ? setSidebarExpanded(true) : handleClick();
-                        }}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <div>
-                              {links.map((link) => (
-                                <div key={link.name} className="text-xl my-4">
-                                  <Link href={link.href}>
-                                    <div className="px-5 py-1 btn btn-md sm:btn-md md:btn-md w-[190px] text-center bg-blue-200 hover:bg-blue-400 border-none">
-                                      {link.name}
-                                    </div>
-                                  </Link>
-                                </div>
-                              ))}
+          {/* Links */}
+          <div className="space-y-8">
+            {/* Pages group */}
+            <div>
+            
+              <ul className="mt-3">
+                {/* Dashboard */}
+                <SidebarLinkGroup open={segments.includes('dashboard')}>
+                  {(handleClick, open) => {
+                    return (
+                      <>
+                        <div
+                          onClick={(e) => {
+                            e.preventDefault();
+                            expandOnly
+                              ? setSidebarExpanded(true)
+                              : handleClick();
+                          }}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <div>
+                                {links.map((link) => (
+                                  <div key={link.name} className="text-xl my-4">
+                                    <Link href={link.href}>
+                                      <div className="px-5 py-1 btn btn-md sm:btn-md md:btn-md w-[145px] text-center bg-blue-200 hover:bg-blue-400 border-none">
+                                        {link.name}
+                                      </div>
+                                    </Link>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                          {/* Icon */}
-                          <div className="flex shrink-0 ml-2">
-                           
+                            {/* Icon */}
+                            <div className="flex shrink-0 ml-2"></div>
                           </div>
                         </div>
-                      </div>
-                  
-                    </>
-                  );
-                }}
-              </SidebarLinkGroup>
+                      </>
+                    );
+                  }}
+                </SidebarLinkGroup>
 
-              {/* Messages */}
+                {/* Messages */}
 
-              {/* Inbox */}
+                {/* Inbox */}
 
-              {/* Calendar */}
+                {/* Calendar */}
 
-              {/* Campaigns */}
+                {/* Campaigns */}
 
-              {/* Settings */}
+                {/* Settings */}
 
-              {/* Utility */}
-            </ul>
+                {/* Utility */}
+              </ul>
+            </div>
           </div>
           {/* More group */}
-         
         </div>
 
         {/* Expand / collapse button */}
