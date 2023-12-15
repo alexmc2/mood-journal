@@ -44,6 +44,7 @@ const Editor = ({ entry }) => {
     color = '#ffffff',
     subject = '',
     negative = false,
+    sentimentScore = '',
   } = analysis;
   const textColor = getContrastYIQ(color);
 
@@ -52,12 +53,13 @@ const Editor = ({ entry }) => {
     { name: 'subject', value: subject },
     { name: 'mood', value: mood },
     { name: 'negative', value: negative ? 'yes' : 'no' },
+    { name: 'sentiment score', value: sentimentScore },
   ];
 
   useAutosave({
     data: value,
     onSave: async (_value) => {
-      setIsSaving(true);
+      setIsSaving(false);
 
       const data = await updateEntry(entry.id, _value);
 

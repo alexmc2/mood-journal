@@ -2,43 +2,28 @@ import React from 'react';
 import { UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
 
-const links = [
-  { name: 'HOME', href: '/' },
-  { name: 'JOURNALS', href: '/journal' },
-  { name: 'HISTORY', href: '/history' },
-];
+import Sidebar from '@/components/Sidebar';
+import Header from '@/components/Header';
 
-const DashboardLayout = ({ children }) => {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-screen h-screen relative">
-      <aside className="absolute w-[200px] top-0 left-0 h-full border-r border-slate-700">
-        <div className="px-4 my-4">
+    <div className="flex w-full min-h-screen bg-slate-800">
+      <div className="flex h-[100dvh] overflow-hidden">
+        <Sidebar />
+
+        {/* <div className="px-4 my-4">
           <span className="text-3xl">MOOD</span>
+        </div> */}
+        {/* <div className="px-5 py-1"></div> */}
+      </div>
+      <div className="flex-1">
+        <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+          <Header />
+
+          <div className="h-full w-full px-6 flex items-center justify-end"></div>
         </div>
-        <div>
-          {links.map((link) => (
-            <div key={link.name} className="text-xl my-4">
-              <Link href={link.href}>
-                <div className="px-5 py-1 ">
-                  <button className="btn btn-xs sm:btn-sm md:btn-md w-[150px] text-center bg-blue-200 hover:bg-blue-400 border-none ">
-                    {link.name}
-                  </button>
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </aside>
-      <div className="ml-[200px] ">
-        <header className="h-[60px] border-b border-slate-700">
-          <div className="h-full w-full px-6 flex items-center justify-end">
-            <UserButton />
-          </div>
-        </header>
-        <div className="p-8 h-[calc(100vh-60px)] w-[calc(100vw-200px)] ">{children}</div>
+        <main className="grow [&>*:first-child]:scroll-mt-16">{children}</main>
       </div>
     </div>
   );
-};
-
-export default DashboardLayout;
+}

@@ -1,10 +1,17 @@
-import './globals.css';
+import './css/globals.css'
+import './css/utility-patterns.css'
+
 import { Inter } from 'next/font/google';
+import Theme from './theme-provider';
+import AppProvider from './app-provider';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Providers } from './providers';
 
-
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'Create Next App',
@@ -17,14 +24,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-  
     <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>
-          <Providers>{children}</Providers>
+      <html lang="en" suppressHydrationWarning>
+        {/* suppressHydrationWarning: https://github.com/vercel/next.js/issues/44343 */}
+        <body
+          className={`${inter.variable} font-inter antialiased bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400`}
+        >
+          <Theme>
+            <AppProvider>
+              <Providers>{children}</Providers>
+            </AppProvider>
+          </Theme>
         </body>
       </html>
     </ClerkProvider>
-    
   );
 }
