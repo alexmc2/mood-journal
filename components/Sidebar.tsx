@@ -7,14 +7,17 @@ import { Transition } from '@headlessui/react';
 import { getBreakpoint } from '../utils/utils';
 import SidebarLinkGroup from './sidebar-link-group';
 import SidebarLink from './sidebar-link';
-import Logo from './logo';
+import Logo from './Logo';
 import { UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
+import HomeIcon from './icons/home';
+import HistoryIcon from './icons/history';
+import JournalIcon from './icons/journal';
 
 export default function Sidebar() {
   const sidebar = useRef<HTMLDivElement>(null);
   const { sidebarOpen, setSidebarOpen } = useAppProvider();
-  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(false);
+  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
   const segments = useSelectedLayoutSegments();
   const [breakpoint, setBreakpoint] = useState<string | undefined>(
     getBreakpoint()
@@ -23,9 +26,9 @@ export default function Sidebar() {
     !sidebarExpanded && (breakpoint === 'lg' || breakpoint === 'xl');
 
   const links = [
-    { name: 'HOME', href: '/' },
-    { name: 'JOURNALS', href: '/journal' },
-    { name: 'HISTORY', href: '/history' },
+    { name: 'HOME', href: '/', icon: HomeIcon },
+    { name: 'JOURNALS', href: '/journal', icon: JournalIcon }, // Replace with actual icon component
+    { name: 'HISTORY', href: '/history', icon: HistoryIcon }, // Replace with actual icon component
   ];
 
   // close on click outside
@@ -61,7 +64,7 @@ export default function Sidebar() {
   }, [breakpoint]);
 
   return (
-    <div className={`min-w-fit ${sidebarExpanded ? 'sidebar-expanded' : ''} `} >
+    <div className={`min-w-fit  ${sidebarExpanded ? 'sidebar-expanded' : ''} `}>
       {/* Sidebar backdrop (mobile only) */}
       <Transition
         className="fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto"
@@ -89,89 +92,63 @@ export default function Sidebar() {
         leaveTo="-translate-x-full"
       >
         {/* Sidebar header */}
-        <div>
-          <div className="flex justify-between mb-10 pr-3 sm:px-2">
-            {/* Close button */}
-            <button
-              className="lg:hidden text-slate-500 hover:text-slate-400"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              aria-controls="sidebar"
-              aria-expanded={sidebarOpen}
+
+        <div className="flex justify-between mb-10 pr-3 sm:px-2">
+          {/* Close button */}
+          <button
+            className="lg:hidden text-slate-500 hover:text-slate-400"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-controls="sidebar"
+            aria-expanded={sidebarOpen}
+          >
+            <span className="sr-only">Close sidebar</span>
+            <svg
+              className="w-6 h-6 fill-current"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <span className="sr-only">Close sidebar</span>
-              <svg
-                className="w-6 h-6 fill-current"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z" />
-              </svg>
-            </button>
-            {/* Logo */}
-            <Logo />
+              <path d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z" />
+            </svg>
+          </button>
+          {/* Logo */}
+          <Logo />
+        </div>
+
+        {/* Links */}
+        <div className="space-y-8">
+          {/* Pages group */}
+          <div>
+            <ul className="mt-3">
+              {links.map((link) => (
+                <li key={link.name} className="my-4">
+                  <Link href={link.href}>
+                    <div
+                      className={`flex items-center btn btn-md w-full text-center bg-blue-200 hover:bg-blue-400 border-none `}
+                      aria-hidden="true"
+                      onClick={() => {
+                        setSidebarOpen(false);
+                      }}
+                    >
+                      {/* Conditionally render icon or text based on sidebarExpanded state */}
+                      {!sidebarExpanded ? (
+                        // Render icon only when sidebar is collapsed
+                        <link.icon className="" color="black" />
+                      ) : (
+                        // Render text only when sidebar is expanded
+                        <span className="">{link.name}</span>
+                      )}
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Links */}
-          <div className="space-y-8">
-            {/* Pages group */}
-            <div>
-            
-              <ul className="mt-3">
-                {/* Dashboard */}
-                <SidebarLinkGroup open={segments.includes('dashboard')}>
-                  {(handleClick, open) => {
-                    return (
-                      <>
-                        <div
-                          onClick={(e) => {
-                            e.preventDefault();
-                            expandOnly
-                              ? setSidebarExpanded(true)
-                              : handleClick();
-                          }}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <div>
-                                {links.map((link) => (
-                                  <div key={link.name} className="text-xl my-4">
-                                    <Link href={link.href}>
-                                      <div className="px-5 py-1 btn btn-md sm:btn-md md:btn-md w-[145px] text-center bg-blue-200 hover:bg-blue-400 border-none">
-                                        {link.name}
-                                      </div>
-                                    </Link>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                            {/* Icon */}
-                            <div className="flex shrink-0 ml-2"></div>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  }}
-                </SidebarLinkGroup>
-
-                {/* Messages */}
-
-                {/* Inbox */}
-
-                {/* Calendar */}
-
-                {/* Campaigns */}
-
-                {/* Settings */}
-
-                {/* Utility */}
-              </ul>
-            </div>
-          </div>
           {/* More group */}
         </div>
 
         {/* Expand / collapse button */}
-        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
+        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-start mt-auto">
           <div className="px-3 py-2">
             <button onClick={() => setSidebarExpanded(!sidebarExpanded)}>
               <span className="sr-only">Expand / collapse sidebar</span>

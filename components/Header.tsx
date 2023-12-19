@@ -4,13 +4,14 @@ import { useState } from 'react';
 import { useAppProvider } from '@/app/app-provider';
 import { UserButton } from '@clerk/nextjs';
 import SearchModal from '@/components/search-modal';
+import ThemeToggle from '@/components/theme-toggle';
 
 export default function Header() {
   const { sidebarOpen, setSidebarOpen } = useAppProvider();
   const [searchModalOpen, setSearchModalOpen] = useState<boolean>(false);
 
   return (
-    <header className="sticky top-0 bg-slate-900 dark:bg-[#182235] border-b border-slate-900 dark:border-slate-700 z-30">
+    <header className="sticky top-0 border-b bg-blue-900 border-slate-900 dark:border-slate-700 z-30">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 -mb-px">
           {/* Header: Left side */}
@@ -71,6 +72,7 @@ export default function Header() {
                 setIsOpen={setSearchModalOpen}
               />
             </div>
+            <ThemeToggle />
 
             {/*  Divider */}
             <hr className="w-px h-6 bg-slate-200 dark:bg-slate-700 border-none" />

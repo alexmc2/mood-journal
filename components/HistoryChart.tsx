@@ -24,9 +24,9 @@ const CustomTooltip = ({ payload, label, active }) => {
           className="absolute left-2 top-2 w-2 h-2 rounded-full"
           style={{ background: analysis.color }}
         ></div>
-        <p className="label text-slate-300">{dateLabel}</p>
-        <p className="label text-xl uppercase">{analysis.mood}</p>
-        <p className="label text-slate-300">
+        <p className="label xs:text-sm md:text-lg">{dateLabel}</p>
+        <p className="label xs:text-md text-xl uppercase">{analysis.mood}</p>
+        <p className="label xs:text-sm md:text-lg ">
           Sentiment Score: {analysis.sentimentScore}
         </p>
       </div>
@@ -54,8 +54,8 @@ const CustomDot = ({ cx, cy, payload }) => {
 
 const HistoryChart = ({ data }) => {
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <LineChart width={300} height={100} data={data}>
+    <ResponsiveContainer height="100%" minWidth={600}>
+      <LineChart data={data}>
         <Line
           type="monotone"
           dataKey="sentimentScore"

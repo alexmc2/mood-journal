@@ -3,13 +3,6 @@
 @tailwind utilities;
 
 /* Additional styles */
-/* @import 'additional-styles/utility-patterns.css'; */
+@import './utility-patterns.css';
 
 
-html {
-  @apply bg-slate-800;
-}
-
-body {
-  @apply text-slate-100 bg-slate-800;
-}

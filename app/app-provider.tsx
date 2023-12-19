@@ -17,7 +17,7 @@ export default function AppProvider({
 }: {
   children: React.ReactNode
 }) {  
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
   return (
     <AppContext.Provider value={{ sidebarOpen, setSidebarOpen }}>
       {children}
