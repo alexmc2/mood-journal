@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useAutosave } from 'react-autosave';
 import Spinner from './Spinner';
 import { useRouter } from 'next/navigation';
+
 import {
   Card,
   CardHeader,
@@ -59,36 +60,48 @@ const Editor = ({ entry }) => {
   useAutosave({
     data: value,
     onSave: async (_value) => {
-      setIsSaving(false);
+      setIsSaving(true);
 
-      const data = await updateEntry(entry.id, _value);
+      // const data = await updateEntry(entry.id, _value);
 
-      setAnalysis(data.analysis || {});
+      // setAnalysis(data.analysis || {});
 
-      setIsSaving(false);
+      // setIsSaving(false);
+
+      setTimeout(() => {
+        setAnalysis({
+          /* ... simulated analysis data ... */
+        });
+        setIsSaving(false);
+      }, 1000); // Simulate a 1 second API call
     },
   });
 
   return (
-    <div className="h-full w-full grid md:grid-cols-3 gap-8 p-8 pt-4">
-      <div className="md:col-span-2">
-        <Card className="flex h-full w-full">
-          <div className="absolute left-1 top-1 p-2">
-            {isSaving ? (
-              <Spinner />
-            ) : (
-              <div className="w-[16px] h-[16px] rounded-full bg-green-500"></div>
-            )}
-          </div>
+    // <div className="px-4 sm:px-6 lg:px-8 py-8 w-full">
+    //   {/* Page content */}
+    //   <div className="max-w-5xl mx-auto flex flex-col lg:flex-row lg:space-x-8 xl:space-x-16">
+
+    <div className="h-full w-full mx-auto grid md:grid-cols-3 gap-8 p-8 pt-4 ">
+      <div className="md:col-span-2  ">
+        <div className=" w-full min-h-[40vh] card shadow-xl ">
           <TextareaAutosize
             cacheMeasurements
-            className=" h-full w-full p-8 text-slate-700 border-none shadow-none outline-none no-scrollbar "
+            className=" min-h-[40vh] w-full p-8 border-none shadow-none outline-none no-scrollbar bg-base-100 dark:bg-blue-900 rounded-2xl "
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
-        </Card>
+
+          <div className="absolute left-1 top-1 p-2 ">
+            {isSaving ? (
+              <Spinner />
+            ) : (
+              <div className="w-[16px] h-[16px] rounded-full bg-green-500 "></div>
+            )}
+          </div>
+        </div>
       </div>
-      <div className="border-l px-8 h-full border-slate-700">
+      <div className=" md:border-l px-8 h-full dark:border-slate-600 border-slate-300">
         <div
           className="flex w-full h-full flex-col mb-6 md:mb-0 gap-4 p-8  card "
           style={{ backgroundColor: color, color: textColor }}
