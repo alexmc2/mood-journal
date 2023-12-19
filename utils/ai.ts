@@ -43,7 +43,7 @@ const getPrompt = async (content) => {
 
   const prompt = new PromptTemplate({
     template:
-      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions. \n{format_instructions}\n{entry}.  ',
+      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions. \n{format_instructions}\n{entry}. You are a friendly, wise psychotherapist',
     inputVariables: ['entry'],
     partialVariables: { format_instructions },
   });
@@ -83,27 +83,34 @@ export const analyse = async (content) => {
 };
 
 export const qa = async (question, entries) => {
-  const docs = entries.map((entry) => {
-    return new Document({
-      pageContent: entry.content,
-      metadata: { id: entry.id, createdAt: entry.createdAt },
+  try {
+    const docs = entries.map((entry) => {
+      return new Document({
+        pageContent: entry.content,
+        metadata: { id: entry.id, createdAt: entry.createdAt },
+      });
     });
-  });
 
-  const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+    const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
 
-  const chain = loadQARefineChain(model);
+    const chain = loadQARefineChain(model);
 
-  const embeddings = new OpenAIEmbeddings();
+    const embeddings = new OpenAIEmbeddings();
 
-  const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
+    console.log('Docs:', docs);
 
-  const relevantDocs = await store.similaritySearch(question);
+    const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
 
-  const res = await chain.call({
-    input_documents: relevantDocs,
-    question: question,
-  });
+    const relevantDocs = await store.similaritySearch(question);
 
-  return res.output_text;
+    const res = await chain.call({
+      input_documents: relevantDocs,
+      question: question,
+    });
+
+    return res.output_text;
+  } catch (error) {
+    console.error('Error in qa function:', error);
+    throw error; // Re-throw the error for higher-level handling
+  }
 };

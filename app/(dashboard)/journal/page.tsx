@@ -27,7 +27,7 @@ const JournalPage = async () => {
   return (
   
       <div className="p-10 pt-6">
-        <h2 className="text-3xl pl-5 sm:pl-7">Journal</h2>
+        <h2 className="text-3xl pl-5 sm:pl-7">JOURNALS</h2>
         <div className="pl-5 sm:pl-7 py-2 ">
           <Question />
         </div>
