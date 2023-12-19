@@ -26,11 +26,16 @@ const Editor = ({ entry }) => {
   //   router.push('/journal');
   // };
 
-  function getContrastYIQ(hexcolor) {
+  function getContrastYIQ(hexcolor: string) {
     // Default to a valid color if hexcolor is undefined or invalid
     // if (!hexcolor || !hexcolor.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i)) {
     //   hexcolor = '#ffffff'; // default to white
     // }
+    if (!hexcolor) {
+      console.error('Hex color is undefined');
+      return '#ffffff';
+    }
+
     hexcolor = hexcolor.replace('#', '');
     var r = parseInt(hexcolor.substr(0, 2), 16);
     var g = parseInt(hexcolor.substr(2, 2), 16);
@@ -60,22 +65,37 @@ const Editor = ({ entry }) => {
   useAutosave({
     data: value,
     onSave: async (_value) => {
-      setIsSaving(true);
+      // Only proceed if there is content
+      if (_value.trim().length > 50) {
+        setIsSaving(true);
 
-      // const data = await updateEntry(entry.id, _value);
-
-      // setAnalysis(data.analysis || {});
-
-      // setIsSaving(false);
-
-      setTimeout(() => {
-        setAnalysis({
-          /* ... simulated analysis data ... */
-        });
-        setIsSaving(false);
-      }, 1000); // Simulate a 1 second API call
+        try {
+          // Call the API to update the entry
+          const updatedEntry = await updateEntry(entry.id, _value);
+          setAnalysis(updatedEntry.analysis || {});
+        } catch (error) {
+          console.error('Error saving entry:', error);
+          // Handle the error appropriately
+        } finally {
+          setIsSaving(false);
+        }
+      }
     },
   });
+
+  // const data = await updateEntry(entry.id, _value);
+
+  // setAnalysis(data.analysis || {});
+
+  // setIsSaving(false);
+
+  //dummy data
+  // setTimeout(() => {
+  //   setAnalysis({
+
+  //   });
+  //   setIsSaving(false);
+  // }, 1000);
 
   return (
     // <div className="px-4 sm:px-6 lg:px-8 py-8 w-full">
@@ -90,6 +110,7 @@ const Editor = ({ entry }) => {
             className=" min-h-[40vh] w-full p-8 border-none shadow-none outline-none no-scrollbar bg-base-100 dark:bg-blue-900 rounded-2xl "
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            placeholder="Write about your day..."
           />
 
           <div className="absolute left-1 top-1 p-2 ">
@@ -103,7 +124,7 @@ const Editor = ({ entry }) => {
       </div>
       <div className=" md:border-l px-8 h-full dark:border-slate-600 border-slate-300">
         <div
-          className="flex w-full h-full flex-col mb-6 md:mb-0 gap-4 p-8  card "
+          className="flex w-full h-full flex-col mb-6 md:mb-0 gap-4 p-8  card shadow-xl"
           style={{ backgroundColor: color, color: textColor }}
         >
           <h2 className="text-2xl ">Analysis</h2>

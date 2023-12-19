@@ -1,7 +1,5 @@
 const createURL = (path) => window.location.origin + path;
 
-
-
 export const updateEntry = async (id, content) => {
   const res = await fetch(
     new Request(createURL(`/api/journal/${id}`), {
@@ -29,17 +27,26 @@ export const newEntry = async () => {
   }
 };
 
-export const askQuestion = async (question) => {
-  const res = await fetch(
-    new Request(createURL(`/api/question`), {
-      method: 'POST',
-      body: JSON.stringify({ question }),
-    })
-  );
+export const askQuestion = async (question: string) => {
+  try {
+    const res = await fetch(
+      new Request(createURL(`/api/question`), {
+        method: 'POST',
+        body: JSON.stringify({ question }),
+      })
+    );
 
-  if (res.ok) {
-    return res.json();
-  } else {
-    throw new Error('Something went wrong on API server!');
+    if (res.ok) {
+      const jsonResponse = await res.json();
+      if (!jsonResponse.data) {
+        throw new Error('Response data is missing');
+      }
+      return jsonResponse;
+    } else {
+      throw new Error('API response not OK');
+    }
+  } catch (error) {
+    console.error('Error in askQuestion:', error);
+    throw error; // Re-throw the error for the caller to handle
   }
 };
