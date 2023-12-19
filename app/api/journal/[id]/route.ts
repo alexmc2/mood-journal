@@ -2,6 +2,24 @@ import { analyse } from '@/utils/ai';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { NextResponse } from 'next/server';
+import { update } from '@/utils/actions';
+
+export const DELETE = async (request: Request, { params }) => {
+  const user = await getUserByClerkId();
+
+  await prisma.journalEntry.delete({
+    where: {
+      userId_id: {
+        id: params.id,
+        userId: user.id,
+      },
+    },
+  });
+
+  update(['/journal']);
+
+  return NextResponse.json({ data: { id: params.id } });
+};
 
 export const PATCH = async (request, { params }) => {
   const { content } = await request.json();

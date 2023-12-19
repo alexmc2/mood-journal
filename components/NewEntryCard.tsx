@@ -3,13 +3,6 @@
 import { newEntry } from '@/utils/api';
 import { revalidatePath } from 'next/cache';
 import { useRouter } from 'next/navigation';
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Divider,
-} from '@nextui-org/react';
 
 const NewEntryCard = () => {
   const router = useRouter();

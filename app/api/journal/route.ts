@@ -15,7 +15,7 @@ export const POST = async () => {
   });
 
   // Check if content is not empty
-  // if (entry.content && entry.content.trim() !== '') {
+
   const analysis = await analyse(entry.content);
   await prisma.analysis.create({
     data: {
@@ -24,7 +24,6 @@ export const POST = async () => {
       ...analysis,
     },
   });
-  // }
 
   revalidatePath('/journal');
 
