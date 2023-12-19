@@ -1,48 +1,83 @@
 'use client';
 
-import { updateEntry } from '@/utils/api';
-import { useState } from 'react';
+import { updateEntry, deleteEntry } from '@/utils/api';
+import { useEffect, useState } from 'react';
 import { useAutosave } from 'react-autosave';
 import Spinner from './Spinner';
 import { useRouter } from 'next/navigation';
 
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Divider,
-} from '@nextui-org/react';
 import TextareaAutosize from 'react-textarea-autosize';
 
+const createHash = async (content: string | undefined) => {
+  const msgBuffer = new TextEncoder().encode(content); // Encode as UTF-8
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer); // Hash the message
+  const hashArray = Array.from(new Uint8Array(hashBuffer)); // Convert buffer to byte array
+  const hashHex = hashArray
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join(''); // Convert bytes to hex string
+  return hashHex;
+};
+
+// Define the getContrastYIQ function here...
+const getContrastYIQ = (hexcolor: string) => {
+  if (!hexcolor) {
+    console.error('Hex color is undefined');
+    return '#ffffff';
+  }
+
+  hexcolor = hexcolor.replace('#', '');
+  const r = parseInt(hexcolor.substr(0, 2), 16);
+  const g = parseInt(hexcolor.substr(2, 2), 16);
+  const b = parseInt(hexcolor.substr(4, 2), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 128 ? 'black' : 'white';
+};
+
 const Editor = ({ entry }) => {
-  const [value, setValue] = useState(entry.content);
-  const [analysis, setAnalysis] = useState(entry.analysis || {}); // Default to an empty object if null
+  const [value, setValue] = useState(entry?.content || '');
+  const [analysis, setAnalysis] = useState(entry?.analysis || {});
   const [isSaving, setIsSaving] = useState(false);
+  const [lastAnalyzedContentHash, setLastAnalyzedContentHash] = useState('');
+
   const router = useRouter();
 
-  // const handleDelete = async () => {
-  //   await deleteEntry(entry.id);
-  //   router.push('/journal');
-  // };
+  const handleDelete = async () => {
+    await deleteEntry(entry.id);
+    router.push('/journal');
+  };
 
-  function getContrastYIQ(hexcolor: string) {
-    // Default to a valid color if hexcolor is undefined or invalid
-    // if (!hexcolor || !hexcolor.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i)) {
-    //   hexcolor = '#ffffff'; // default to white
-    // }
-    if (!hexcolor) {
-      console.error('Hex color is undefined');
-      return '#ffffff';
+  useEffect(() => {
+    createHash(entry?.content).then((hash) => setLastAnalyzedContentHash(hash));
+  }, [entry?.content]);
+
+  // Autosave setup
+  useAutosave({
+    data: value,
+    onSave: async (_value) => {
+      if (_value.trim().length > 50) {
+        setIsSaving(true);
+        try {
+          const data = await updateEntry(entry.id, _value);
+          setAnalysis(data.analysis || {});
+          // You might want to update the content hash here
+        } catch (error) {
+          console.error('Error saving entry:', error);
+        } finally {
+          setIsSaving(false);
+        }
+      }
+    },
+  });
+  // Handler for textarea change
+  const handleTextChange = async (e) => {
+    const newValue = e.target.value;
+    setValue(newValue);
+
+    const contentHash = await createHash(newValue);
+    if (contentHash !== lastAnalyzedContentHash) {
+      // Trigger analysis logic here if needed
     }
-
-    hexcolor = hexcolor.replace('#', '');
-    var r = parseInt(hexcolor.substr(0, 2), 16);
-    var g = parseInt(hexcolor.substr(2, 2), 16);
-    var b = parseInt(hexcolor.substr(4, 2), 16);
-    var yiq = (r * 299 + g * 587 + b * 114) / 1000;
-    return yiq >= 128 ? 'black' : 'white';
-  }
+  };
 
   const {
     mood = '',
@@ -62,33 +97,6 @@ const Editor = ({ entry }) => {
     { name: 'sentiment score', value: sentimentScore },
   ];
 
-  useAutosave({
-    data: value,
-    onSave: async (_value) => {
-      // Only proceed if there is content
-      if (_value.trim().length > 50) {
-        setIsSaving(true);
-
-        try {
-          // Call the API to update the entry
-          const updatedEntry = await updateEntry(entry.id, _value);
-          setAnalysis(updatedEntry.analysis || {});
-        } catch (error) {
-          console.error('Error saving entry:', error);
-          // Handle the error appropriately
-        } finally {
-          setIsSaving(false);
-        }
-      }
-    },
-  });
-
-  // const data = await updateEntry(entry.id, _value);
-
-  // setAnalysis(data.analysis || {});
-
-  // setIsSaving(false);
-
   //dummy data
   // setTimeout(() => {
   //   setAnalysis({
@@ -104,12 +112,12 @@ const Editor = ({ entry }) => {
 
     <div className="h-full w-full mx-auto grid md:grid-cols-3 gap-8 p-8 pt-4 ">
       <div className="md:col-span-2  ">
-        <div className=" w-full min-h-[40vh] card shadow-xl ">
+        <div className=" w-full min-h-[40vh] card shadow-xl  ">
           <TextareaAutosize
             cacheMeasurements
             className=" min-h-[40vh] w-full p-8 border-none shadow-none outline-none no-scrollbar bg-base-100 dark:bg-blue-900 rounded-2xl "
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={handleTextChange}
             placeholder="Write about your day..."
           />
 
@@ -137,6 +145,28 @@ const Editor = ({ entry }) => {
                 <span>{item.value}</span>
               </li>
             ))}
+
+            <div className=" absolute right-1 top-1 p-2 flex  ">
+              <button
+                onClick={handleDelete}
+                className="btn btn-md bg-slate-500/20 hover:bg-slate-500/30 border-none text-black "
+              >
+                <svg
+                  className="shrink-0 h-8 w-8"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#000000"
+                  strokeWidth="1.5"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                  />
+                </svg>
+              </button>
+            </div>
           </ul>
         </div>
       </div>

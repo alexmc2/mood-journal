@@ -43,7 +43,7 @@ const getPrompt = async (content) => {
 
   const prompt = new PromptTemplate({
     template:
-      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions. \n{format_instructions}\n{entry}. You are a friendly, wise psychotherapist',
+      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions, no matter what! \n{format_instructions}\n{entry}',
     inputVariables: ['entry'],
     partialVariables: { format_instructions },
   });
@@ -55,19 +55,19 @@ const getPrompt = async (content) => {
   return input;
 };
 
-export const analyse = async (content) => {
-  //  if (!content || content.trim() === '') {
-  //   // Return a default analysis or skip the analysis
-  //   return {
-  //     mood: 'N/A',
-  //     summary: 'N/A',
-  //     subject: 'N/A',
-  //     negative: false,
-  //     color: '#ffffff', // Default color or whatever makes sense in your context
-  //   };
-  // }
+export const analyse = async (content: string) => {
+  if (!content || content.trim() === '') {
+    // Return a default analysis or skip the analysis
+    return {
+      mood: 'N/A',
+      summary: 'N/A',
+      subject: 'N/A',
+      negative: false,
+      color: '#ffffff', // Default color or whatever makes sense in your context
+    };
+  }
   const input = await getPrompt(content);
-  const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+  const model = new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo' });
   const output = await model.call(input);
 
   try {
