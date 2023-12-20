@@ -43,7 +43,7 @@ const EntryCard = ({ entry }) => {
 
   return (
     <div
-      className={`cursor-pointer overflow-hidden px-4 py-3 sm:px-6 card shadow-xl ${
+      className={`cursor-pointer overflow-hidden px-4 py-3 sm:px-6 shadow-xl card hover:scale-105 transition-transform duration-300 ${
         analysisColor ? '' : 'bg-base-100 dark:bg-blue-900'
       }`}
       style={{ ...cardStyle, color: textColor }}
