@@ -82,7 +82,7 @@ export const analyse = async (content: string) => {
   }
 };
 
-export const qa = async (question, entries) => {
+export const qa = async (question: string, entries: any[]) => {
   try {
     const docs = entries.map((entry) => {
       return new Document({
@@ -103,9 +103,17 @@ export const qa = async (question, entries) => {
 
     const relevantDocs = await store.similaritySearch(question);
 
+    // Create a prompt template
+    const prompt = new PromptTemplate({
+      template: `As a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Do not preface your advice with a greeting. \n\nQuestion: {question}\n\nAnswer:`,
+      inputVariables: ['question'],
+    });
+
+    const input = await prompt.format({ question });
+
     const res = await chain.call({
       input_documents: relevantDocs,
-      question: question,
+      question: input,
     });
 
     return res.output_text;
