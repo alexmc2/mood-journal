@@ -29,6 +29,7 @@ model JournalEntry {
   user   User   @relation(fields: [userId], references: [id])
 
   content String @db.Text
+  contentHash String? // New field for storing the content hash
 
   analysis Analysis?
 

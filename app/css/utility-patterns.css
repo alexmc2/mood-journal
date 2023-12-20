@@ -141,3 +141,7 @@ input[type="search"]::-webkit-search-results-decoration {
   scrollbar-width: none;  /* Firefox */
 }
 
+.analysis-item {
+  display: flex;
+  flex-direction: column;
+}

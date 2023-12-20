@@ -33,7 +33,7 @@ const JournalPage = async () => {
       <div className="pl-5 sm:pl-7 py-2 ">
         <Question />
       </div>
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 p-8">
+      <div className="grid 2xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 p-8">
         <NewEntryCard />
 
         {entries.map((entry) => (
