@@ -14,7 +14,14 @@ const Question = () => {
 
     const { data } = await askQuestion(question);
 
-    setAnswer(data);
+    // Formatting the response
+    let formattedAnswer = data;
+    // Remove any 'Friend:' prefix
+    // formattedAnswer = formattedAnswer.replace(/^Friend:\s*/, '');
+    // Ensure proper paragraph formatting
+    formattedAnswer = formattedAnswer.split('\n').join('<br/>');
+
+    setAnswer(formattedAnswer);
     setLoading(false);
     setQuestion('');
   };
@@ -39,7 +46,12 @@ const Question = () => {
         </button>
       </form>
       {loading && <p>Loading...</p>}
-      {answer && <p className="my-4 text-xl">{answer}</p>}
+      {answer && (
+        <div
+          className="my-4 text-xl"
+          dangerouslySetInnerHTML={{ __html: answer }}
+        />
+      )}
     </div>
   );
 };
