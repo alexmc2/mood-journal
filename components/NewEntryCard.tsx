@@ -12,7 +12,7 @@ const NewEntryCard = () => {
     router.push(`/journal/${data.id}`);
   };
   return (
-    <div className="cursor-pointer overflow-hidden shadow-md px-4 py-5 sm:p-6 bg-base-100 dark:bg-blue-900 card">
+    <div className="cursor-pointer overflow-hidden shadow-md px-4  sm:p-6 bg-base-100 dark:bg-blue-900 card">
       <div className="card-body" onClick={handleOnClick}>
         <div className="text-3xl font-semibold text">New Entry</div>
       </div>
