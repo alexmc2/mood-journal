@@ -18,7 +18,7 @@ const createHash = async (content: string | undefined) => {
   return hashHex;
 };
 
-// Define the getContrastYIQ function here...
+
 const getContrastYIQ = (hexcolor: string) => {
   if (!hexcolor) {
     console.error('Hex color is undefined');
@@ -34,8 +34,8 @@ const getContrastYIQ = (hexcolor: string) => {
 };
 
 const Editor = ({ entry }) => {
-  const [value, setValue] = useState(entry?.content || '');
-  const [analysis, setAnalysis] = useState(entry?.analysis || {});
+  const [value, setValue] = useState(entry.content || '');
+  const [analysis, setAnalysis] = useState(entry.analysis || {});
   const [isSaving, setIsSaving] = useState(false);
   const [lastAnalyzedContentHash, setLastAnalyzedContentHash] = useState('');
 
@@ -47,8 +47,8 @@ const Editor = ({ entry }) => {
   };
 
   useEffect(() => {
-    createHash(entry?.content).then((hash) => setLastAnalyzedContentHash(hash));
-  }, [entry?.content]);
+    createHash(entry.content).then((hash) => setLastAnalyzedContentHash(hash));
+  }, [entry.content]);
 
   // Autosave setup
   useAutosave({
@@ -87,6 +87,7 @@ const Editor = ({ entry }) => {
     negative = false,
     sentimentScore = '',
   } = analysis;
+  
   const textColor = getContrastYIQ(color);
 
   const dataAnalysis = [
