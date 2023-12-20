@@ -2,56 +2,63 @@ import { analyse } from '@/utils/ai';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { NextResponse } from 'next/server';
-import { update } from '@/utils/actions';
-
-export const DELETE = async (request: Request, { params }) => {
-  const user = await getUserByClerkId();
-
-  await prisma.journalEntry.delete({
-    where: {
-      userId_id: {
-        id: params.id,
-        userId: user.id,
-      },
-    },
-  });
-
-  update(['/journal']);
-
-  return NextResponse.json({ data: { id: params.id } });
-};
+import { createHash } from 'crypto'; // Node.js native module
 
 export const PATCH = async (request, { params }) => {
   const { content } = await request.json();
-
   const user = await getUserByClerkId();
-  const updatedEntry = await prisma.journalEntry.update({
+
+  // Retrieve the current entry
+  const currentEntry = await prisma.journalEntry.findUnique({
     where: {
       userId_id: {
         userId: user.id,
         id: params.id,
       },
     },
-
-    data: {
-      content,
+    include: {
+      analysis: true, // Assuming each entry has an associated analysis
     },
   });
 
-  const analysis = await analyse(updatedEntry.content);
+  // Generate a hash of the new content
+  const newContentHash = createHash('sha256').update(content).digest('hex');
 
-  const updated = await prisma.analysis.upsert({
-    where: {
-      entryId: updatedEntry.id,
-    },
-    create: {
-      userId: user.id,
-      entryId: updatedEntry.id,
-      ...analysis,
-    },
+  // Compare the new content hash with the existing one
+  if (newContentHash !== currentEntry.contentHash) {
+    // Content has changed significantly, update entry and re-analyse
+    const updatedEntry = await prisma.journalEntry.update({
+      where: {
+        userId_id: {
+          userId: user.id,
+          id: params.id,
+        },
+      },
+      data: {
+        content,
+        contentHash: newContentHash, // Update the content hash
+      },
+    });
 
-    update: analysis,
-  });
+    const analysis = await analyse(updatedEntry.content);
 
-  return NextResponse.json({ data: { ...updatedEntry, analysis: updated } });
+    const updatedAnalysis = await prisma.analysis.upsert({
+      where: {
+        entryId: updatedEntry.id,
+      },
+      create: {
+        userId: user.id,
+        entryId: updatedEntry.id,
+        ...analysis,
+      },
+      update: analysis,
+    });
+
+    return NextResponse.json({
+      data: { ...updatedEntry, analysis: updatedAnalysis },
+    });
+  } else {
+    // Content hasn't changed significantly, skip re-analysis
+    return NextResponse.json({ data: currentEntry });
+  }
 };
