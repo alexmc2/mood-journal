@@ -13,6 +13,7 @@ import Link from 'next/link';
 import HomeIcon from './icons/home';
 import HistoryIcon from './icons/history';
 import JournalIcon from './icons/journal';
+import ChatIcon from './icons/chat';
 
 export default function Sidebar() {
   const sidebar = useRef<HTMLDivElement>(null);
@@ -27,8 +28,9 @@ export default function Sidebar() {
 
   const links = [
     { name: 'HOME', href: '/', icon: HomeIcon },
-    { name: 'JOURNALS', href: '/journal', icon: JournalIcon }, // Replace with actual icon component
-    { name: 'HISTORY', href: '/history', icon: HistoryIcon }, // Replace with actual icon component
+    { name: 'JOURNALS', href: '/journal', icon: JournalIcon }, 
+    { name: 'HISTORY', href: '/history', icon: HistoryIcon }, 
+    { name: 'CHAT', href: '/chat', icon: ChatIcon}
   ];
 
   // close on click outside
