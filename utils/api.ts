@@ -47,7 +47,7 @@ export const newEntry = async () => {
 export const askQuestion = async (question: string) => {
   try {
     const res = await fetch(
-      new Request(createURL(`/api/question`), {
+      new Request(createURL(`/api/chat`), {
         method: 'POST',
         body: JSON.stringify({ question }),
       })
@@ -61,6 +61,7 @@ export const askQuestion = async (question: string) => {
       return jsonResponse;
     } else {
       throw new Error('API response not OK');
+      
     }
   } catch (error) {
     console.error('Error in askQuestion:', error);

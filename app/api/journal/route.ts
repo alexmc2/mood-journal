@@ -9,8 +9,7 @@ export const POST = async () => {
   const entry = await prisma.journalEntry.create({
     data: {
       userId: user.id,
-
-      content: '',
+      content: 'Write about your day...',
     },
   });
 
@@ -29,3 +28,5 @@ export const POST = async () => {
 
   return NextResponse.json({ data: entry });
 };
+
+

@@ -1,6 +1,6 @@
+import HistoryChart from '@/components/HistoryChart';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
-import HistoryChart from '@/components/HistoryChart';
 
 const getData = async () => {
   const user = await getUserByClerkId();
@@ -12,12 +12,16 @@ const getData = async () => {
       createdAt: 'asc',
     },
   });
-
-  const sum = analyses.reduce((all, current) => {
-    return all + current.sentimentScore;
+  const total = analyses.reduce((acc, curr) => {
+    return acc + curr.sentimentScore;
   }, 0);
-
-  const average = Math.round(sum / analyses.length);
+  const average =
+    analyses.length > 0
+      ? Math.ceil(
+          analyses.reduce((acc, curr) => acc + curr.sentimentScore, 0) /
+            analyses.length
+        )
+      : 0; // Return 0 or another default value if there are no analyses
 
   return { analyses, average };
 };
@@ -32,7 +36,6 @@ const History = async () => {
         {`Average Sentiment Score:`} {average}
       </div>
       <div className=" h-full overflow-x-auto">
-  
         <HistoryChart data={analyses} />
       </div>
     </div>

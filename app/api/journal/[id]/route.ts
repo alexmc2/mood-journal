@@ -3,6 +3,24 @@ import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { NextResponse } from 'next/server';
 import { createHash } from 'crypto'; // Node.js native module
+import { update } from '@/utils/actions';
+
+export const DELETE = async (request: Request, { params }) => {
+  const user = await getUserByClerkId();
+
+  await prisma.journalEntry.delete({
+    where: {
+      userId_id: {
+        id: params.id,
+        userId: user.id,
+      },
+    },
+  });
+
+  update(['/journal']);
+
+  return NextResponse.json({ data: { id: params.id } });
+};
 
 export const PATCH = async (request, { params }) => {
   const { content } = await request.json();
@@ -17,7 +35,7 @@ export const PATCH = async (request, { params }) => {
       },
     },
     include: {
-      analysis: true, // Assuming each entry has an associated analysis
+      analysis: true, 
     },
   });
 
@@ -25,7 +43,7 @@ export const PATCH = async (request, { params }) => {
   const newContentHash = createHash('sha256').update(content).digest('hex');
 
   // Compare the new content hash with the existing one
-  if (newContentHash !== currentEntry.contentHash) {
+  if (newContentHash !== currentEntry?.contentHash) {
     // Content has changed significantly, update entry and re-analyse
     const updatedEntry = await prisma.journalEntry.update({
       where: {

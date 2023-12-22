@@ -56,14 +56,15 @@ const getPrompt = async (content) => {
 };
 
 export const analyse = async (content: string) => {
-  if (!content || content.trim() === '') {
+  if (!content || content.trim() === ''|| content === 'Write about your day...') {
     // Return a default analysis or skip the analysis
     return {
-      mood: 'N/A',
-      summary: 'N/A',
-      subject: 'N/A',
+      mood: 'Neutral',
+      subject: 'None',
       negative: false,
-      color: '#ffffff', // Default color or whatever makes sense in your context
+      summary: 'None',
+      sentimentScore: 0,
+      color: '#0101fe',
     };
   }
   const input = await getPrompt(content);

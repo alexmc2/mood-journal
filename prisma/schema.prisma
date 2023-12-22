@@ -16,8 +16,10 @@ model User {
   clerkId String         @unique
   email   String         @unique
 
-  entries JournalEntry[]
+  entries  JournalEntry[]
   analyses Analysis[]
+  chats    Chat[]
+  
 }
 
 model JournalEntry {
@@ -56,4 +58,31 @@ model Analysis {
 
   @@unique([entryId])
   @@index ([userId])
+}
+
+model Chat {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  messages Message[]
+  
+
+  @@index([userId])
+}
+
+
+model Message {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+
+  chatId String
+  chat   Chat    @relation(fields: [chatId], references: [id])
+
+  text String @db.Text
+
+  @@index([chatId]) // Optional, for performance enhancement
 }
