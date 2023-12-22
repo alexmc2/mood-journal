@@ -1,5 +1,6 @@
 import './css/globals.css'
 import './css/utility-patterns.css'
+import './css/styles.css';
 
 import { Inter } from 'next/font/google';
 import Theme from './theme-provider';

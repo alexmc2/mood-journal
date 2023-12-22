@@ -5,6 +5,7 @@ import { useAppProvider } from '@/app/app-provider';
 import { useSelectedLayoutSegments } from 'next/navigation';
 import { Transition } from '@headlessui/react';
 import { getBreakpoint } from '../utils/utils';
+import { newEntry } from '@/utils/api';
 import SidebarLinkGroup from './sidebar-link-group';
 import SidebarLink from './sidebar-link';
 import Logo from './Logo';
@@ -14,6 +15,8 @@ import HomeIcon from './icons/home';
 import HistoryIcon from './icons/history';
 import JournalIcon from './icons/journal';
 import ChatIcon from './icons/chat';
+import newEntryIcon from './icons/newEntry';
+import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
   const sidebar = useRef<HTMLDivElement>(null);
@@ -25,12 +28,13 @@ export default function Sidebar() {
   );
   const expandOnly =
     !sidebarExpanded && (breakpoint === 'lg' || breakpoint === 'xl');
-
+  const router = useRouter();
   const links = [
     { name: 'HOME', href: '/', icon: HomeIcon },
-    { name: 'JOURNALS', href: '/journal', icon: JournalIcon }, 
-    { name: 'HISTORY', href: '/history', icon: HistoryIcon }, 
-    { name: 'CHAT', href: '/chat', icon: ChatIcon}
+    { name: 'JOURNAL ENTRIES', href: '/journal', icon: JournalIcon },
+    { name: 'NEW ENTRY', href: `/journal/{data.id}`, icon: newEntryIcon },
+    { name: 'HISTORY CHART', href: '/history', icon: HistoryIcon },
+    { name: 'CHAT', href: '/chat', icon: ChatIcon },
   ];
 
   // close on click outside
@@ -64,6 +68,11 @@ export default function Sidebar() {
       window.removeEventListener('resize', handleBreakpoint);
     };
   }, [breakpoint]);
+
+  const handleOnClick = async () => {
+    const data = await newEntry();
+    router.push(`/journal/${data.id}`);
+  };
 
   return (
     <div className={`min-w-fit  ${sidebarExpanded ? 'sidebar-expanded' : ''} `}>
@@ -123,15 +132,26 @@ export default function Sidebar() {
             <ul className="mt-3">
               {links.map((link) => (
                 <li key={link.name} className="my-4">
-                  <Link href={link.href}>
-                    <div
+                  {link.name !== 'NEW ENTRY' ? (
+                    <Link href={link.href}>
+                      <div
+                        className={`flex items-center btn btn-md w-full text-center bg-blue-200 hover:bg-blue-400 border-none `}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        {!sidebarExpanded ? (
+                          // Render icon only when sidebar is collapsed
+                          <link.icon className="" color="black" />
+                        ) : (
+                          // Render text only when sidebar is expanded
+                          <span className="">{link.name}</span>
+                        )}
+                      </div>
+                    </Link>
+                  ) : (
+                    <button
                       className={`flex items-center btn btn-md w-full text-center bg-blue-200 hover:bg-blue-400 border-none `}
-                      aria-hidden="true"
-                      onClick={() => {
-                        setSidebarOpen(false);
-                      }}
+                      onClick={handleOnClick}
                     >
-                      {/* Conditionally render icon or text based on sidebarExpanded state */}
                       {!sidebarExpanded ? (
                         // Render icon only when sidebar is collapsed
                         <link.icon className="" color="black" />
@@ -139,8 +159,8 @@ export default function Sidebar() {
                         // Render text only when sidebar is expanded
                         <span className="">{link.name}</span>
                       )}
-                    </div>
-                  </Link>
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>

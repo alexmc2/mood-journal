@@ -1,4 +1,6 @@
+import React from 'react';
 import Editor from '@/components/Editor';
+import LexicalEditor from '@/components/LexicalEditor';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 
@@ -24,11 +26,11 @@ const EntryPage = async ({ params }) => {
   const entry = await getEntry(params.id);
 
   return (
-
-      <div className="">
+    <div>
+   
         <Editor entry={entry} />
-      </div>
-    
+      
+    </div>
   );
 };
 
