@@ -44,6 +44,17 @@ export const newEntry = async () => {
   }
 };
 
+export const fetchEntry = async (id) => {
+  const res = await fetch(createURL(`/api/journal/${id}`));
+  if (res.ok) {
+    const data = await res.json();
+    return data.data;
+  } else {
+    throw new Error('Failed to fetch entry');
+  }
+};
+
+
 export const askQuestion = async (question: string) => {
   try {
     const res = await fetch(

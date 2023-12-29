@@ -22,6 +22,24 @@ export const DELETE = async (request: Request, { params }) => {
   return NextResponse.json({ data: { id: params.id } });
 };
 
+
+export const GET = async (request, { params }) => {
+  const user = await getUserByClerkId();
+  const entry = await prisma.journalEntry.findUnique({
+    where: {
+      userId_id: {
+        userId: user.id,
+        id: params.id,
+      },
+    },
+    include: {
+      analysis: true,
+    },
+  });
+  return NextResponse.json({ data: entry });
+};
+
+
 export const PATCH = async (request, { params }) => {
   const { content } = await request.json();
   const user = await getUserByClerkId();
@@ -38,6 +56,8 @@ export const PATCH = async (request, { params }) => {
       analysis: true, 
     },
   });
+
+  
 
   // Generate a hash of the new content
   const newContentHash = createHash('sha256').update(content).digest('hex');
