@@ -1,5 +1,5 @@
-import './css/globals.css'
-import './css/utility-patterns.css'
+import './css/globals.css';
+import './css/utility-patterns.css';
 import './css/styles.css';
 
 import { Inter } from 'next/font/google';
@@ -7,6 +7,7 @@ import Theme from './theme-provider';
 import AppProvider from './app-provider';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Providers } from './providers';
+import CustomEditor from '../components/CustomEditor';
 
 const inter = Inter({
   subsets: ['latin'],
