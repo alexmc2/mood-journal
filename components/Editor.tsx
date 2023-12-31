@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import CustomEditor from './CustomEditor';
 
+
 const createHash = async (content: string | undefined) => {
   const msgBuffer = new TextEncoder().encode(content); // Encode as UTF-8
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer); // Hash the message

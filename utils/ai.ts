@@ -28,7 +28,7 @@ const parser = StructuredOutputParser.fromZodSchema(
     color: z
       .string()
       .describe(
-        'a hexidecimal color code that represents the mood of the entry. Example #0101fe for blue representing happiness.'
+        'a hexidecimal color code that represents the mood of the entry. For example, use #008000 for envy. Use a wide variety of bright, interesting and vibrant colors for positive moods such as #B586DE, #84FCD3, #92ABEE, #BADBB7, #AB80E8, #D9ECF5, #E88CE7, #D5E080, #DBCCA6, #C88AB3, #F0E3FC, #E1AD80, #E5C198, #A9B9A7, #81FFC8, #DED2C9, #B5C9DA, #FACBCA, #FACEDA or #9ED4A3. Use somber colors for negative sentiments such as #2B2B2B, #5F5F5F, #5A5A5A, #1F1F1F, #222222, #1A1A1A, #535353, #3D3D3D, #555555, #383838, #724F5D, #364839, #021D18, #756B6C, #6D0213, #623436, #442C75, #2A096E, #074344, #28172E, #272954, #271A72, #0E0159, #291864, #51062E, #273C6C, #0E532C, #355328, #4C716B or #3E4F08. Do not change this unless the entry changes significantly.'
       ),
     sentimentScore: z
       .number()
@@ -56,7 +56,11 @@ const getPrompt = async (content) => {
 };
 
 export const analyse = async (content: string) => {
-  if (!content || content.trim() === ''|| content === 'Write about your day...') {
+  if (
+    !content ||
+    content.trim() === '' ||
+    content === 'Write about your day...'
+  ) {
     // Return a default analysis or skip the analysis
     return {
       mood: 'Neutral',
