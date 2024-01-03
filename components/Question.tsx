@@ -8,23 +8,26 @@ const Question = () => {
   const [answer, setAnswer] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    const { data } = await askQuestion(question);
 
-    // Formatting the response
-    let formattedAnswer = data;
-    // Remove any 'Friend:' prefix
-    // formattedAnswer = formattedAnswer.replace(/^Friend:\s*/, '');
-    // Ensure proper paragraph formatting
-    formattedAnswer = formattedAnswer.split('\n').join('<br/>');
+  const chatId = 'your-chat-id-here';
 
-    setAnswer(formattedAnswer);
-    setLoading(false);
-    setQuestion('');
-  };
+  const { data } = await askQuestion(chatId, question);
+
+  // Formatting the response
+  let formattedAnswer = data;
+  // Remove any 'Friend:' prefix
+  // formattedAnswer = formattedAnswer.replace(/^Friend:\s*/, '');
+  // Ensure proper paragraph formatting
+  formattedAnswer = formattedAnswer.split('\n').join('<br/>');
+
+  setAnswer(formattedAnswer);
+  setLoading(false);
+  setQuestion('');
+};
 
   return (
     <div>

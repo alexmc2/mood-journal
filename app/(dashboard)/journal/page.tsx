@@ -2,16 +2,11 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { prisma } from '@/utils/db';
-import { getUserByClerkId } from '@/utils/auth';
-import PaginationControls from '../../../components/PaginationControls';
-import Image from 'next/image';
+
 import { Pagination } from '@nextui-org/react';
 
 import EntryCard from '@/components/EntryCard';
 import Link from 'next/link';
-
-
 
 const getEntries = async (page = 1) => {
   try {
@@ -28,16 +23,14 @@ const getEntries = async (page = 1) => {
   }
 };
 
-
-
 interface JournalEntry {
   id: string;
   createdAt: Date;
   updatedAt: Date;
   userId: string;
   content: string;
-  contentHash?: string; 
-  analysis?: Analysis; 
+  contentHash?: string;
+  analysis?: Analysis;
 }
 
 interface Analysis {

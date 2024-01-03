@@ -55,12 +55,12 @@ export const fetchEntry = async (id) => {
 };
 
 
-export const askQuestion = async (question: string) => {
+export const askQuestion = async (chatId, newMessage) => {
   try {
     const res = await fetch(
-      new Request(createURL(`/api/chat`), {
+      new Request(createURL(`/api/chat/`), {
         method: 'POST',
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({ chatId, newMessage }),
       })
     );
 
@@ -72,7 +72,6 @@ export const askQuestion = async (question: string) => {
       return jsonResponse;
     } else {
       throw new Error('API response not OK');
-      
     }
   } catch (error) {
     console.error('Error in askQuestion:', error);

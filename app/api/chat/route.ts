@@ -3,22 +3,46 @@ import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { NextResponse } from 'next/server';
 
-export const POST = async (request: { body: any; json: () => PromiseLike<{ question: any; }> | { question: any; }; }) => {
-   console.log(request.body);
-  const { question } = await request.json();
+// API Route for handling chat messages
+export const POST = async (request, { params } = {}) => {
+  const { newMessage } = await request.json();
   const user = await getUserByClerkId();
-  const entries = await prisma.journalEntry.findMany({
-    where: {
-      userId: user.id,
-    },
-    select: {
-      id: true,
-      content: true,
-      createdAt: true,
+
+  let currentChatId = params?.chatId; // Use optional chaining to safely access chatId
+
+  // If chatId is not provided, create a new chat
+  if (!currentChatId) {
+    const newChat = await prisma.chat.create({
+      data: {
+        userId: user?.id,
+      },
+    });
+    currentChatId = newChat.id;
+  }
+
+  // Save the new message to the database
+  await prisma.message.create({
+    data: {
+      chatId: currentChatId,
+      text: newMessage,
+      userId: user?.id,
+      isUser: true,
     },
   });
 
-  const answer = await qa(question, entries);
+
+
+   const answer = await qa(currentChatId, newMessage, user.id);
+
+  await prisma.message.create({
+    data: {
+      chatId: currentChatId,
+      text: answer,
+      userId: null, // No userId for chatbot messages
+      isUser: false,
+    },
+  });
+
   console.log(answer);
-  return NextResponse.json({ data: answer });
+  return NextResponse.json({ data: answer, chatId: currentChatId });
 };

@@ -22,7 +22,6 @@ export const DELETE = async (request: Request, { params }) => {
   return NextResponse.json({ data: { id: params.id } });
 };
 
-
 export const GET = async (request, { params }) => {
   const user = await getUserByClerkId();
   const entry = await prisma.journalEntry.findUnique({
@@ -36,9 +35,9 @@ export const GET = async (request, { params }) => {
       analysis: true,
     },
   });
+  console.log(entry);
   return NextResponse.json({ data: entry });
 };
-
 
 export const PATCH = async (request, { params }) => {
   const { content } = await request.json();
@@ -53,11 +52,9 @@ export const PATCH = async (request, { params }) => {
       },
     },
     include: {
-      analysis: true, 
+      analysis: true,
     },
   });
-
-  
 
   // Generate a hash of the new content
   const newContentHash = createHash('sha256').update(content).digest('hex');

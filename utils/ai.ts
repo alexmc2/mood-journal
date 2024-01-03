@@ -12,6 +12,7 @@ import {
 } from 'langchain/output_parsers';
 
 import { z } from 'zod';
+import { prisma } from './db';
 
 const parser = StructuredOutputParser.fromZodSchema(
   z.object({
@@ -28,12 +29,12 @@ const parser = StructuredOutputParser.fromZodSchema(
     color: z
       .string()
       .describe(
-        'a hexidecimal color code that represents the mood of the entry. For example, use #008000 for envy. Use a wide variety of bright, interesting and vibrant colors for positive moods such as #B586DE, #84FCD3, #92ABEE, #BADBB7, #AB80E8, #D9ECF5, #E88CE7, #D5E080, #DBCCA6, #C88AB3, #F0E3FC, #E1AD80, #E5C198, #A9B9A7, #81FFC8, #DED2C9, #B5C9DA, #FACBCA, #FACEDA or #9ED4A3. Use somber colors for negative sentiments such as #2B2B2B, #5F5F5F, #5A5A5A, #1F1F1F, #222222, #1A1A1A, #535353, #3D3D3D, #555555, #383838, #724F5D, #364839, #021D18, #756B6C, #6D0213, #623436, #442C75, #2A096E, #074344, #28172E, #272954, #271A72, #0E0159, #291864, #51062E, #273C6C, #0E532C, #355328, #4C716B or #3E4F08. Do not change this unless the entry changes significantly.'
+        'a hexidecimal color code that represents the mood of the entry. For example, use #008000 for envy. Use a wide variety of bright, interesting and vibrant colors for positive moods such as #84FCD3, #92ABEE, #BADBB7, #AB80E8, #D9ECF5, #E88CE7, #D5E080, #DBCCA6, #B586DE, #C88AB3, #F0E3FC, #E1AD80, #E5C198, #A9B9A7, #81FFC8, #DED2C9, #B5C9DA, #FACBCA, #FACEDA or #9ED4A3. Use somber colors for negative sentiments such as #2B2B2B, #5F5F5F, #5A5A5A, #1F1F1F, #222222, #1A1A1A, #535353, #3D3D3D, #555555, #383838, #724F5D, #364839, #021D18, #756B6C, #6D0213, #623436, #442C75, #2A096E, #074344, #28172E, #272954, #271A72, #0E0159, #291864, #51062E, #273C6C, #0E532C, #355328, #4C716B or #3E4F08. Do not just pick the first color - consider them all or choose your own interesting color. Do not change this unless the entry changes significantly.'
       ),
     sentimentScore: z
       .number()
       .describe(
-        'sentiment of the text and rated on a scale from -10 to 10, where -10 is extremely negative, 0 is neutral, and 10 is extremely positive. After giving the entry a sentiment score do not change this unless the entry changes significantly.'
+        'sentiment of the text and rated on a scale from -10 to 10, where -10 is extremely negative, 0 is neutral, and 10 is extremely positive. After giving the entry a sentiment score do not change this unless the sentiment of the entry changes significantly.'
       ),
   })
 );
@@ -87,8 +88,63 @@ export const analyse = async (content: string) => {
   }
 };
 
-export const qa = async (question: string, entries: any[]) => {
+// export const qa = async (question: string, entries: any[]) => {
+//   try {
+//     const docs = entries.map((entry) => {
+//       return new Document({
+//         pageContent: entry.content,
+//         metadata: { id: entry.id, createdAt: entry.createdAt },
+//       });
+//     });
+
+//     const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+
+//     const chain = loadQARefineChain(model);
+
+//     const embeddings = new OpenAIEmbeddings();
+
+//     console.log('Docs:', docs);
+
+//     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
+
+//     const relevantDocs = await store.similaritySearch(question);
+
+//     // Create a prompt template
+//     const prompt = new PromptTemplate({
+//       template: `As a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Do not preface your advice with a greeting. \n\nQuestion: {question}\n\nAnswer:`,
+//       inputVariables: ['question'],
+//     });
+
+//     const input = await prompt.format({ question });
+
+//     const res = await chain.call({
+//       input_documents: relevantDocs,
+//       question: input,
+//     });
+
+//     return res.output_text;
+//   } catch (error) {
+//     console.error('Error in qa function:', error);
+//     throw error; // Re-throw the error for higher-level handling
+//   }
+// };
+
+export const qa = async (chatId, newMessage, userId) => {
   try {
+    // Fetch recent chat history
+    const recentChatMessages = await prisma.message.findMany({
+      where: { chatId: chatId },
+      orderBy: { createdAt: 'desc' },
+      take: 5, // Adjust the number as needed
+    });
+
+     const entries = await prisma.journalEntry.findMany({
+       where: {
+         userId: userId,
+       },
+     });
+
+    // Convert entries to documents for embeddings (Retaining existing logic)
     const docs = entries.map((entry) => {
       return new Document({
         pageContent: entry.content,
@@ -96,26 +152,25 @@ export const qa = async (question: string, entries: any[]) => {
       });
     });
 
-    const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
-
-    const chain = loadQARefineChain(model);
-
+    // Existing logic for embeddings
     const embeddings = new OpenAIEmbeddings();
-
-    console.log('Docs:', docs);
-
     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
+    const relevantDocs = await store.similaritySearch(newMessage);
 
-    const relevantDocs = await store.similaritySearch(question);
+    // Combine chat history and relevant documents in the GPT prompt
+    const chatContext = recentChatMessages.map((m) => m.text).join('\n');
+    const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
 
-    // Create a prompt template
     const prompt = new PromptTemplate({
-      template: `As a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Do not preface your advice with a greeting. \n\nQuestion: {question}\n\nAnswer:`,
-      inputVariables: ['question'],
+      template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nRAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
+      inputVariables: ['chatContext', 'docContext', 'newMessage'],
     });
 
-    const input = await prompt.format({ question });
+    const input = await prompt.format({ chatContext, docContext, newMessage });
 
+    // Call the GPT model
+    const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+    const chain = loadQARefineChain(model);
     const res = await chain.call({
       input_documents: relevantDocs,
       question: input,
@@ -123,7 +178,7 @@ export const qa = async (question: string, entries: any[]) => {
 
     return res.output_text;
   } catch (error) {
-    console.error('Error in qa function:', error);
-    throw error; // Re-throw the error for higher-level handling
+    console.error('Error in qaChat function:', error);
+    throw error;
   }
 };
