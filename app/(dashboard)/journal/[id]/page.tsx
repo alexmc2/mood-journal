@@ -1,6 +1,6 @@
 import React from 'react';
 import Editor from '@/components/Editor';
-import LexicalEditor from '@/components/LexicalEditor';
+
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 

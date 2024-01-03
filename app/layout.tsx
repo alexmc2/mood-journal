@@ -8,6 +8,8 @@ import AppProvider from './app-provider';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Providers } from './providers';
 import CustomEditor from '../components/CustomEditor';
+import ChatThemeProvider from '@/components/chat/theme-provider';
+
 
 const inter = Inter({
   subsets: ['latin'],
@@ -34,7 +36,10 @@ export default function RootLayout({
         >
           <Theme>
             <AppProvider>
-              <Providers>{children}</Providers>
+              <Providers>
+                {' '}
+                <ChatThemeProvider>{children} </ChatThemeProvider>
+              </Providers>
             </AppProvider>
           </Theme>
         </body>

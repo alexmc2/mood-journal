@@ -6,10 +6,9 @@ import { useSelectedLayoutSegments } from 'next/navigation';
 import { Transition } from '@headlessui/react';
 import { getBreakpoint } from '../utils/utils';
 import { newEntry } from '@/utils/api';
-import SidebarLinkGroup from './sidebar-link-group';
-import SidebarLink from './sidebar-link';
+
 import Logo from './Logo';
-import { UserButton } from '@clerk/nextjs';
+
 import Link from 'next/link';
 import HomeIcon from './icons/home';
 import HistoryIcon from './icons/history';

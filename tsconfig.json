@@ -23,6 +23,17 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "tailwind.config.js", "utils/plugins/AutoLinkPlugin.js", "utils/nodes/EmojiNode.js", "next.config.js", "postcss.config.js", "components/CustomEditor.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "tailwind.config.js",
+    "utils/plugins/AutoLinkPlugin.js",
+    "utils/nodes/EmojiNode.js",
+    "next.config.js",
+    "postcss.config.js",
+    "components/CustomEditor.tsx"
+  ],
   "exclude": ["node_modules"]
 }

@@ -9,29 +9,29 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String         @id @default(uuid())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
-  clerkId String         @unique
-  email   String         @unique
+  clerkId String           @unique
+  email   String           @unique
 
   entries  JournalEntry[]
   analyses Analysis[]
   chats    Chat[]
-  
+  messages Message[]
 }
 
 model JournalEntry {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String         @id @default(uuid())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User              @relation(fields: [userId], references: [id])
 
-  content String @db.Text
-  contentHash String? // New field for storing the content hash
+  content String           @db.Text
+  contentHash String?      // New field for storing the content hash
 
   analysis Analysis?
 
@@ -39,22 +39,22 @@ model JournalEntry {
 }
 
 model Analysis {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String         @id @default(uuid())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   entryId String
-  entry   JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  entry   JournalEntry    @relation(fields: [entryId], references: [id], onDelete: Cascade)
 
   userId String 
-  user  User   @relation(fields: [userId], references: [id])
+  user   User             @relation(fields: [userId], references: [id])
 
-  mood     String
-  summary  String  @db.Text
-  color    String
-  negative Boolean
-  subject String
-  sentimentScore Float @default(0)
+  mood            String
+  summary         String  @db.Text
+  color           String
+  negative        Boolean
+  subject         String
+  sentimentScore  Float   @default(0)
 
   @@unique([entryId])
   @@index ([userId])
@@ -65,24 +65,28 @@ model Chat {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  userId   String
+  user     User      @relation(fields: [userId], references: [id])
 
   messages Message[]
-  
 
   @@index([userId])
 }
 
-
 model Message {
   id        String    @id @default(uuid())
   createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   chatId String
-  chat   Chat    @relation(fields: [chatId], references: [id])
+  chat   Chat        @relation(fields: [chatId], references: [id])
 
-  text String @db.Text
+  userId String?  // Allow null for system messages
+  user   User?    @relation(fields: [userId], references: [id])
+  isUser Boolean  // Indicates if the message is from a user
 
-  @@index([chatId]) // Optional, for performance enhancement
+  text String     @db.Text
+
+  @@index([chatId])
+  @@index([userId])
 }
