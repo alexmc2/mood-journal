@@ -1,6 +1,5 @@
 const createURL = (path) => window.location.origin + path;
 
-
 export const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export const deleteEntry = async (id: any) => {
@@ -54,8 +53,7 @@ export const fetchEntry = async (id) => {
   }
 };
 
-
-export const askQuestion = async (chatId, newMessage) => {
+export const newChat = async (chatId, newMessage) => {
   try {
     const res = await fetch(
       new Request(createURL(`/api/chat/`), {
@@ -74,7 +72,81 @@ export const askQuestion = async (chatId, newMessage) => {
       throw new Error('API response not OK');
     }
   } catch (error) {
-    console.error('Error in askQuestion:', error);
+    console.error('Error in newChat:', error);
     throw error; // Re-throw the error for the caller to handle
+  }
+};
+
+// Function to fetch all chats for the logged-in user
+export const fetchAllChats = async () => {
+  try {
+    const res = await fetch(createURL(`/api/chat`));
+
+    if (res.ok) {
+      const jsonResponse = await res.json();
+      return jsonResponse.chats;
+    } else {
+      throw new Error('Failed to fetch chats');
+    }
+  } catch (error) {
+    console.error('Error in fetchAllChats:', error);
+    throw error;
+  }
+};
+
+
+export const fetchChat = async (chatId) => {
+  const res = await fetch(createURL(`/api/chat/${chatId}`));
+  if (res.ok) {
+    const data = await res.json();
+    return data.data;
+  } else {
+    throw new Error('Failed to fetch chat');
+  }
+};
+
+
+// Function to post a new message to a specific chat
+export const postMessageToChat = async (chatId, newMessage) => {
+  try {
+    const res = await fetch(
+      new Request(createURL(`/api/chat/${chatId}`), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ newMessage }),
+      })
+    );
+
+    if (res.ok) {
+      const jsonResponse = await res.json();
+      return jsonResponse;
+    } else {
+      throw new Error('Failed to post message to chat');
+    }
+  } catch (error) {
+    console.error('Error in postMessageToChat:', error);
+    throw error;
+  }
+};
+
+// Function to delete a specific chat
+export const deleteChat = async (chatId) => {
+  try {
+    const res = await fetch(
+      new Request(createURL(`/api/chat/${chatId}`), {
+        method: 'DELETE',
+      })
+    );
+
+    if (res.ok) {
+      return res.json();
+    } else {
+      throw new Error('Failed to delete chat');
+    }
+  } catch (error) {
+    console.error('Error in deleteChat:', error);
+    throw error;
   }
 };

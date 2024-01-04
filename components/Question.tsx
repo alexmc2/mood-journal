@@ -1,6 +1,6 @@
 'use client';
 
-import { askQuestion } from '@/utils/api';
+import { newChat } from '@/utils/api';
 import { useState } from 'react';
 
 const Question = () => {
@@ -8,26 +8,25 @@ const Question = () => {
   const [answer, setAnswer] = useState(null);
   const [loading, setLoading] = useState(false);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
+    const chatId = 'your-chat-id-here';
 
-  const chatId = 'your-chat-id-here';
+    const { data } = await newChat(chatId, question);
 
-  const { data } = await askQuestion(chatId, question);
+    // Formatting the response
+    let formattedAnswer = data;
+    // Remove any 'Friend:' prefix
+    // formattedAnswer = formattedAnswer.replace(/^Friend:\s*/, '');
+    // Ensure proper paragraph formatting
+    formattedAnswer = formattedAnswer.split('\n').join('<br/>');
 
-  // Formatting the response
-  let formattedAnswer = data;
-  // Remove any 'Friend:' prefix
-  // formattedAnswer = formattedAnswer.replace(/^Friend:\s*/, '');
-  // Ensure proper paragraph formatting
-  formattedAnswer = formattedAnswer.split('\n').join('<br/>');
-
-  setAnswer(formattedAnswer);
-  setLoading(false);
-  setQuestion('');
-};
+    setAnswer(formattedAnswer);
+    setLoading(false);
+    setQuestion('');
+  };
 
   return (
     <div>
