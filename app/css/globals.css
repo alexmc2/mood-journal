@@ -5,7 +5,17 @@
 /* Additional styles */
 @import './utility-patterns.css';
 
-
+@layer utilities {
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+     /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+    }
+  }
 .dark {
     color-scheme: dark;
 }
@@ -34,4 +44,27 @@
 
 html {
     font-family: var(--font);
+}
+
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px); /* Adjust 60px if the header is a different height */
+  overflow: hidden; /* Prevent scrolling on the chat container */
+}
+
+.messages-container {
+  flex-grow: 1;
+  overflow-y: auto; /* Only the messages area is scrollable */
+  padding: 1rem; /* Add padding if necessary */
+}
+
+.input-container {
+  padding: 1rem; /* Add padding if necessary */
+}
+
+
+.css-fix {
+  white-space: pre-line; /* or pre-line */
 }

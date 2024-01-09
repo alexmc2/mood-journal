@@ -88,6 +88,7 @@ module.exports = {
     nextui(),
     require('@tailwindcss/forms'),
     require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
     plugin(({ addVariant, e }) => {
       addVariant('sidebar-expanded', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {

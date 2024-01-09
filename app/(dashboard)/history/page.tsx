@@ -30,7 +30,7 @@ const History = async () => {
   const { average, analyses } = await getData();
 
   return (
-    <div className=" h-full  py-6 px-6 ">
+    <div className="flex flex-col h-full p-10">
       <div className="text-lg ">HISTORY</div>
       <div className="pb-6">
         {`Average Sentiment Score:`} {average}

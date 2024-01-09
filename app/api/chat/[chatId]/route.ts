@@ -1,3 +1,5 @@
+//api/chat/[chatId]/route.ts
+
 import { qa } from '@/utils/ai';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
@@ -63,6 +65,7 @@ export const POST = async (request, { params }) => {
       text: answer,
       userId: null, // No userId for chatbot messages
       isUser: false,
+
     },
   });
 

@@ -32,10 +32,16 @@
 
 // app/dashboard/chat/layout.tsx
 
+import ChatThemeProvider from '@/components/chat/theme-provider';
+import { Toaster } from '@/components/chat/ui/toaster';
+
 export default function ChatLayout({ children }) {
   return (
-    <div className=" bg-slate-200 dark:bg-blue-800 text-slate-600 dark:text-slate-300 ">
-      {children}
+    <div className="flex flex-col h-full   ">
+      <ChatThemeProvider>
+        <Toaster />
+        {children}
+      </ChatThemeProvider>
     </div>
   );
 }

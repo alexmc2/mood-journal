@@ -1,3 +1,5 @@
+//api/chat/route.ts
+
 import { qa } from '@/utils/ai';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
@@ -30,9 +32,7 @@ export const POST = async (request, { params } = {}) => {
     },
   });
 
-
-
-   const answer = await qa(currentChatId, newMessage, user.id);
+  const answer = await qa(currentChatId, newMessage, user.id);
 
   await prisma.message.create({
     data: {
@@ -70,11 +70,10 @@ export const GET = async () => {
   });
 
   // Map through chats to format the data for the sidebar
-  const formattedChats = chats.map(chat => ({
+  const formattedChats = chats.map((chat) => ({
     id: chat.id,
     firstMessageSummary: chat.messages[0]?.text || 'No messages yet',
     firstMessageTime: chat.messages[0]?.createdAt || chat.createdAt,
-
   }));
 
   return NextResponse.json({ chats: formattedChats });

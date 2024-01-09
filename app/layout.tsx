@@ -10,7 +10,6 @@ import { Providers } from './providers';
 import CustomEditor from '../components/CustomEditor';
 import ChatThemeProvider from '@/components/chat/theme-provider';
 
-
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -32,14 +31,11 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         {/* suppressHydrationWarning: https://github.com/vercel/next.js/issues/44343 */}
         <body
-          className={`${inter.variable} font-inter antialiased bg-slate-200 dark:bg-blue-800 text-slate-600 dark:text-slate-300 no-scrollbar`}
+          className={`${inter.variable} font-inter antialiased bg-neutral-200 dark:bg-blue-800 text-slate-600 dark:text-slate-300 no-scrollbar`}
         >
           <Theme>
             <AppProvider>
-              <Providers>
-                {' '}
-                <ChatThemeProvider>{children} </ChatThemeProvider>
-              </Providers>
+              <Providers>{children}</Providers>
             </AppProvider>
           </Theme>
         </body>

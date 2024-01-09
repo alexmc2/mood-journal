@@ -87,6 +87,7 @@ model Message {
 
   text String     @db.Text
 
+
   @@index([chatId])
   @@index([userId])
 }

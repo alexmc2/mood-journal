@@ -133,7 +133,7 @@ const Editor = ({ entry }) => {
   ];
 
   return (
-    <div className="h-full w-full mx-auto grid md:grid-cols-3 gap-8 p-8 mt-8 ">
+    <div className="h-full w-full  grid md:grid-cols-3 gap-8 p-8 mt-16">
       <div className="absolute left-4 top-20  ">
         {isSaving ? (
           <Spinner />
@@ -206,7 +206,7 @@ const Editor = ({ entry }) => {
           </div>
         </div>
       </div>
-      <div className=" md:border-l px-8 h-full dark:border-slate-600 border-slate-300">
+      <div className=" md:border-l px-8 h-full dark:border-slate-600 border-slate-300 ">
         <div
           className="flex w-full h-full flex-col mb-6 md:mb-0 gap-4 p-8 card shadow-xl"
           style={{ backgroundColor: color, color: textColor }}

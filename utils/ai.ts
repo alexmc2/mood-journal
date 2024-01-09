@@ -162,7 +162,7 @@ export const qa = async (chatId, newMessage, userId) => {
     const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
 
     const prompt = new PromptTemplate({
-      template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nRAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
+      template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nRAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
       inputVariables: ['chatContext', 'docContext', 'newMessage'],
     });
 
