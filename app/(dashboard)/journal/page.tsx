@@ -2,21 +2,18 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-
+import axios from 'axios';
 import { Pagination } from '@nextui-org/react';
 
 import EntryCard from '@/components/EntryCard';
 import Link from 'next/link';
 
+
+
 const getEntries = async (page = 1) => {
   try {
-    // Replace 'your-api-route' with the actual route, e.g., '/api/pagination'
-    const response = await fetch(`/api/pagination/${page}`);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    return data; // This should include both entries and pagination info
+    const response = await axios.get(`/api/pagination/${page}`);
+    return response.data;
   } catch (error) {
     console.error('Fetch error:', error);
     return { entries: [], pageCount: 0 };
@@ -69,7 +66,7 @@ const JournalPage = () => {
 
   return (
     <div className="p-10 pt-6 ">
-      <h2 className="text-3xl pl-5 sm:pl-7 ">JOURNALS</h2>
+      <h2 className="text-3xl pl-5 sm:pl-7 mt-16 ">JOURNALS</h2>
 
       <div className="grid 2xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-y-5 mt-4  md:gap-4 md:p-8 ">
         {entries.map((entry) => (

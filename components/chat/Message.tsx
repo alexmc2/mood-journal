@@ -4,22 +4,27 @@ import { Avatar, AvatarImage } from './ui/avatar';
 import { useState, useEffect } from 'react';
 import Typewriter from 'typewriter-effect';
 import Code from './Code';
+
 type MessageProps = {
-  message: string;
+  text: string;
   id: string;
   isUser: boolean;
-  isNew?: boolean;
+  isNewMessage?: boolean;
 };
 
 export default function Message({
   id,
   isUser,
-  message,
-  isNew = false,
+  text,
+  isNewMessage = false,
 }: MessageProps) {
+  console.log('Message component props:', { id, isUser, text });
+
   const [avatar, setAvatar] = useState<string | undefined>(undefined);
 
-  const { codesArr, withoutCodeArr } = parseCode(message);
+  // Ensure text is a string before parsing
+  const textString = typeof text === 'string' ? text : String(text);
+  const { codesArr, withoutCodeArr } = parseCode(textString);
   let result = withoutCodeArr.map((item, index) => {
     return codesArr[index] ? [item, codesArr[index]] : [item];
   });
@@ -33,13 +38,16 @@ export default function Message({
       }
     }
   }, []);
+
   return (
     <div
-      className={`${!isUser ? 'py-7' : 'py-1'} h-fit ${
-        !isUser ? 'dark:bg-neutral-900 bg-neutral-100' : 'bg-inherit'
+      className={`${!isUser ? 'py-4' : 'py-1'} h-fit ${
+        !isUser
+          ? 'dark:bg-blue-800 bg-neutral-100'
+          : 'dark:bg-blue-800 bg-neutral-100'
       }`}
     >
-      <div className="flex flex-row gap-6 w-[40%] max-[900px]:w-[88%]  mx-auto items-start">
+      <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[88%]  mx-auto items-start ">
         {isUser ? (
           <>
             <Avatar className="w-10 h-10">
@@ -52,15 +60,19 @@ export default function Message({
           <span className="">{Logo}</span>
         )}
         <span className="leading-8 w-[97%]">
-          {isUser || !isNew ? (
+          {isUser ? (
             <>
               {result.flat().map((item: any, index: number) => {
                 return (
-                  <div key={id + index}>
+                  <div key={id + index} className="">
                     {typeof item == 'string' ? (
-                      item
+                      isNewMessage ? (
+                        <TypeOnce isNewMessage={isNewMessage}>{item}</TypeOnce>
+                      ) : (
+                        item
+                      )
                     ) : (
-                      <div className="mb-1 w-[94%] z-50">
+                      <div className="mb-1 w-[94%] z-50 ">
                         <Code language={item.language}>{item.code}</Code>
                       </div>
                     )}
@@ -70,17 +82,19 @@ export default function Message({
             </>
           ) : (
             <>
-              {result.flat().map((item: any) => {
+              {result.flat().map((item, index) => {
                 return (
-                  <>
+                  <div key={`${id}-${index}`}>
+                    {' '}
+                    {/* Ensure the key is unique for each item */}
                     {typeof item == 'string' ? (
-                      <TypeOnce>{item}</TypeOnce>
+                      <TypeOnce isNewMessage={isNewMessage}>{item}</TypeOnce>
                     ) : (
                       <div className="mb-1 w-[94%] z-50">
                         <Code language={item.language}>{item.code}</Code>
                       </div>
                     )}
-                  </>
+                  </div>
                 );
               })}
             </>
@@ -93,13 +107,13 @@ export default function Message({
 
 export function Skeleton() {
   return (
-    <div className={`py-7 h-fit dark:bg-neutral-900 bg-neutral-100`}>
-      <div className="flex flex-row gap-6 w-[40%] max-[900px]:w-[88%]  mx-auto items-start">
+    <div className={`py-7 h-fit `}>
+      <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[88%]  mx-auto items-start ">
         <span className="">{Logo}</span>
         <span className="leading-8">
           <Typewriter
             options={{
-              delay: 85,
+              delay: 95,
               loop: true,
               autoStart: true,
             }}
@@ -113,12 +127,25 @@ export function Skeleton() {
   );
 }
 
-function TypeOnce({ children }: { children: string }) {
-  const [on, setOn] = useState(true);
+function TypeOnce({
+  children,
+  isNewMessage,
+}: {
+  children: string;
+  isNewMessage: boolean;
+}) {
+  const [on, setOn] = useState(isNewMessage);
+
+  useEffect(() => {
+    if (!isNewMessage) {
+      setOn(false); // Disable Typewriter effect if not a new message
+    }
+  }, [isNewMessage]);
+
   return on ? (
     <Typewriter
       options={{
-        delay: 45,
+        delay: 5,
       }}
       onInit={(typewriter) => {
         typewriter
@@ -130,6 +157,6 @@ function TypeOnce({ children }: { children: string }) {
       }}
     />
   ) : (
-    children
+    <p className="">{children}</p>
   );
 }

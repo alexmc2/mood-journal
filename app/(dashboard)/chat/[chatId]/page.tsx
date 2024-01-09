@@ -1,5 +1,4 @@
-// //app/(dashboard)/chat/page.tsx
-
+// //app/(dashboard)/chat/[chatId]/page.tsx
 // 'use client';
 
 // import Menu from '@/components/chat/Menu';
@@ -13,53 +12,58 @@
 // import axios, { AxiosError } from 'axios';
 // import { useEffect, useRef, useState } from 'react';
 // import { v4 as idGen } from 'uuid';
-// import { useRouter, useSearchParams } from 'next/navigation';
+// import { useSearchParams } from 'next/navigation';
 // import ScrollableFeed from 'react-scrollable-feed';
 
-// type Message = {
+// type MessageType = {
 //   id: string;
 //   text: string;
 //   isUser: boolean;
 // };
 
-// export default function Chat() {
-//   const [messages, setMessages] = useState<Message[]>([]);
+// export default function Chat({ params }) {
+//   const searchParams = useSearchParams();
+//   const initialChatId = searchParams.get('chatId') || params?.chatId;
+//   console.log('Initial Chat ID:', initialChatId);
+//   const [messages, setMessages] = useState<MessageType[]>([]);
 //   const [message, setMessage] = useState('');
-//   const [loading, setLoading] = useState(false);
-//   const [chatId, setChatId] = useState<string | null>(null);
+//   const [loading, setLoading] = useState(true);
+
+//   const [chatId, setChatId] = useState<string | null>(initialChatId);
+//   console.log('Current Chat ID:', chatId);
+
 //   const scrollRef = useRef<HTMLDivElement | null>(null);
-//   const router = useRouter();
 //   const { toast } = useToast();
 
 //   // Fetch existing chat and messages if any
 //   useEffect(() => {
+//     let isMounted = true;
 //     if (chatId) {
 //       setLoading(true);
 //       httpRequest
 //         .get(`/api/chat/${chatId}`)
 //         .then((res) => {
-//           console.log('API response for fetching messages:', res);
-//           const fetchedMessages = Array.isArray(res.data.messages)
-//             ? res.data.messages
-//             : res.data;
-//           console.log('Processed fetched messages:', fetchedMessages);
-//           setMessages(
-//             fetchedMessages.map((msg) => ({
-//               id: msg.id,
-//               text: msg.text,
-//               isUser: msg.userId !== null,
-//             }))
-//           );
+//           console.log('API Response 7 Jan:', res);
+//           if (isMounted) {
+//             const fetchedMessages = res.data.data.messages;
+//             setMessages(
+//               fetchedMessages.map((msg) => ({
+//                 id: msg.id,
+//                 text: msg.text,
+//                 isUser: msg.userId !== null,
+//               }))
+//             );
+//           }
 //         })
 //         .catch((err) => {
-//           if (err instanceof AxiosError)
-//             toast({
-//               title: 'Error',
-//               description: err.response?.data.message,
-//             });
+//           if (err instanceof AxiosError) {
+//             toast({ title: 'Error', description: err.response?.data.message });
+//           }
 //         })
 //         .finally(() => {
-//           setLoading(false);
+//           if (isMounted) {
+//             setLoading(false);
+//           }
 //         });
 //     }
 //   }, [chatId, toast]);
@@ -75,31 +79,25 @@
 
 //     const endpoint = chatId ? `/api/chat/${chatId}` : '/api/chat';
 //     httpRequest
-//       .post(endpoint, {
-//         newMessage: message,
-//       })
+//       .post(endpoint, { newMessage: message })
 //       .then(({ data }) => {
 //         console.log('Response received:', data);
 //         console.log('POST response data:', data);
 
-//         if (data.chatId) {
+//         if (!chatId && data.chatId) {
 //           // Redirect to the specific chat URL
-//           router.push(`/chat/${data.chatId}`);
+//           setChatId(data.chatId);
 //         }
 
-//         setChatId(data.chatId); // Set chatId if new chat is started
 //         setMessages((prev) => [
 //           ...prev,
-
 //           { id: idGen(), isUser: false, text: data.data },
 //         ]);
 //       })
 //       .catch((err) => {
-//         if (err instanceof AxiosError)
-//           toast({
-//             title: 'Error',
-//             description: err.response?.data.message,
-//           });
+//         if (err instanceof AxiosError) {
+//           toast({ title: 'Error', description: err.response?.data.message });
+//         }
 //       })
 //       .finally(() => {
 //         setLoading(false);
@@ -107,22 +105,23 @@
 //       });
 //   }
 
-//   // Clear messages
 //   function clear() {
-//     setMessages([]);
-//     setChatId(null);
+//     setMessages([]); // Clears the messages array
+//     setChatId(null); // Resets the chatId to null
 //   }
 
 //   // Auto-scroll to latest message
-//   useEffect(() => {
+//   function updateScroll() {
 //     var element = scrollRef.current;
-//     if (element) {
-//       element.scrollTop = element.scrollHeight;
-//       scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-//     }
-//   }, [messages]);
+//     if (!element) return;
+//     element.scrollTop = element.scrollHeight;
+//     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+//   }
+
+//   useEffect(updateScroll, [messages]);
 
 //   // Component JSX
+
 //   return (
 //     <div className="overflow-y-hidden no-scrollbar">
 //       <Menu clear={clear} />
@@ -145,7 +144,7 @@
 //           </div>
 //         </ScrollableFeed>
 //         {/* Message input */}
-//         <div className="w-[50%] max-[900px]:w-[90%] flex flex-row gap-3 mx-auto mt-auto my-4 py-8">
+//         <div className="w-[50%] max-[900px]:w-[90%] flex flex-row gap-3 mx-auto mt-auto my-4 py-6 ">
 //           <Input
 //             onKeyDown={(e) => {
 //               if (e.keyCode === 13 && message) {
@@ -175,10 +174,15 @@
 //   );
 // }
 
+'use client';
 
+import ChatComponent from '../../../../components/chat/ChatComponent';
+import { useRouter, useSearchParams } from 'next/navigation';
+import ScrollableFeed from 'react-scrollable-feed';
 
-import ChatComponent from '../../../components/chat/ChatComponent';
+export default function ChatIdPage({params}) {
+    const searchParams = useSearchParams();
+    const initialChatId = searchParams.get('chatId') || params?.chatId;
 
-export default function ChatPage() {
-  return <ChatComponent initialChatId={null} />;
+  return <ChatComponent initialChatId={initialChatId} />;
 }
