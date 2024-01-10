@@ -135,7 +135,7 @@ export default function Menu({ clear }: { clear: () => void }) {
             variant="default"
           >
             <MenuIcon className="w-5 h-5" />{' '}
-            <span className="ml-2 hidden sm:flex">Menu</span>
+            <span className="ml-2 hidden sm:flex">Chats</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="dark:border-slate-800 z-[9999]">

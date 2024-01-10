@@ -68,3 +68,14 @@ html {
 .css-fix {
   white-space: pre-line; /* or pre-line */
 }
+
+.textarea-button-wrapper {
+  position: relative;
+}
+
+.send-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  /* Additional styles to ensure proper alignment and appearance */
+}

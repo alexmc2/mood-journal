@@ -20,6 +20,7 @@ export const POST = async (request, { params } = {}) => {
       },
     });
     currentChatId = newChat.id;
+    return NextResponse.json({ chatId: currentChatId });
   }
 
   // Save the new message to the database

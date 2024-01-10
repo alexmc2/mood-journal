@@ -16,6 +16,7 @@ import JournalIcon from './icons/journal';
 import ChatIcon from './icons/chat';
 import newEntryIcon from './icons/newEntry';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 export default function Sidebar() {
   const sidebar = useRef<HTMLDivElement>(null);
@@ -29,11 +30,11 @@ export default function Sidebar() {
     !sidebarExpanded && (breakpoint === 'lg' || breakpoint === 'xl');
   const router = useRouter();
   const links = [
-    { name: 'HOME', href: '/', icon: HomeIcon },
-    { name: 'JOURNAL ENTRIES', href: '/journal', icon: JournalIcon },
-    { name: 'NEW ENTRY', href: `/journal/{data.id}`, icon: newEntryIcon },
-    { name: 'HISTORY CHART', href: '/history', icon: HistoryIcon },
-    { name: 'CHAT', href: '/chat', icon: ChatIcon },
+    { name: 'Home', href: '/', icon: HomeIcon },
+    { name: 'Journal Entries', href: '/journal', icon: JournalIcon },
+    { name: 'New Entry', href: `/journal/{data.id}`, icon: newEntryIcon },
+    { name: 'History', href: '/history', icon: HistoryIcon },
+    { name: 'New Chat', href: '/chat', icon: ChatIcon },
   ];
 
   // close on click outside
@@ -71,6 +72,24 @@ export default function Sidebar() {
   const handleOnClick = async () => {
     const data = await newEntry();
     router.push(`/journal/${data.id}`);
+  };
+
+  const generateNewChatId = async () => {
+    try {
+      // Sending a POST request with an empty message or placeholder
+      const response = await axios.post('/api/chat', {
+        newMessage: 'Starting chat...',
+      });
+      return response.data.chatId;
+    } catch (error) {
+      console.error('Error in generateNewChatId:', error);
+      throw error;
+    }
+  };
+
+  const handleChatClick = async () => {
+    let newChatId = await generateNewChatId(); // Implement this function
+    router.push(`/chat/${newChatId}`);
   };
 
   return (
@@ -120,52 +139,70 @@ export default function Sidebar() {
               <path d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z" />
             </svg>
           </button>
-          {/* Logo */}
           <Logo />
+          {/* Logo */}
         </div>
 
         {/* Links */}
         <div className="space-y-8">
-          {/* Pages group */}
           <div>
             <ul className="mt-3">
               {links.map((link) => (
-                <li key={link.name} className="my-4">
-                  {link.name !== 'NEW ENTRY' ? (
-                    <Link href={link.href}>
-                      <div
-                        className={`flex items-center btn btn-md w-full text-center bg-blue-200 hover:bg-blue-400 border-none `}
-                        onClick={() => setSidebarOpen(false)}
-                      >
-                        {!sidebarExpanded ? (
-                          // Render icon only when sidebar is collapsed
-                          <link.icon className="" color="black" />
-                        ) : (
-                          // Render text only when sidebar is expanded
-                          <span className="">{link.name}</span>
-                        )}
-                      </div>
-                    </Link>
-                  ) : (
+                <li key={link.name} className="my-4 ">
+                  {link.name === 'New Chat' ? (
+                    // 'CHAT' button
+                    <div
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                        sidebarExpanded
+                          ? 'justify-start pl-4'
+                          : 'justify-center'
+                      }`}
+                      onClick={handleChatClick}
+                    >
+                      <link.icon
+                        className={`${sidebarExpanded ? 'mr-2' : ''}`}
+                        color="black"
+                      />
+                      {sidebarExpanded && <span>{link.name}</span>}
+                    </div>
+                  ) : link.name === 'New Entry' ? (
+                    // 'NEW ENTRY' button
                     <button
-                      className={`flex items-center btn btn-md w-full text-center bg-blue-200 hover:bg-blue-400 border-none `}
+                      className={`flex items-center btn text-lg btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                        sidebarExpanded
+                          ? 'justify-start pl-4'
+                          : 'justify-center'
+                      }`}
                       onClick={handleOnClick}
                     >
-                      {!sidebarExpanded ? (
-                        // Render icon only when sidebar is collapsed
-                        <link.icon className="" color="black" />
-                      ) : (
-                        // Render text only when sidebar is expanded
-                        <span className="">{link.name}</span>
-                      )}
+                      <link.icon
+                        className={`${sidebarExpanded ? 'mr-2' : ''}`}
+                        color="black"
+                      />
+                      {sidebarExpanded && <span>{link.name}</span>}
                     </button>
+                  ) : (
+                    // Other links
+                    <Link href={link.href}>
+                      <div
+                        className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                          sidebarExpanded
+                            ? 'justify-start pl-4'
+                            : 'justify-center'
+                        }`}
+                      >
+                        <link.icon
+                          className={`${sidebarExpanded ? 'mr-2' : ''}`}
+                          color="black"
+                        />
+                        {sidebarExpanded && <span>{link.name}</span>}
+                      </div>
+                    </Link>
                   )}
                 </li>
               ))}
             </ul>
           </div>
-
-          {/* More group */}
         </div>
 
         {/* Expand / collapse button */}

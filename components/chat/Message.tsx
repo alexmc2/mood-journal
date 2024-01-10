@@ -1,9 +1,10 @@
 import { CodeMessage, parseCode } from '@/utils/utils';
 import { Logo } from './assets/Icons';
-import { Avatar, AvatarImage } from './ui/avatar';
+
 import { useState, useEffect } from 'react';
 import Typewriter from 'typewriter-effect';
 import Code from './Code';
+import { UserButton } from '@clerk/nextjs';
 
 type MessageProps = {
   text: string;
@@ -20,7 +21,6 @@ export default function Message({
 }: MessageProps) {
   console.log('Message component props:', { id, isUser, text });
 
-  const [avatar, setAvatar] = useState<string | undefined>(undefined);
 
   // Ensure text is a string before parsing
   const textString = typeof text === 'string' ? text : String(text);
@@ -29,19 +29,11 @@ export default function Message({
     return codesArr[index] ? [item, codesArr[index]] : [item];
   });
 
-  useEffect(() => {
-    const local = localStorage.getItem('user');
-    if (local) {
-      const t = JSON.parse(local);
-      if (t.avatar) {
-        setAvatar(t.avatar);
-      }
-    }
-  }, []);
+
 
   return (
     <div
-      className={`${!isUser ? 'py-4' : 'py-1'} h-fit ${
+      className={`${!isUser ? 'py-1' : 'py-1 '} h-fit ${
         !isUser
           ? 'dark:bg-blue-800 bg-neutral-100'
           : 'dark:bg-blue-800 bg-neutral-100'
@@ -50,11 +42,7 @@ export default function Message({
       <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[88%]  mx-auto items-start ">
         {isUser ? (
           <>
-            <Avatar className="w-10 h-10">
-              <AvatarImage
-                src={avatar ?? 'https://ui.shadcn.com/avatars/01.png'}
-              />
-            </Avatar>
+            <UserButton />
           </>
         ) : (
           <span className="">{Logo}</span>
@@ -115,7 +103,7 @@ export function Skeleton() {
             options={{
               delay: 95,
               loop: true,
-              autoStart: true,
+              autoStart: false,
             }}
             onInit={(typewriter) => {
               typewriter.typeString('...').start();
@@ -126,7 +114,6 @@ export function Skeleton() {
     </div>
   );
 }
-
 function TypeOnce({
   children,
   isNewMessage,
@@ -134,29 +121,27 @@ function TypeOnce({
   children: string;
   isNewMessage: boolean;
 }) {
-  const [on, setOn] = useState(isNewMessage);
-
-  useEffect(() => {
-    if (!isNewMessage) {
-      setOn(false); // Disable Typewriter effect if not a new message
-    }
-  }, [isNewMessage]);
-
-  return on ? (
-    <Typewriter
-      options={{
-        delay: 5,
-      }}
-      onInit={(typewriter) => {
-        typewriter
-          .typeString(children)
-          .start()
-          .callFunction(() => {
-            setOn(false);
+  if (isNewMessage) {
+    // Typing effect for new messages
+    const lines = children.split('\n');
+    return (
+      <Typewriter
+        options={{ delay: 5 }}
+        onInit={(typewriter) => {
+          lines.forEach((line, index) => {
+            if (index === lines.length - 1) {
+              typewriter.typeString(line);
+            } else {
+              typewriter.typeString(line).typeString('<br>');
+            }
           });
-      }}
-    />
-  ) : (
-    <p className="">{children}</p>
-  );
+          typewriter.start();
+        }}
+      />
+    );
+  } else {
+    // Render text with preserved new lines for existing messages
+    return <div style={{ whiteSpace: 'pre-wrap' }}>{children}</div>;
+  }
 }
+

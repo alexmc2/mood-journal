@@ -59,6 +59,7 @@
     "react-hot-toast": "^2.4.1",
     "react-paginate": "^8.2.0",
     "react-scrollable-feed": "^2.0.1",
+    "react-svg-text": "^0.1.2",
     "react-syntax-highlighter": "^15.5.0",
     "react-textarea-autosize": "^8.5.3",
     "react-use-localstorage": "^3.5.3",

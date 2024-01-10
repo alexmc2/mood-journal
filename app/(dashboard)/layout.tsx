@@ -13,7 +13,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/*  Site header */}
         <Header />
 
-        <main className="  h-[calc(100vh-60px)]  ">{children}</main>
+        <main className="  h-[calc(100vh-60px)] overflow-y-auto no-scrollbar ">
+          {children}
+        </main>
       </div>
     </div>
   );

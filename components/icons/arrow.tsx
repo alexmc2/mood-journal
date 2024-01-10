@@ -3,10 +3,10 @@ import React from 'react';
 export default function ArrowIcon({ className }) {
   return (
     <svg
-      className={`shrink-0 h-10 w-10 ${className}`}
+      className={`shrink-0 h-8 w-8 ${className}`}
       viewBox="0 0 24 24"
       fill="none"
-      strokeWidth="2.0"
+      strokeWidth="2.8"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

@@ -135,7 +135,7 @@ export const qa = async (chatId, newMessage, userId) => {
     const recentChatMessages = await prisma.message.findMany({
       where: { chatId: chatId },
       orderBy: { createdAt: 'desc' },
-      take: 5, // Adjust the number as needed
+      take: 4, // Adjust the number as needed
     });
 
      const entries = await prisma.journalEntry.findMany({
@@ -162,7 +162,7 @@ export const qa = async (chatId, newMessage, userId) => {
     const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
 
     const prompt = new PromptTemplate({
-      template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nRAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
+      template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nRAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer occasional thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear, concise, and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
       inputVariables: ['chatContext', 'docContext', 'newMessage'],
     });
 
@@ -182,3 +182,104 @@ export const qa = async (chatId, newMessage, userId) => {
     throw error;
   }
 };
+
+// export const qa = async (chatId, newMessage, userId) => {
+//   try {
+//     const recentChatMessages = await prisma.message.findMany({
+//       where: { chatId: chatId },
+//       orderBy: { createdAt: 'desc' },
+//       take: 5, // Adjust the number as needed
+//     });
+
+//     const entries = await prisma.journalEntry.findMany({
+//       where: {
+//         userId: userId,
+//       },
+//     });
+
+//     const docs = entries.map((entry) => {
+//       return new Document({
+//         pageContent: entry.content,
+//         metadata: { id: entry.id, createdAt: entry.createdAt },
+//       });
+//     });
+
+//     const embeddings = new OpenAIEmbeddings();
+//     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
+//     const relevantDocs = await store.similaritySearch(newMessage);
+
+//     const chatContext = recentChatMessages.map((m) => m.text).join('\n');
+//     const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
+
+//     const prompt = new PromptTemplate({
+//       template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
+//       inputVariables: ['chatContext', 'docContext', 'newMessage'],
+//     });
+
+//     const input = await prompt.format({ chatContext, docContext, newMessage });
+
+//     const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+//     const chain = loadQARefineChain(model);
+//     const res = await chain.call({
+//       input_documents: relevantDocs,
+//       question: input,
+//     });
+
+//     return res.output_text;
+//   } catch (error) {
+//     console.error('Error in qaChat function:', error);
+//     throw error;
+//   }
+// };
+
+// export const qa = async (chatId, newMessage, userId) => {
+//   try {
+//     // Parallel fetching of chat messages and journal entries
+//     const [recentChatMessages, entries] = await Promise.all([
+//       prisma.message.findMany({
+//         where: { chatId: chatId },
+//         orderBy: { createdAt: 'desc' },
+//         take: 4,
+//       }),
+//       prisma.journalEntry.findMany({
+//         where: { userId: userId },
+//         orderBy: { createdAt: 'desc' },
+//         take: 20, 
+   
+//       }),
+//     ]);
+
+//     // Streamline document conversion
+//     const docs = entries.map((entry) => ({
+//       pageContent: entry.content,
+//       metadata: { id: entry.id, createdAt: entry.createdAt },
+//     }));
+
+//     const embeddings = new OpenAIEmbeddings();
+//     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
+//     const relevantDocs = await store.similaritySearch(newMessage);
+
+//     const chatContext = recentChatMessages.map((m) => m.text).join('\n');
+//     const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
+
+//     const prompt = new PromptTemplate({
+//       template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer insights and guidance. Respond to the user's question below in a clear, concise, and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
+
+//       inputVariables: ['chatContext', 'docContext', 'newMessage'],
+//     });
+
+//     const input = await prompt.format({ chatContext, docContext, newMessage });
+
+//     const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+//     const chain = loadQARefineChain(model);
+//     const res = await chain.call({
+//       input_documents: relevantDocs,
+//       question: input,
+//     });
+
+//     return res.output_text;
+//   } catch (error) {
+//     console.error('Error in qaChat function:', error);
+//     throw error;
+//   }
+// };
