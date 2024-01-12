@@ -1,15 +1,20 @@
 import { OpenAI } from 'langchain/llms/openai';
 import { PromptTemplate } from 'langchain/prompts';
-import { loadQARefineChain } from 'langchain/chains';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import dotenv from 'dotenv';
 import { Document } from 'langchain/document';
-
 import {
   StructuredOutputParser,
   OutputFixingParser,
 } from 'langchain/output_parsers';
+import { ChatOpenAI } from '@langchain/openai';
+import {
+  BufferMemory,
+  ChatMessageHistory,
+  VectorStoreRetrieverMemory,
+} from 'langchain/memory';
+
+import { LLMChain } from 'langchain/chains';
 
 import { z } from 'zod';
 import { prisma } from './db';
@@ -129,59 +134,59 @@ export const analyse = async (content: string) => {
 //   }
 // };
 
-export const qa = async (chatId, newMessage, userId) => {
-  try {
-    // Fetch recent chat history
-    const recentChatMessages = await prisma.message.findMany({
-      where: { chatId: chatId },
-      orderBy: { createdAt: 'desc' },
-      take: 4, // Adjust the number as needed
-    });
+// export const qa = async (chatId, newMessage, userId) => {
+//   try {
+//     // Fetch recent chat history
+//     const recentChatMessages = await prisma.message.findMany({
+//       where: { chatId: chatId },
+//       orderBy: { createdAt: 'desc' },
+//       take: 4, // Adjust the number as needed
+//     });
 
-     const entries = await prisma.journalEntry.findMany({
-       where: {
-         userId: userId,
-       },
-     });
+//     const entries = await prisma.journalEntry.findMany({
+//       where: {
+//         userId: userId,
+//       },
+//     });
 
-    // Convert entries to documents for embeddings (Retaining existing logic)
-    const docs = entries.map((entry) => {
-      return new Document({
-        pageContent: entry.content,
-        metadata: { id: entry.id, createdAt: entry.createdAt },
-      });
-    });
+//     // Convert entries to documents for embeddings (Retaining existing logic)
+//     const docs = entries.map((entry) => {
+//       return new Document({
+//         pageContent: entry.content,
+//         metadata: { id: entry.id, createdAt: entry.createdAt },
+//       });
+//     });
 
-    // Existing logic for embeddings
-    const embeddings = new OpenAIEmbeddings();
-    const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
-    const relevantDocs = await store.similaritySearch(newMessage);
+//     // Existing logic for embeddings
+//     const embeddings = new OpenAIEmbeddings();
+//     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
+//     const relevantDocs = await store.similaritySearch(newMessage);
 
-    // Combine chat history and relevant documents in the GPT prompt
-    const chatContext = recentChatMessages.map((m) => m.text).join('\n');
-    const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
+//     // Combine chat history and relevant documents in the GPT prompt
+//     const chatContext = recentChatMessages.map((m) => m.text).join('\n');
+//     const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
 
-    const prompt = new PromptTemplate({
-      template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nRAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer occasional thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear, concise, and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
-      inputVariables: ['chatContext', 'docContext', 'newMessage'],
-    });
+//     const prompt = new PromptTemplate({
+//       template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nRAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer occasional thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear, concise, and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
+//       inputVariables: ['chatContext', 'docContext', 'newMessage'],
+//     });
 
-    const input = await prompt.format({ chatContext, docContext, newMessage });
+//     const input = await prompt.format({ chatContext, docContext, newMessage });
 
-    // Call the GPT model
-    const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
-    const chain = loadQARefineChain(model);
-    const res = await chain.call({
-      input_documents: relevantDocs,
-      question: input,
-    });
+//     // Call the GPT model
+//     const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+//     const chain = loadQARefineChain(model);
+//     const res = await chain.call({
+//       input_documents: relevantDocs,
+//       question: input,
+//     });
 
-    return res.output_text;
-  } catch (error) {
-    console.error('Error in qaChat function:', error);
-    throw error;
-  }
-};
+//     return res.output_text;
+//   } catch (error) {
+//     console.error('Error in qaChat function:', error);
+//     throw error;
+//   }
+// };
 
 // export const qa = async (chatId, newMessage, userId) => {
 //   try {
@@ -234,47 +239,44 @@ export const qa = async (chatId, newMessage, userId) => {
 
 // export const qa = async (chatId, newMessage, userId) => {
 //   try {
-//     // Parallel fetching of chat messages and journal entries
+//     // Fetch recent chat history and user entries in parallel
 //     const [recentChatMessages, entries] = await Promise.all([
 //       prisma.message.findMany({
 //         where: { chatId: chatId },
 //         orderBy: { createdAt: 'desc' },
-//         take: 4,
+//         take: 4, // Limit the number of messages
+//         select: { text: true }, // Fetch only required field
 //       }),
 //       prisma.journalEntry.findMany({
 //         where: { userId: userId },
-//         orderBy: { createdAt: 'desc' },
-//         take: 20, 
-   
+//         select: { content: true, id: true, createdAt: true }, // Fetch only required fields
 //       }),
 //     ]);
 
-//     // Streamline document conversion
-//     const docs = entries.map((entry) => ({
-//       pageContent: entry.content,
-//       metadata: { id: entry.id, createdAt: entry.createdAt },
-//     }));
+//     // Create documents for embeddings
+//     const docs = entries.map(
+//       (entry) =>
+//         new Document({
+//           pageContent: entry.content,
+//           metadata: { id: entry.id, createdAt: entry.createdAt },
+//         })
+//     );
 
 //     const embeddings = new OpenAIEmbeddings();
 //     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
 //     const relevantDocs = await store.similaritySearch(newMessage);
 
+//     // Simplify prompt template
 //     const chatContext = recentChatMessages.map((m) => m.text).join('\n');
 //     const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
+//     const prompt = `Conversation:\n${chatContext}\n\nRelevant Information:\n${docContext}\n\nAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer occasional thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear, concise, and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate.\nUser: ${newMessage}\n\nResponse:`;
 
-//     const prompt = new PromptTemplate({
-//       template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer insights and guidance. Respond to the user's question below in a clear, concise, and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
-
-//       inputVariables: ['chatContext', 'docContext', 'newMessage'],
-//     });
-
-//     const input = await prompt.format({ chatContext, docContext, newMessage });
-
+//     // Call the GPT model
 //     const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
 //     const chain = loadQARefineChain(model);
 //     const res = await chain.call({
 //       input_documents: relevantDocs,
-//       question: input,
+//       question: prompt,
 //     });
 
 //     return res.output_text;
@@ -283,3 +285,102 @@ export const qa = async (chatId, newMessage, userId) => {
 //     throw error;
 //   }
 // };
+
+export const qa = async (chatId, newMessage, userId) => {
+  try {
+    //  Fetch recent chat history and user entries in parallel
+    const [chatHistory, entries] = await Promise.all([
+      prisma.message.findMany({
+        where: { chatId: chatId },
+        orderBy: { createdAt: 'desc' },
+
+        select: { text: true, id: true, createdAt: true },
+      }),
+      prisma.journalEntry.findMany({
+        where: { userId: userId },
+        orderBy: { createdAt: 'desc' },
+        select: { content: true, id: true, createdAt: true },
+      }),
+    ]);
+
+    // Create documents for embeddings from journal entries
+    const docs = entries.map(
+      (entry) =>
+        new Document({
+          pageContent: entry.content,
+          metadata: { id: entry.id, createdAt: entry.createdAt },
+        })
+    );
+
+    const chatDocs = chatHistory.map(
+      (message) =>
+        new Document({
+          pageContent: message.text,
+          metadata: { id: message.id, createdAt: message.createdAt },
+        })
+    );
+
+    console.log('Type of newMessage:', typeof newMessage);
+    console.log('Value of newMessage:', newMessage);
+
+    // Initialize OpenAI Embeddings and Memory Vector Store
+
+    const combinedDocs = [...chatDocs, ...docs];
+    const embeddings = new OpenAIEmbeddings();
+    const vectorStore = await MemoryVectorStore.fromDocuments(
+      combinedDocs,
+      embeddings
+    );
+
+    // Retrieve relevant documents
+    const relevantDocs = await vectorStore.similaritySearch(newMessage);
+
+    console.log('Type of relevantDocs:', typeof relevantDocs);
+    console.log('Value of relevantDocs:', relevantDocs);
+
+    // Initialize Memory-backed vector store as a retriever
+    const memory = new VectorStoreRetrieverMemory({
+      vectorStoreRetriever: vectorStore.asRetriever(5),
+      memoryKey: 'history',
+    });
+
+    console.log('Type of memory:', typeof memory);
+    console.log('Value of memory:', memory);
+
+    // Load the memory context
+    const context = await memory.loadMemoryVariables({ prompt: 'newMessage' });
+
+    console.log('Context:', context);
+
+    // Initialize the LLM Chain with memory
+    const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+    const prompt = new PromptTemplate({
+      template: `Using the information provided in the previous conversation and relevant documents, respond directly to the user's question. Offer relevant, and practical insights or guidance based on the user's input and the context available. Adopt the position of a wise and empathic therapist or friend but avoid role-playing or creating fictional scenarios. Address the user by name.
+
+    Previous Conversation: ${context.history}
+
+    Relevant Documents: ${relevantDocs}
+
+    User's Question: ${newMessage}
+
+    Response:`,
+      inputVariables: ['newMessage', 'context', 'relevantDocs'],
+    });
+
+    const chain = new LLMChain({ llm: model, prompt, memory });
+
+    // Call the GPT model with updated prompt
+    const res = await chain.call({
+      input: newMessage,
+    });
+
+    console.log('Response object:', res);
+    console.log('Response text:', res.text);
+
+    return res.text;
+  } catch (error) {
+    console.error('Error in qaChat function:', error);
+    throw error;
+  }
+};
+
