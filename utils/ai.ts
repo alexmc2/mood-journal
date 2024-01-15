@@ -15,9 +15,17 @@ import {
 } from 'langchain/memory';
 
 import { LLMChain } from 'langchain/chains';
+import { UpstashRedisChatMessageHistory } from 'langchain/stores/message/upstash_redis';
+
+import { RedisVectorStore } from '@langchain/community/vectorstores/redis';
 
 import { z } from 'zod';
 import { prisma } from './db';
+import { Redis } from '@upstash/redis';
+
+import { ConversationChain } from 'langchain/chains';
+import { createClient } from 'redis';
+import { RedisChatMessageHistory } from '@langchain/community/stores/message/ioredis';
 
 const parser = StructuredOutputParser.fromZodSchema(
   z.object({
@@ -93,198 +101,49 @@ export const analyse = async (content: string) => {
   }
 };
 
-// export const qa = async (question: string, entries: any[]) => {
-//   try {
-//     const docs = entries.map((entry) => {
-//       return new Document({
-//         pageContent: entry.content,
-//         metadata: { id: entry.id, createdAt: entry.createdAt },
-//       });
-//     });
+const chatParser = StructuredOutputParser.fromZodSchema(
+  z.object({
+    summary: z.string().describe('a quick summary of the chat.'),
+    subject: z.string().describe('the main subject of the chat.'),
+  })
+);
 
-//     const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+const getChatSummaryPrompt = async (chatContent) => {
+  const format_instructions = chatParser.getFormatInstructions();
 
-//     const chain = loadQARefineChain(model);
+  const prompt = new PromptTemplate({
+    template:
+      'Summarize the following chat conversation. Follow the instructions and format your response to match the format instructions, no matter what! \n{format_instructions}\n{chat}',
+    inputVariables: ['chat'],
+    partialVariables: { format_instructions },
+  });
 
-//     const embeddings = new OpenAIEmbeddings();
+  return await prompt.format({ chat: chatContent });
+};
 
-//     console.log('Docs:', docs);
+export const chatSummary = async (chatContent: string) => {
+  if (!chatContent || chatContent.trim() === '') {
+    return {
+      summary: 'No chat content available.',
+      subject: 'N/A',
+    };
+  }
 
-//     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
+  const input = await getChatSummaryPrompt(chatContent);
+  const model = new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo' });
+  const output = await model.call(input);
 
-//     const relevantDocs = await store.similaritySearch(question);
-
-//     // Create a prompt template
-//     const prompt = new PromptTemplate({
-//       template: `As a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Do not preface your advice with a greeting. \n\nQuestion: {question}\n\nAnswer:`,
-//       inputVariables: ['question'],
-//     });
-
-//     const input = await prompt.format({ question });
-
-//     const res = await chain.call({
-//       input_documents: relevantDocs,
-//       question: input,
-//     });
-
-//     return res.output_text;
-//   } catch (error) {
-//     console.error('Error in qa function:', error);
-//     throw error; // Re-throw the error for higher-level handling
-//   }
-// };
-
-// export const qa = async (chatId, newMessage, userId) => {
-//   try {
-//     // Fetch recent chat history
-//     const recentChatMessages = await prisma.message.findMany({
-//       where: { chatId: chatId },
-//       orderBy: { createdAt: 'desc' },
-//       take: 4, // Adjust the number as needed
-//     });
-
-//     const entries = await prisma.journalEntry.findMany({
-//       where: {
-//         userId: userId,
-//       },
-//     });
-
-//     // Convert entries to documents for embeddings (Retaining existing logic)
-//     const docs = entries.map((entry) => {
-//       return new Document({
-//         pageContent: entry.content,
-//         metadata: { id: entry.id, createdAt: entry.createdAt },
-//       });
-//     });
-
-//     // Existing logic for embeddings
-//     const embeddings = new OpenAIEmbeddings();
-//     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
-//     const relevantDocs = await store.similaritySearch(newMessage);
-
-//     // Combine chat history and relevant documents in the GPT prompt
-//     const chatContext = recentChatMessages.map((m) => m.text).join('\n');
-//     const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
-
-//     const prompt = new PromptTemplate({
-//       template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nRAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer occasional thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear, concise, and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
-//       inputVariables: ['chatContext', 'docContext', 'newMessage'],
-//     });
-
-//     const input = await prompt.format({ chatContext, docContext, newMessage });
-
-//     // Call the GPT model
-//     const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
-//     const chain = loadQARefineChain(model);
-//     const res = await chain.call({
-//       input_documents: relevantDocs,
-//       question: input,
-//     });
-
-//     return res.output_text;
-//   } catch (error) {
-//     console.error('Error in qaChat function:', error);
-//     throw error;
-//   }
-// };
-
-// export const qa = async (chatId, newMessage, userId) => {
-//   try {
-//     const recentChatMessages = await prisma.message.findMany({
-//       where: { chatId: chatId },
-//       orderBy: { createdAt: 'desc' },
-//       take: 5, // Adjust the number as needed
-//     });
-
-//     const entries = await prisma.journalEntry.findMany({
-//       where: {
-//         userId: userId,
-//       },
-//     });
-
-//     const docs = entries.map((entry) => {
-//       return new Document({
-//         pageContent: entry.content,
-//         metadata: { id: entry.id, createdAt: entry.createdAt },
-//       });
-//     });
-
-//     const embeddings = new OpenAIEmbeddings();
-//     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
-//     const relevantDocs = await store.similaritySearch(newMessage);
-
-//     const chatContext = recentChatMessages.map((m) => m.text).join('\n');
-//     const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
-
-//     const prompt = new PromptTemplate({
-//       template: `Conversation:\n{chatContext}\n\nRelevant Information:\n{docContext}\n\nAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate. Do not preface your advice with a greeting.:\nUser: {newMessage}\n\nResponse:`,
-//       inputVariables: ['chatContext', 'docContext', 'newMessage'],
-//     });
-
-//     const input = await prompt.format({ chatContext, docContext, newMessage });
-
-//     const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
-//     const chain = loadQARefineChain(model);
-//     const res = await chain.call({
-//       input_documents: relevantDocs,
-//       question: input,
-//     });
-
-//     return res.output_text;
-//   } catch (error) {
-//     console.error('Error in qaChat function:', error);
-//     throw error;
-//   }
-// };
-
-// export const qa = async (chatId, newMessage, userId) => {
-//   try {
-//     // Fetch recent chat history and user entries in parallel
-//     const [recentChatMessages, entries] = await Promise.all([
-//       prisma.message.findMany({
-//         where: { chatId: chatId },
-//         orderBy: { createdAt: 'desc' },
-//         take: 4, // Limit the number of messages
-//         select: { text: true }, // Fetch only required field
-//       }),
-//       prisma.journalEntry.findMany({
-//         where: { userId: userId },
-//         select: { content: true, id: true, createdAt: true }, // Fetch only required fields
-//       }),
-//     ]);
-
-//     // Create documents for embeddings
-//     const docs = entries.map(
-//       (entry) =>
-//         new Document({
-//           pageContent: entry.content,
-//           metadata: { id: entry.id, createdAt: entry.createdAt },
-//         })
-//     );
-
-//     const embeddings = new OpenAIEmbeddings();
-//     const store = await MemoryVectorStore.fromDocuments(docs, embeddings);
-//     const relevantDocs = await store.similaritySearch(newMessage);
-
-//     // Simplify prompt template
-//     const chatContext = recentChatMessages.map((m) => m.text).join('\n');
-//     const docContext = relevantDocs.map((doc) => doc.pageContent).join('\n\n');
-//     const prompt = `Conversation:\n${chatContext}\n\nRelevant Information:\n${docContext}\n\nAs a friendly, wise and empathetic counselor, engage in a friendly conversation with the user. Offer occasional thoughtful insights, understanding, and guidance. Respond to the user's question below in a clear, concise, and well-structured manner, using separate paragraphs to organize your thoughts. Ask relevant, thought-provoking or insightful questions, where appropriate.\nUser: ${newMessage}\n\nResponse:`;
-
-//     // Call the GPT model
-//     const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
-//     const chain = loadQARefineChain(model);
-//     const res = await chain.call({
-//       input_documents: relevantDocs,
-//       question: prompt,
-//     });
-
-//     return res.output_text;
-//   } catch (error) {
-//     console.error('Error in qaChat function:', error);
-//     throw error;
-//   }
-// };
+  try {
+    return chatParser.parse(output);
+  } catch (e) {
+    const fixParser = OutputFixingParser.fromLLM(
+      new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' }),
+      chatParser
+    );
+    const fix = await fixParser.parse(output);
+    return fix;
+  }
+};
 
 export const qa = async (chatId, newMessage, userId) => {
   try {
@@ -298,9 +157,16 @@ export const qa = async (chatId, newMessage, userId) => {
       }),
       prisma.journalEntry.findMany({
         where: { userId: userId },
-        orderBy: { createdAt: 'desc' },
+
         select: { content: true, id: true, createdAt: true },
       }),
+
+    //   prisma.chat.findMany({
+    //     where: { userId: userId },
+    //     orderBy: { createdAt: 'desc' },
+
+    //     select: { messages: true, id: true, createdAt: true },
+    //   }),
     ]);
 
     // Create documents for embeddings from journal entries
@@ -319,6 +185,7 @@ export const qa = async (chatId, newMessage, userId) => {
           metadata: { id: message.id, createdAt: message.createdAt },
         })
     );
+
 
     console.log('Type of newMessage:', typeof newMessage);
     console.log('Value of newMessage:', newMessage);
@@ -340,7 +207,7 @@ export const qa = async (chatId, newMessage, userId) => {
 
     // Initialize Memory-backed vector store as a retriever
     const memory = new VectorStoreRetrieverMemory({
-      vectorStoreRetriever: vectorStore.asRetriever(5),
+      vectorStoreRetriever: vectorStore.asRetriever(10),
       memoryKey: 'history',
     });
 
@@ -350,12 +217,13 @@ export const qa = async (chatId, newMessage, userId) => {
     // Load the memory context
     const context = await memory.loadMemoryVariables({ prompt: 'newMessage' });
 
-    console.log('Context:', context);
+    console.log('Type of context:', typeof context);
+    console.log('Value of context:', context);
 
     // Initialize the LLM Chain with memory
-    const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' });
+    const model = new OpenAI({ temperature: 0.6, modelName: 'gpt-3.5-turbo' });
     const prompt = new PromptTemplate({
-      template: `Using the information provided in the previous conversation and relevant documents, respond directly to the user's question. Offer relevant, and practical insights or guidance based on the user's input and the context available. Adopt the position of a wise and empathic therapist or friend but avoid role-playing or creating fictional scenarios. Address the user by name.
+      template: `Using the information provided in the previous conversation and relevant documents, respond directly to the user's question. Offer relevant, and practical insights or guidance based on the user's ${newMessage}, ${relevantDocs} and the ${context.history} available. Ask questions and be interested in the user. Adopt the position of a wise and empathic therapist or friend but avoid role-playing or creating fictional scenarios. Address the user by name.
 
     Previous Conversation: ${context.history}
 
@@ -383,4 +251,134 @@ export const qa = async (chatId, newMessage, userId) => {
     throw error;
   }
 };
+
+// export const qa = async (chatId, newMessage, userId) => {
+//   try {
+//     const client = createClient({
+//       url: 'rediss://default:********@eu1-suitable-doberman-38495.upstash.io:38495',
+//     });
+
+//     client.on('error', function (err) {
+//       throw err;
+//     });
+//     await client.connect();
+
+//     //  Fetch recent chat history and user entries in parallel
+//     const [chatHistory, entries] = await Promise.all([
+//       prisma.message.findMany({
+//         where: { chatId: chatId },
+//         orderBy: { createdAt: 'desc' },
+
+//         select: { text: true, id: true, createdAt: true },
+//       }),
+//       prisma.journalEntry.findMany({
+//         where: { userId: userId },
+
+//         select: { content: true, id: true, createdAt: true },
+//       }),
+//     ]);
+
+//     // Create documents for embeddings from journal entries
+//     const docs = entries.map(
+//       (entry) =>
+//         new Document({
+//           pageContent: entry.content,
+//           metadata: { id: entry.id, createdAt: entry.createdAt },
+//         })
+//     );
+
+//     const chatDocs = chatHistory.map(
+//       (message) =>
+//         new Document({
+//           pageContent: message.text,
+//           metadata: { id: message.id, createdAt: message.createdAt },
+//         })
+//     );
+
+//     // Serialize chat history
+//     const chatHistorySerialized = JSON.stringify(chatHistory);
+//     // Save to Redis
+//     await client.set(`${userId}_chatHistory`, chatHistorySerialized);
+
+//     console.log('Type of newMessage:', typeof newMessage);
+//     console.log('Value of newMessage:', newMessage);
+
+//     const combinedDocs = [...chatDocs, ...docs];
+//     const embeddings = new OpenAIEmbeddings();
+//     const vectorStore = await RedisVectorStore.fromDocuments(
+//       combinedDocs,
+//       embeddings,
+//       {
+//         redisClient: client,
+//         indexName: 'docs',
+//         // You can include createIndexOptions if needed
+//       }
+//     );
+
+//     // Retrieve relevant documents
+//     const relevantDocs = await vectorStore.similaritySearch(newMessage, 10);
+
+//     console.log('Type of relevantDocs:', typeof relevantDocs);
+//     console.log('Value of relevantDocs:', relevantDocs);
+
+//     // Initialize Memory-backed vector store as a retriever
+//     // const memory = new VectorStoreRetrieverMemory({
+//     //   vectorStoreRetriever: vectorStore.asRetriever(10),
+//     //   memoryKey: 'history',
+//     // });
+
+//     const memory = new BufferMemory({
+//       chatHistory: new UpstashRedisChatMessageHistory({
+//         sessionId: new Date().toLocaleDateString(),
+//         client: Redis.fromEnv(),
+//       }),
+//     });
+
+//     console.log('Type of memory:', typeof memory);
+//     console.log('Value of memory:', memory);
+
+//     // Load the memory context
+//     const context = await memory.loadMemoryVariables({ prompt: 'newMessage' });
+
+//     console.log('Type of context:', typeof context);
+//     console.log('Value of context:', context);
+
+//     // Initialize the LLM Chain with memory
+//     const model = new ChatOpenAI({
+//       modelName: 'gpt-3.5-turbo',
+//       streaming: true,
+//       temperature: 0.6,
+//     });
+
+//     const prompt = new PromptTemplate({
+//       template: `Using the information provided in the previous conversation and relevant documents, respond directly to the user's question. Offer relevant, and practical insights or guidance based on the user's ${newMessage}, ${relevantDocs} and the ${context.history} available. Ask questions and be interested in the user. Adopt the position of a wise and empathic therapist or friend but avoid role-playing or creating fictional scenarios. Address the user by name.
+
+//     Previous Conversation: ${context.history}
+
+//     Relevant Documents: ${relevantDocs}
+
+//     User's Question: ${newMessage}
+
+//     Response:`,
+//       inputVariables: ['newMessage', 'context', 'relevantDocs'],
+//     });
+
+//     const chain = new ConversationChain({ llm: model, prompt, memory });
+
+//     // Call the GPT model with updated prompt
+//     const res = await chain.call({
+
+//       input: newMessage,
+
+//     });
+
+//     console.log('Response object:', res);
+//     console.log('Response text:', res.text);
+
+//     return res.text;
+//   } catch (error) {
+//     console.error('Error in qaChat function:', error);
+//     throw error;
+//   }
+// };
 

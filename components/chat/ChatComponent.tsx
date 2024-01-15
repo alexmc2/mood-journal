@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 as idGen } from 'uuid';
 import ScrollableFeed from 'react-scrollable-feed';
 import { useRouter } from 'next/navigation';
-
+import { ArrowDownIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
 type MessageType = {
   id: string;
@@ -31,6 +31,15 @@ export default function ChatComponent({ initialChatId }) {
   const [inputKey, setInputKey] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isBotProcessing, setIsBotProcessing] = useState(false);
+  const [chatResponded, setChatResponded] = useState(false);
+  const [isBotTyping, setIsBotTyping] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const scrollableRef = useRef<ScrollableFeed>(null);
+  const [scrollHeight, setScrollHeight] = useState(
+    scrollRef.current?.scrollHeight
+  );
+  const [mounted, setMounted] = useState(false);
+  const messageRef = useRef<HTMLDivElement>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -72,10 +81,11 @@ export default function ChatComponent({ initialChatId }) {
 
   //   Function to handle sending messages
   function handleEmit() {
-    if (isBotProcessing) return;
+    if (isBotProcessing || isBotTyping || !message.trim()) return; // Check if the bot is processing/typing or the message is empty
     setLoading(true);
+    setIsBotTyping(true);
     setIsBotProcessing(true);
-    setMessage('')
+    setMessage('');
 
     const newMessageId = idGen();
     setMessages((prev) => [
@@ -83,7 +93,7 @@ export default function ChatComponent({ initialChatId }) {
       { id: newMessageId, isUser: true, text: message, isNewMessage: false },
     ]);
 
-    const endpoint = chatId ? `/api/chat/${chatId}` : '/api/chat';
+    const endpoint = `/api/chat/${chatId}` 
     httpRequest
       .post(endpoint, {
         newMessage: message,
@@ -91,6 +101,8 @@ export default function ChatComponent({ initialChatId }) {
       .then(({ data }) => {
         console.log('Response received:', data);
         console.log('POST response data:', data);
+        setIsBotTyping(false);
+        setMessage('');
 
         if (data.chatId) {
           // Redirect to the specific chat URL
@@ -111,11 +123,13 @@ export default function ChatComponent({ initialChatId }) {
             title: 'Error',
             description: err.response?.data.message,
           });
+        setIsBotTyping(false);
       })
       .finally(() => {
         setLoading(false);
         setMessage('');
         setIsBotProcessing(false);
+     
 
         // Manually reset the height of the textarea
         if (textareaRef.current) {
@@ -138,6 +152,20 @@ export default function ChatComponent({ initialChatId }) {
 
   useEffect(updateScroll, [messages]);
 
+  useEffect(() => {
+    if (scrollRef.current && isAtBottom) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+
+    setTimeout(() => {
+      setMounted(true);
+    }, 1000);
+  }, [isAtBottom, scrollHeight]);
+
+  const updateIsAtBottomState = (result: boolean) => {
+    setIsAtBottom(result);
+  };
+
   // Component JSX
 
   return (
@@ -146,32 +174,47 @@ export default function ChatComponent({ initialChatId }) {
 
       <div className="input w-full flex flex-col justify-between h-screen bg-neutral-100 dark:bg-blue-800 text-neutral-600 dark:text-slate-300   ">
         {/* Messages display */}
-
-        <div
-          className=" messages w-full mx-auto h-full mb-4 overflow-y-auto flex flex-col gap-8 pt-10 max-[900px]:pt-20 scroll-smooth  "
-          ref={scrollRef}
+        <ScrollableFeed
+          className="no-scrollbar"
+          onScroll={(isAtBottom: boolean) => updateIsAtBottomState(isAtBottom)}
         >
-          {messages.map((message) => (
-            <Message
-              key={`${message.id}-${message.isUser}`}
-              id={message.id}
-              isUser={message.isUser}
-              text={message.text}
-              isNewMessage={message.isNewMessage}
-            />
-          ))}
-          {loading && <Skeleton />}
-          <div ref={bottomRef} />
-        </div>
-
-        <div className="chat-input-container relative w-[50%] max-w-[900px] mx-auto mt-auto mb-16 pb-6">
+          <div
+            className=" messages w-full mx-auto h-full mb-4 overflow-y-auto flex flex-col gap-8 pt-10 max-[900px]:pt-20 scroll-smooth  "
+          
+            ref={scrollRef}
+          >
+            {messages.map((message) => (
+              <Message
+                key={`${message.id}-${message.isUser}`}
+                id={message.id}
+                isUser={message.isUser}
+                text={message.text}
+                isNewMessage={message.isNewMessage}
+              />
+            ))}
+            {loading && <Skeleton />}
+            <div ref={bottomRef} />
+          </div>
+        </ScrollableFeed>
+        <div className="chat-input-container relative sm:w-[50%]  w:[90%] sm:max-w-[900px] max-w-[1200px] mx-auto mt-auto mb-16 pb-6">
           {/* Textarea and button wrapper */}
           <div className="textarea-button-wrapper relative">
             <Input
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && message && !isBotProcessing) {
+                if (
+                  e.key === 'Enter' &&
+                  !e.shiftKey &&
+                  message &&
+                  !isBotProcessing &&
+                  !isBotTyping // Add this check
+                ) {
                   e.preventDefault(); // Prevent form submission
                   handleEmit();
+                }
+
+                // Prevent submission when the bot is typing or processing
+                if ((isBotProcessing || isBotTyping) && e.key === 'Enter') {
+                  e.preventDefault();
                 }
               }}
               key={inputKey}
@@ -179,7 +222,23 @@ export default function ChatComponent({ initialChatId }) {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Send a message"
               className="text-lg"
+              isBotTyping={isBotTyping}
+              isBotProcessing={isBotProcessing}
             />
+            {!isAtBottom && (
+              <div className="absolute bottom-16 xl:bottom-16 left-1/2 transform -translate-x-1/2">
+                <button
+                  onClick={updateScroll}
+                  disabled={isAtBottom}
+                  className={`${
+                    isAtBottom && 'hidden'
+                  } inline-flex items-center p-2 rounded-full shadow-sm bg-gray-300 bg-opacity-70 active:bg-gray-500 dark:bg-gray-500 dark:bg-opacity-70 dark:active:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none`}
+                >
+                  <ArrowDownIcon className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </div>
+            )}
+
             <Button
               isIconOnly
               disabled={!message || isBotProcessing}

@@ -59,8 +59,6 @@ export const POST = async (request, { params }) => {
 
   // Generate and save chatbot's response
   const answer = await qa(chatId, newMessage, user.id);
-
-
   await prisma.message.create({
     data: {
       chatId: chatId,

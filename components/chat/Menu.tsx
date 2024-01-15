@@ -10,6 +10,7 @@ import {
   Moon,
   XCircle,
 } from 'lucide-react';
+import PopoverButton from './Popover';
 
 import { Button } from '@/components/chat/ui/button';
 import axios, { AxiosError } from 'axios';
@@ -34,11 +35,20 @@ import {
   SheetHeader,
   SheetTrigger,
 } from '@/components/chat/ui/sheet';
+import { fetchAllChats } from '@/utils/api';
+import { Tooltip } from '@nextui-org/react';
 
 const EDIT_INITIAL = {
   username: '',
   avatar: '',
   apiKey: '',
+};
+
+type Chat = {
+  id: string;
+  firstMessageSummary: string;
+  firstMessageTime: string; // assuming this is a string representation of a date
+  // Add other fields as necessary
 };
 
 export default function Menu({ clear }: { clear: () => void }) {
@@ -48,6 +58,8 @@ export default function Menu({ clear }: { clear: () => void }) {
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(EDIT_INITIAL);
 
+  // Remove the declaration of 'chats' since it is already declared above
+  // const chats: Chat[] = // your data here
   useEffect(() => {
     let localMode = localStorage.getItem('mode');
     if (!localMode) {
@@ -62,46 +74,22 @@ export default function Menu({ clear }: { clear: () => void }) {
     }
   }, []);
 
-  function handleLogout() {
-    axios
-      .delete('/api/auth/logout')
-      .then(() => {
-        localStorage.clear();
-        push('/auth/login');
-        toast({
-          title: 'Logged out',
-          description: 'successfuly logged out user',
-        });
-      })
-      .catch((err) => {
-        if (err instanceof AxiosError)
-          toast({
-            title: 'Logout unsuccessful',
-            description: err.response?.data.message,
-          });
-      });
-  }
+  const [chats, setChats] = useState<Chat[]>([]);
 
-  function toggleMode() {
-    document.getElementById('mode')?.classList.toggle('dark');
-    const v = mode == 'light' ? 'dark' : 'light';
-    setMode(() => v);
-    localStorage.setItem('mode', v);
-  }
+  useEffect(() => {
+    const loadChats = async () => {
+      try {
+        const fetchedChats: Chat[] = await fetchAllChats();
+        console.log('fetchedChats:', fetchedChats);
+        setChats(fetchedChats);
+      } catch (error) {
+        console.error('Error fetching chats:', error);
+        // Handle the error appropriately
+      }
+    };
 
-  function handleClear() {
-    httpRequest
-      .delete('/api/chat')
-      .then(() => {
-        clear();
-      })
-      .catch((err) => {
-        toast({
-          title: 'Error',
-          description: err.response?.data.message,
-        });
-      });
-  }
+    loadChats();
+  }, []);
 
   function handleUpdate() {
     httpRequest
@@ -138,67 +126,27 @@ export default function Menu({ clear }: { clear: () => void }) {
             <span className="ml-2 hidden sm:flex">Chats</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="dark:border-slate-800 z-[9999]">
+        <SheetContent
+          side="left"
+          className="dark:border-slate-800 z-[9999] overflow-y-auto"
+        >
           <SheetHeader>
             <div className="pt-8 flex flex-col gap-2">
-              <div
-                className="flex flex-row items-center gap-2 hover:bg-gray-800 dark:hover:text-inherit hover:text-white py-3 px-3 rounded-lg cursor-pointer"
-                onClick={() => setOpen(true)}
-              >
-                <User className="mr-2 h-5 w-5" />
-                <span>Edit profile</span>
-              </div>
-              <div
-                className="flex flex-row items-center gap-2 hover:bg-gray-800 dark:hover:text-inherit hover:text-white py-3 px-3 rounded-lg cursor-pointer"
-                onClick={handleClear}
-              >
-                <XCircle className="mr-2 h-5 w-5" />
-                <span>Clear conversation</span>
-              </div>
-              <Link
-                href="https://github.com/nisabmohd/ChatGPT"
-                target="_blank"
-                className="flex flex-row items-center gap-2 hover:bg-gray-800 dark:hover:text-inherit hover:text-white py-3 px-3 rounded-lg"
-              >
-                <Github className="mr-2 h-5 w-5" />
-                <span>GitHub</span>
-              </Link>
-              <div className="flex flex-row items-center gap-2 hover:bg-gray-800 dark:hover:text-inherit hover:text-white py-3 px-3 rounded-lg cursor-pointer">
-                {mode === 'dark' ? (
-                  <div
-                    className="flex flex-row items-center gap-2"
-                    onClick={toggleMode}
-                  >
-                    {' '}
-                    <Sun className="mr-2 h-5 w-5" />
-                    <span>Light mode</span>
-                  </div>
-                ) : (
-                  <div
-                    className="flex flex-row items-center gap-2"
-                    onClick={toggleMode}
-                  >
-                    {' '}
-                    <Moon className="mr-2 h-5 w-5" />
-                    <span>Dark mode</span>
-                  </div>
-                )}
-              </div>
-              <Link
-                href="https://platform.openai.com/docs/"
-                target="_blank"
-                className="flex flex-row items-center gap-2 hover:bg-gray-800 dark:hover:text-inherit hover:text-white py-3 px-3 rounded-lg cursor-pointer"
-              >
-                <Cloud className="mr-2 h-5 w-5" />
-                <span>API</span>
-              </Link>
-              <div
-                className="flex flex-row items-center gap-2 hover:bg-gray-800 dark:hover:text-inherit hover:text-white py-3 px-3 rounded-lg cursor-pointer"
-                onClick={handleLogout}
-              >
-                <LogOut className="mr-2 h-5 w-5" />
-                <span>Log out</span>
-              </div>
+              {chats.map((chat) => (
+                <div
+                  key={chat.id}
+                  className="flex flex-row items-center justify-between hover:bg-gray-800 dark:hover:text-inherit hover:text-white py-3 px-3 rounded-lg cursor-pointer"
+                  onClick={() => {
+                    push(`/chat/${chat.id}`);
+                    clear();
+                  }}
+                >
+                  <span>{chat.firstMessageSummary}</span>
+                  <PopoverButton  />
+                </div>
+              ))}
+
+              {/* You can keep or remove other menu items as per your requirement */}
             </div>
           </SheetHeader>
         </SheetContent>

@@ -117,6 +117,8 @@ export function Skeleton() {
 function TypeOnce({
   children,
   isNewMessage,
+  
+  
 }: {
   children: string;
   isNewMessage: boolean;

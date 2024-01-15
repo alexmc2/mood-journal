@@ -5,10 +5,12 @@ import { cn } from '@/utils/utils';
 
 type InputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   style?: React.CSSProperties & { height?: number };
+  isBotTyping?: boolean;
+  isBotProcessing?: boolean;
 };
 
 const Input = React.forwardRef<HTMLTextAreaElement, InputProps>(
-  ({ className, value, ...props }, ref) => {
+  ({ className, value, onKeyDown, ...props }, ref) => {
     const handleHeightChange = (height, { rowHeight }) => {
       console.log(
         `Textarea height changed to ${height}, row height is ${rowHeight}`
@@ -20,6 +22,7 @@ const Input = React.forwardRef<HTMLTextAreaElement, InputProps>(
         maxRows={10}
         minRows={1}
         onHeightChange={handleHeightChange}
+        onKeyDown={onKeyDown}
         cacheMeasurements={true}
         value={value}
         style={{ lineHeight: '2.0' }}

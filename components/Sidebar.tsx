@@ -78,7 +78,7 @@ export default function Sidebar() {
     try {
       // Sending a POST request with an empty message or placeholder
       const response = await axios.post('/api/chat', {
-        newMessage: 'Starting chat...',
+        newMessage: '',
       });
       return response.data.chatId;
     } catch (error) {
@@ -88,8 +88,8 @@ export default function Sidebar() {
   };
 
   const handleChatClick = async () => {
-    let newChatId = await generateNewChatId(); // Implement this function
-    router.push(`/chat/${newChatId}`);
+    let newChatId = await generateNewChatId(); 
+    router.replace(`/chat/${newChatId}`);
   };
 
   return (
@@ -139,7 +139,7 @@ export default function Sidebar() {
               <path d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z" />
             </svg>
           </button>
-          <Logo />
+  
           {/* Logo */}
         </div>
 

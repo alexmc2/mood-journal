@@ -1,6 +1,6 @@
 //api/chat/route.ts
 
-import { qa } from '@/utils/ai';
+import { qa, chatSummary } from '@/utils/ai';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { NextResponse } from 'next/server';
@@ -55,27 +55,47 @@ export const GET = async () => {
   // Fetch all chats associated with the user
   const chats = await prisma.chat.findMany({
     where: {
-      userId: user.id,
-    },
-    include: {
       messages: {
-        take: 1, // Only fetch the first user message for each chat
-        orderBy: {
-          createdAt: 'asc',
-        },
-        where: {
-          isUser: true, // Filter to only include messages sent by the user
+        some: {
+          text: {
+            not: '',
+          },
         },
       },
     },
+    include: {
+      messages: {
+        take: 1,
+        orderBy: {
+          createdAt: 'asc',
+        },
+      },
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
   });
 
-  // Map through chats to format the data for the sidebar
-  const formattedChats = chats.map((chat) => ({
-    id: chat.id,
-    firstMessageSummary: chat.messages[0]?.text || 'No messages yet',
-    firstMessageTime: chat.messages[0]?.createdAt || chat.createdAt,
-  }));
+  // Map through chats and apply summary analysis
+  const formattedChats = await Promise.all(
+    chats.map(async (chat) => {
+      let firstMessageText = chat.messages[0]?.text || 'Empty chat';
+
+      // Apply chat summary analysis
+      const summaryData = await chatSummary(firstMessageText);
+      let summary = summaryData.summary;
+
+      if (summary.length > 50) {
+        summary = summary.slice(0, 50) + '...'; // Truncate to a certain number of characters
+      }
+
+      return {
+        id: chat.id,
+        firstMessageSummary: summary,
+        firstMessageTime: chat.messages[0]?.createdAt || chat.createdAt,
+      };
+    })
+  );
 
   return NextResponse.json({ chats: formattedChats });
 };

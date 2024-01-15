@@ -19,6 +19,7 @@ model User {
   entries  JournalEntry[]
   analyses Analysis[]
   chats    Chat[]
+  chatSessions ChatSession[]
   messages Message[]
 }
 
@@ -89,5 +90,17 @@ model Message {
 
 
   @@index([chatId])
+  @@index([userId])
+}
+
+
+model ChatSession {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  data      Json      // Store chatbot session data as JSON
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
   @@index([userId])
 }
