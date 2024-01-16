@@ -61,10 +61,10 @@ const HistoryChart = ({ data }) => {
           dataKey="sentimentScore"
           stroke="#8884d8"
           strokeWidth={2}
-          dot={<CustomDot />}
+          dot={<CustomDot cx={undefined} cy={undefined} payload={undefined} />}
         />
         <XAxis dataKey="createdAt" />
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip content={<CustomTooltip payload={undefined} label={undefined} active={undefined} />} />
       </LineChart>
     </ResponsiveContainer>
   );

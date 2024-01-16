@@ -98,7 +98,7 @@ model ChatSession {
   id        String    @id @default(uuid())
   userId    String
   user      User      @relation(fields: [userId], references: [id])
-  data      Json      // Store chatbot session data as JSON
+  data      String    @db.Text
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 

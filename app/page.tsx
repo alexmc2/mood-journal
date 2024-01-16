@@ -27,7 +27,7 @@ export default async function Home() {
             <p className="text-4xl text-white/50 mb-8">Track your mood</p>
             <div>
               <Link href={href}>
-                <button className="bg-blue-500 px-4 py-2 btn-info btn btn-lg md:btn-lg lg:btn-lg border-none text-2xl ">
+                <button className="bg-blue-500 px-4 py-2 btn-info text-white btn btn-lg md:btn-lg lg:btn-lg border-none text-lg ">
                   Get Started
                 </button>
               </Link>

@@ -91,7 +91,7 @@
     "@vitejs/plugin-react-swc": "^3.5.0",
     "daisyui": "^4.4.19",
     "jsdom": "^23.0.1",
-    "prisma": "^5.7.1",
+    "prisma": "^5.8.1",
     "vitest": "^1.0.4"
   }
 }

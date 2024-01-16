@@ -15,17 +15,12 @@ import {
 } from 'langchain/memory';
 
 import { LLMChain } from 'langchain/chains';
-import { UpstashRedisChatMessageHistory } from 'langchain/stores/message/upstash_redis';
 
-import { RedisVectorStore } from '@langchain/community/vectorstores/redis';
 
 import { z } from 'zod';
 import { prisma } from './db';
-import { Redis } from '@upstash/redis';
 
-import { ConversationChain } from 'langchain/chains';
-import { createClient } from 'redis';
-import { RedisChatMessageHistory } from '@langchain/community/stores/message/ioredis';
+
 
 const parser = StructuredOutputParser.fromZodSchema(
   z.object({
@@ -101,6 +96,7 @@ export const analyse = async (content: string) => {
   }
 };
 
+//chat summary code for sidebar
 const chatParser = StructuredOutputParser.fromZodSchema(
   z.object({
     summary: z.string().describe('a quick summary of the chat.'),
@@ -145,9 +141,50 @@ export const chatSummary = async (chatContent: string) => {
   }
 };
 
+interface SessionData {
+  chatHistory: {
+    userMessage: string;
+    chatbotResponse: string;
+    createdAt: string;
+  }[];
+}
+
 export const qa = async (chatId, newMessage, userId) => {
   try {
+    // Retrieve or create a user session
+    console.log('Starting qa function for user:', userId);
+
+    let userSession = await prisma.chatSession.findFirst({
+      where: { userId: userId },
+    });
+
+    console.log('Fetching user session from database...');
+
+    let sessionData: SessionData;
+
+    if (userSession) {
+      // Deserialize session data if it exists
+      sessionData = JSON.parse(userSession.data) as SessionData;
+
+      console.log('Session data fetched from database:', sessionData);
+    } else {
+      // Create a new session for new users
+      sessionData = {
+        chatHistory: [],
+      };
+      console.log('Creating new session data for new user...');
+      userSession = await prisma.chatSession.create({
+        data: {
+          userId: userId,
+          data: JSON.stringify(sessionData), // Serialize data to JSON string
+        },
+      });
+    }
+
+    console.log('Session data:', sessionData);
+
     //  Fetch recent chat history and user entries in parallel
+    console.log('Fetching chat history and journal entries...');
     const [chatHistory, entries] = await Promise.all([
       prisma.message.findMany({
         where: { chatId: chatId },
@@ -160,16 +197,11 @@ export const qa = async (chatId, newMessage, userId) => {
 
         select: { content: true, id: true, createdAt: true },
       }),
-
-    //   prisma.chat.findMany({
-    //     where: { userId: userId },
-    //     orderBy: { createdAt: 'desc' },
-
-    //     select: { messages: true, id: true, createdAt: true },
-    //   }),
     ]);
+    console.log('Chat history and journal entries fetched.');
 
     // Create documents for embeddings from journal entries
+
     const docs = entries.map(
       (entry) =>
         new Document({
@@ -186,14 +218,37 @@ export const qa = async (chatId, newMessage, userId) => {
         })
     );
 
+    const chatHistoryDocs = sessionData.chatHistory.map((interaction) => {
+      const content =
+        interaction.userMessage + ' ' + interaction.chatbotResponse;
+
+      return new Document({
+        pageContent: content,
+        metadata: { createdAt: new Date(interaction.createdAt) },
+      });
+    });
+
+    console.log('Type of docs:', typeof docs);
+    console.log('Value of docs:', docs);
+
+    console.log('Type of chatDocs:', typeof chatDocs);
+    console.log('Value of chatDocs:', chatDocs);
 
     console.log('Type of newMessage:', typeof newMessage);
     console.log('Value of newMessage:', newMessage);
 
+    console.log('Type of chatHistoryDocs:', typeof chatHistoryDocs);
+    console.log('Value of chatHistoryDocs:', chatHistoryDocs);
+
     // Initialize OpenAI Embeddings and Memory Vector Store
 
-    const combinedDocs = [...chatDocs, ...docs];
+    console.log('Generated documents for embeddings.');
+
+    const combinedDocs = [...chatDocs, ...docs, ...chatHistoryDocs];
+    console.log('Combined document count:', combinedDocs.length);
+    console.log('CombinedDocs for embedding:', combinedDocs);
     const embeddings = new OpenAIEmbeddings();
+    console.log('OpenAI Embeddings initialized.');
     const vectorStore = await MemoryVectorStore.fromDocuments(
       combinedDocs,
       embeddings
@@ -215,6 +270,10 @@ export const qa = async (chatId, newMessage, userId) => {
     console.log('Value of memory:', memory);
 
     // Load the memory context
+    // const context = await memory.loadMemoryVariables({
+    //   sessionData: JSON.stringify(sessionData),
+    // });
+
     const context = await memory.loadMemoryVariables({ prompt: 'newMessage' });
 
     console.log('Type of context:', typeof context);
@@ -234,12 +293,26 @@ export const qa = async (chatId, newMessage, userId) => {
     Response:`,
       inputVariables: ['newMessage', 'context', 'relevantDocs'],
     });
-
     const chain = new LLMChain({ llm: model, prompt, memory });
 
     // Call the GPT model with updated prompt
     const res = await chain.call({
       input: newMessage,
+    });
+    console.log('GPT model response:', res);
+
+    // Update session data with the new user message and chatbot response
+    const updatedSessionData = updateSessionDataBasedOnResponse(
+      sessionData,
+      newMessage,
+      res.text
+    );
+
+    console.log('Session data updated. Storing in database...');
+    // Update session data in the database
+    await prisma.chatSession.update({
+      where: { id: userSession.id },
+      data: { data: updatedSessionData },
     });
 
     console.log('Response object:', res);
@@ -252,133 +325,20 @@ export const qa = async (chatId, newMessage, userId) => {
   }
 };
 
-// export const qa = async (chatId, newMessage, userId) => {
-//   try {
-//     const client = createClient({
-//       url: 'rediss://default:********@eu1-suitable-doberman-38495.upstash.io:38495',
-//     });
+function updateSessionDataBasedOnResponse(
+  sessionData: SessionData,
+  userMessage: string,
+  chatbotResponse: string
+): string {
+  // Append the new interaction to the chat history
+  console.log('Appending new interaction to chat history...');
+  sessionData.chatHistory.push({
+    userMessage: userMessage,
+    chatbotResponse: chatbotResponse,
+    createdAt: new Date().toISOString(),
+  });
 
-//     client.on('error', function (err) {
-//       throw err;
-//     });
-//     await client.connect();
-
-//     //  Fetch recent chat history and user entries in parallel
-//     const [chatHistory, entries] = await Promise.all([
-//       prisma.message.findMany({
-//         where: { chatId: chatId },
-//         orderBy: { createdAt: 'desc' },
-
-//         select: { text: true, id: true, createdAt: true },
-//       }),
-//       prisma.journalEntry.findMany({
-//         where: { userId: userId },
-
-//         select: { content: true, id: true, createdAt: true },
-//       }),
-//     ]);
-
-//     // Create documents for embeddings from journal entries
-//     const docs = entries.map(
-//       (entry) =>
-//         new Document({
-//           pageContent: entry.content,
-//           metadata: { id: entry.id, createdAt: entry.createdAt },
-//         })
-//     );
-
-//     const chatDocs = chatHistory.map(
-//       (message) =>
-//         new Document({
-//           pageContent: message.text,
-//           metadata: { id: message.id, createdAt: message.createdAt },
-//         })
-//     );
-
-//     // Serialize chat history
-//     const chatHistorySerialized = JSON.stringify(chatHistory);
-//     // Save to Redis
-//     await client.set(`${userId}_chatHistory`, chatHistorySerialized);
-
-//     console.log('Type of newMessage:', typeof newMessage);
-//     console.log('Value of newMessage:', newMessage);
-
-//     const combinedDocs = [...chatDocs, ...docs];
-//     const embeddings = new OpenAIEmbeddings();
-//     const vectorStore = await RedisVectorStore.fromDocuments(
-//       combinedDocs,
-//       embeddings,
-//       {
-//         redisClient: client,
-//         indexName: 'docs',
-//         // You can include createIndexOptions if needed
-//       }
-//     );
-
-//     // Retrieve relevant documents
-//     const relevantDocs = await vectorStore.similaritySearch(newMessage, 10);
-
-//     console.log('Type of relevantDocs:', typeof relevantDocs);
-//     console.log('Value of relevantDocs:', relevantDocs);
-
-//     // Initialize Memory-backed vector store as a retriever
-//     // const memory = new VectorStoreRetrieverMemory({
-//     //   vectorStoreRetriever: vectorStore.asRetriever(10),
-//     //   memoryKey: 'history',
-//     // });
-
-//     const memory = new BufferMemory({
-//       chatHistory: new UpstashRedisChatMessageHistory({
-//         sessionId: new Date().toLocaleDateString(),
-//         client: Redis.fromEnv(),
-//       }),
-//     });
-
-//     console.log('Type of memory:', typeof memory);
-//     console.log('Value of memory:', memory);
-
-//     // Load the memory context
-//     const context = await memory.loadMemoryVariables({ prompt: 'newMessage' });
-
-//     console.log('Type of context:', typeof context);
-//     console.log('Value of context:', context);
-
-//     // Initialize the LLM Chain with memory
-//     const model = new ChatOpenAI({
-//       modelName: 'gpt-3.5-turbo',
-//       streaming: true,
-//       temperature: 0.6,
-//     });
-
-//     const prompt = new PromptTemplate({
-//       template: `Using the information provided in the previous conversation and relevant documents, respond directly to the user's question. Offer relevant, and practical insights or guidance based on the user's ${newMessage}, ${relevantDocs} and the ${context.history} available. Ask questions and be interested in the user. Adopt the position of a wise and empathic therapist or friend but avoid role-playing or creating fictional scenarios. Address the user by name.
-
-//     Previous Conversation: ${context.history}
-
-//     Relevant Documents: ${relevantDocs}
-
-//     User's Question: ${newMessage}
-
-//     Response:`,
-//       inputVariables: ['newMessage', 'context', 'relevantDocs'],
-//     });
-
-//     const chain = new ConversationChain({ llm: model, prompt, memory });
-
-//     // Call the GPT model with updated prompt
-//     const res = await chain.call({
-
-//       input: newMessage,
-
-//     });
-
-//     console.log('Response object:', res);
-//     console.log('Response text:', res.text);
-
-//     return res.text;
-//   } catch (error) {
-//     console.error('Error in qaChat function:', error);
-//     throw error;
-//   }
-// };
+  // Serialize sessionData before returning
+  return JSON.stringify(sessionData);
+}
 
