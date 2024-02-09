@@ -1,16 +1,8 @@
 'use client';
 
-import {
-  Cloud,
-  Github,
-  LogOut,
-  User,
-  Menu as MenuIcon,
-  Sun,
-  Moon,
-  XCircle,
-} from 'lucide-react';
+import { Menu as MenuIcon } from 'lucide-react';
 import PopoverButton from './Popover';
+import { useDisclosure } from '@nextui-org/react';
 
 import { Button } from '@/components/chat/ui/button';
 import axios, { AxiosError } from 'axios';
@@ -18,17 +10,7 @@ import { useToast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/chat/ui/dialog';
-import { Label } from './ui/label';
-import { Input } from './ui/input';
-import { httpRequest } from '@/utils/interceptor';
+
 import {
   Sheet,
   SheetContent,
@@ -37,6 +19,9 @@ import {
 } from '@/components/chat/ui/sheet';
 import { fetchAllChats } from '@/utils/api';
 import { Tooltip } from '@nextui-org/react';
+import DeleteModal from '../DeleteChatModal';
+import { deleteChat } from '@/utils/api';
+import { useParams } from 'next/navigation';
 
 const EDIT_INITIAL = {
   username: '',
@@ -47,19 +32,27 @@ const EDIT_INITIAL = {
 type Chat = {
   id: string;
   firstMessageSummary: string;
-  firstMessageTime: string; // assuming this is a string representation of a date
+  firstMessageTime: string;
   // Add other fields as necessary
 };
 
 export default function Menu({ clear }: { clear: () => void }) {
+  const [selectedChatId, setSelectedChatId] = useState(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const { toast } = useToast();
   const { push } = useRouter();
   const [mode, setMode] = useState('dark');
   const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(EDIT_INITIAL);
 
-  // Remove the declaration of 'chats' since it is already declared above
-  // const chats: Chat[] = // your data here
+  const params = useParams();
+  const currentChatId = params.chatId;
+
+  
+
+ 
+
   useEffect(() => {
     let localMode = localStorage.getItem('mode');
     if (!localMode) {
@@ -91,35 +84,42 @@ export default function Menu({ clear }: { clear: () => void }) {
     loadChats();
   }, []);
 
-  function handleUpdate() {
-    httpRequest
-      .put('/api/profile', {
-        ...edit,
-      })
-      .then(({ data }) => {
-        localStorage.setItem('user', JSON.stringify(data));
-        window.location.reload();
-      })
-      .catch((err) => {
-        toast({
-          title: 'Error',
-          description: err.response?.data.message,
-        });
-      });
-  }
-
   useEffect(() => {
     if (open) {
       setEdit(EDIT_INITIAL);
     }
   }, [open]);
 
+  // const handleChatDelete = (deletedChatId) => {
+  //   const updatedChats = chats.filter((chat) => chat.id !== deletedChatId);
+  //   setChats(updatedChats);
+  // };
+
+  // Handle chat deletion
+  const handleChatDelete = async () => {
+    if (selectedChatId) {
+      try {
+        await deleteChat(selectedChatId);
+        // Update state to reflect deletion...
+        onClose(); // Close the modal
+      } catch (error) {
+        console.error('Error deleting chat:', error);
+        // Handle error (e.g., show a toast notification)
+      }
+    }
+  };
+
+  const openDeleteModal = (chatId) => {
+    setSelectedChatId(chatId);
+    onOpen();
+  };
+
   return (
     <>
       <Sheet>
         <SheetTrigger asChild>
           <Button
-            className="absolute top-24 left-5 max-[500px]:left-2 "
+            className="absolute top-20 left-5 max-[500px]:left-2 "
             variant="default"
           >
             <MenuIcon className="w-5 h-5" />{' '}
@@ -142,76 +142,25 @@ export default function Menu({ clear }: { clear: () => void }) {
                   }}
                 >
                   <span>{chat.firstMessageSummary}</span>
-                  <PopoverButton  />
+                  <PopoverButton
+                    chatId={chat.id}
+                    onOpenDeleteModal={openDeleteModal}
+                  />
                 </div>
               ))}
-
-              {/* You can keep or remove other menu items as per your requirement */}
             </div>
           </SheetHeader>
         </SheetContent>
-      </Sheet>
+      
 
-      <Dialog open={open} onOpenChange={(val) => setOpen(val)}>
-        <DialogContent className="sm:max-w-[495px]">
-          <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when youre done.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
-                Username
-              </Label>
-              <Input
-                id="username"
-                value={edit.username}
-                onChange={(e) =>
-                  setEdit((prev) => ({ ...prev, username: e.target.value }))
-                }
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="avatar" className="text-right">
-                Avatar URL
-              </Label>
-              <Input
-                id="avatar"
-                value={edit.avatar}
-                onChange={(e) =>
-                  setEdit((prev) => ({ ...prev, avatar: e.target.value }))
-                }
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="api" className="text-right">
-                API Key
-              </Label>
-              <Input
-                id="api"
-                value={edit.apiKey}
-                onChange={(e) =>
-                  setEdit((prev) => ({ ...prev, apiKey: e.target.value }))
-                }
-                className="col-span-3"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              onClick={handleUpdate}
-              disabled={!edit.apiKey && !edit.avatar && !edit.username}
-              type="submit"
-            >
-              Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        <DeleteModal
+          isOpen={isOpen}
+          onClose={onClose}
+          chatId={selectedChatId}
+          onDelete={handleChatDelete}
+          currentChatId={currentChatId}
+        />
+      </Sheet>
     </>
   );
 }

@@ -1,11 +1,16 @@
-generator client {
-  provider = "prisma-client-js"
-}
+
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  // directUrl         = env("DIRECT_URL")
+  extensions        = [vector]
+}
+
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 model User {
@@ -21,6 +26,7 @@ model User {
   chats    Chat[]
   chatSessions ChatSession[]
   messages Message[]
+  documents documents[]
 }
 
 model JournalEntry {
@@ -35,6 +41,8 @@ model JournalEntry {
   contentHash String?      // New field for storing the content hash
 
   analysis Analysis?
+  documents documents[]
+  embedding Unsupported("vector(1536)")?
 
   @@unique([userId, id])
 }
@@ -70,6 +78,9 @@ model Chat {
   user     User      @relation(fields: [userId], references: [id])
 
   messages Message[]
+  summary   String?   @db.Text
+  documents documents[]
+  embedding Unsupported("vector(1536)")?
 
   @@index([userId])
 }
@@ -87,6 +98,7 @@ model Message {
   isUser Boolean  // Indicates if the message is from a user
 
   text String     @db.Text
+  embedding Unsupported("vector(1536)")?
 
 
   @@index([chatId])
@@ -101,6 +113,29 @@ model ChatSession {
   data      String    @db.Text
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  embedding Unsupported("vector(1536)")?
 
   @@index([userId])
+}
+
+
+model documents {
+  id            BigInt    @id @default(autoincrement())
+  
+  content       String
+  metadata      Json
+  embedding     Unsupported("vector(1536)")
+
+  userId        String?    // User ID
+  journalEntryId String?   // Nullable Journal Entry ID
+  chatId        String?   // Nullable Chat ID
+
+  // Relations
+  user          User?     @relation(fields: [userId], references: [id])
+  journalEntry  JournalEntry? @relation(fields: [journalEntryId], references: [id])
+  chat          Chat?     @relation(fields: [chatId], references: [id])
+
+  @@index([userId])
+  @@index([journalEntryId])
+  @@index([chatId])
 }

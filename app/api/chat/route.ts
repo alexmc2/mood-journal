@@ -1,16 +1,24 @@
 //api/chat/route.ts
 
-import { qa, chatSummary } from '@/utils/ai';
+import { chatSummary } from '@/utils/ai';
+import { qa } from '@/utils/chatbot/chatbotChain';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { NextResponse } from 'next/server';
+import { OpenAIEmbeddings } from '@langchain/openai';
+import { generateEmbedding } from '@/utils/chatbot/embeddings';
+import { client } from '@/utils/chatbot/supabaseClient';
+import { Document } from 'langchain/document';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 // API Route for handling chat messages
 export const POST = async (request, { params } = {}) => {
+  // console.log('POST route hit with request:', request);
+
   const { newMessage } = await request.json();
   const user = await getUserByClerkId();
 
-  let currentChatId = params?.chatId; // Use optional chaining to safely access chatId
+  let currentChatId = params?.chatId;
 
   // If chatId is not provided, create a new chat
   if (!currentChatId) {
@@ -23,26 +31,100 @@ export const POST = async (request, { params } = {}) => {
     return NextResponse.json({ chatId: currentChatId });
   }
 
-  // Save the new message to the database
-  await prisma.message.create({
+  const savedMessage = await prisma.message.create({
     data: {
       chatId: currentChatId,
       text: newMessage,
       userId: user?.id,
       isUser: true,
+      createdAt: new Date(),
     },
   });
 
+  console.log('New message from the route file:', newMessage);
+
+  try {
+    // Split the incoming message
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 1000,
+      chunkOverlap: 200,
+    });
+    const splitDocs = await splitter.splitDocuments([
+      new Document({ pageContent: newMessage }),
+    ]);
+
+    // Process each chunk
+    for (const doc of splitDocs) {
+      const embedding = await generateEmbedding(doc.pageContent);
+      const metadata = {
+        messageId: savedMessage.id,
+        userId: user?.id,
+        type: 'message',
+        createdAt: new Date(),
+      };
+
+      // Insert the embedding into the 'documents' table. This will insert the embedding directly into Supabase.
+      const { error } = await client.from('documents').insert([
+        {
+          content: doc.pageContent,
+          metadata,
+          embedding,
+          userId: user.id,
+          chatId: currentChatId,
+        },
+      ]);
+      if (error) throw error;
+    }
+  } catch (error) {
+    console.error('Error in POST handler:', error);
+  }
+
   const answer = await qa(currentChatId, newMessage, user.id);
 
-  await prisma.message.create({
+  const savedBotMessage = await prisma.message.create({
     data: {
       chatId: currentChatId,
       text: answer,
       userId: null, // No userId for chatbot messages
       isUser: false,
+      createdAt: new Date(),
     },
   });
+
+  try {
+    // Split the bot's response message
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 800,
+      chunkOverlap: 100,
+    });
+    const splitBotResponseDocs = await splitter.splitDocuments([
+      new Document({ pageContent: answer }),
+    ]);
+
+    // Process each chunk of bot's response
+    for (const doc of splitBotResponseDocs) {
+      const embedding = await generateEmbedding(doc.pageContent);
+      const metadata = {
+        messageId: savedBotMessage.id,
+        type: 'bot-response',
+        createdAt: new Date(),
+      };
+
+      // Insert the bot's response embedding into the 'documents' table. This will insert the embedding directly into Supabase.
+      const { error } = await client.from('documents').insert([
+        {
+          content: doc.pageContent,
+          metadata,
+          embedding,
+          userId: user.id,
+          chatId: currentChatId,
+        },
+      ]);
+      if (error) throw error;
+    }
+  } catch (error) {
+    console.error('Error processing bot response:', error);
+  }
 
   console.log(answer);
   return NextResponse.json({ data: answer, chatId: currentChatId });
@@ -52,9 +134,9 @@ export const POST = async (request, { params } = {}) => {
 export const GET = async () => {
   const user = await getUserByClerkId();
 
-  // Fetch all chats associated with the user
   const chats = await prisma.chat.findMany({
     where: {
+      userId: user.id,
       messages: {
         some: {
           text: {
@@ -76,17 +158,23 @@ export const GET = async () => {
     },
   });
 
-  // Map through chats and apply summary analysis
   const formattedChats = await Promise.all(
     chats.map(async (chat) => {
-      let firstMessageText = chat.messages[0]?.text || 'Empty chat';
+      let summary;
+      if (!chat.summary && chat.messages[0]?.text) {
+        const summaryData = await chatSummary(chat.messages[0].text);
+        summary = summaryData.summary;
 
-      // Apply chat summary analysis
-      const summaryData = await chatSummary(firstMessageText);
-      let summary = summaryData.summary;
+        if (summary.length > 50) {
+          summary = summary.slice(0, 50) + '...';
+        }
 
-      if (summary.length > 50) {
-        summary = summary.slice(0, 50) + '...'; // Truncate to a certain number of characters
+        await prisma.chat.update({
+          where: { id: chat.id },
+          data: { summary },
+        });
+      } else {
+        summary = chat.summary || 'No summary available';
       }
 
       return {

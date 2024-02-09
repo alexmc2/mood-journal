@@ -29,8 +29,9 @@ export default function Sidebar() {
   const expandOnly =
     !sidebarExpanded && (breakpoint === 'lg' || breakpoint === 'xl');
   const router = useRouter();
+
   const links = [
-    { name: 'Home', href: '/', icon: HomeIcon },
+    { name: 'Home', href: '/home', icon: HomeIcon },
     { name: 'Journal Entries', href: '/journal', icon: JournalIcon },
     { name: 'New Entry', href: `/journal/{data.id}`, icon: newEntryIcon },
     { name: 'History', href: '/history', icon: HistoryIcon },
@@ -88,7 +89,7 @@ export default function Sidebar() {
   };
 
   const handleChatClick = async () => {
-    let newChatId = await generateNewChatId(); 
+    let newChatId = await generateNewChatId();
     router.replace(`/chat/${newChatId}`);
   };
 
@@ -139,7 +140,7 @@ export default function Sidebar() {
               <path d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z" />
             </svg>
           </button>
-  
+
           {/* Logo */}
         </div>
 

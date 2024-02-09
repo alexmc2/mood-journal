@@ -3,6 +3,7 @@ import React from 'react';
 export default function ChatIcon({ className, color = 'currentColor' }) {
   return (
     <svg
+     
       className="shrink-0 h-10 w-10"
       viewBox="0 0 24 24"
       fill="none"

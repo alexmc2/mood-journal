@@ -6,6 +6,11 @@ import Spinner from './Spinner';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import CustomEditor from './CustomEditor';
+import DeleteEntryModal from './DeleteEntryModal';
+import { useDisclosure } from '@nextui-org/react';
+import { useParams } from 'next/navigation';
+import DeleteEntryButton from './DeleteEntryButton';
+import { useAutosave } from 'react-autosave';
 
 
 const createHash = async (content: string | undefined) => {
@@ -38,6 +43,12 @@ const Editor = ({ entry }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [lastAnalyzedContentHash, setLastAnalyzedContentHash] = useState('');
 
+  const [selectedJournalId, setSelectedJournalId] = useState(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const params = useParams();
+  const currentEntryId = params.id;
+
   const router = useRouter();
 
   const { theme } = useTheme(); // Get the current theme
@@ -50,9 +61,41 @@ const Editor = ({ entry }) => {
   const svgStrokeColor =
     theme === 'dark' ? darkThemeStrokeColor : lightThemeStrokeColor;
 
-  const handleDelete = async () => {
-    await deleteEntry(entry.id);
-    router.push('/journal');
+
+
+  const handleJournalDelete = async () => {
+    if (selectedJournalId) {
+      try {
+        await deleteEntry(selectedJournalId);
+        // Update state to reflect deletion...
+        onClose(); // Close the modal
+      } catch (error) {
+        console.error('Error deleting journal:', error);
+        // Handle error (e.g., show a toast notification)
+      }
+    }
+  };
+
+  const openDeleteJournalModal = async (Id, content) => {
+    // Check if the content is empty or contains placeholder text
+    if (
+      !content ||
+      content.trim() === '' ||
+      content === 'Write about your day...'
+    ) {
+      try {
+        await deleteEntry(Id); // Directly call the delete function
+        console.log('Entry deleted successfully');
+        router.push('/journal'); // Redirect to the journal page
+      } catch (error) {
+        console.error('Error deleting journal:', error);
+       
+      }
+    } else {
+      // For entries with content, proceed with the normal deletion process
+      setSelectedJournalId(Id);
+      onOpen(); // Only open the modal for entries that actually have content
+    }
   };
 
   useEffect(() => {
@@ -76,6 +119,8 @@ const Editor = ({ entry }) => {
     editorContentRef.current = content;
   };
 
+  
+
   const handleSave = async () => {
     const content = editorContentRef.current; // Use the current ref value
     const contentHash = await createHash(content);
@@ -90,6 +135,8 @@ const Editor = ({ entry }) => {
       } finally {
         setIsSaving(false); // Hide saving spinner
       }
+
+      
 
       //   setTimeout(() => {
       //     const dummyAnalysis = {
@@ -109,6 +156,22 @@ const Editor = ({ entry }) => {
       //   console.log('No significant changes detected, autosave skipped.');
     }
   };
+
+  const autosaveContent = async (content) => {
+    try {
+      // Call your API to update the content without triggering analysis
+      await updateEntry(entry.id, content);
+      console.log('Content autosaved');
+    } catch (error) {
+      console.error('Error during autosave:', error);
+    }
+  };
+
+  useAutosave({
+    data: editorContentRef.current,
+    onSave: autosaveContent,
+    // Optional: adjust the interval or set saveOnUnmount as needed
+  });
 
   const {
     mood = '',
@@ -133,7 +196,7 @@ const Editor = ({ entry }) => {
   ];
 
   return (
-    <div className="h-full w-full  grid md:grid-cols-3 gap-8 p-8 mt-16">
+    <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8 p-8 mt-16 h-full w-full">
       <div className="absolute left-4 top-20  ">
         {isSaving ? (
           <Spinner />
@@ -142,25 +205,19 @@ const Editor = ({ entry }) => {
         )}
       </div>
       <div className=" absolute left-28 top-20 p-2 flex  ">
-        <button
-          onClick={handleDelete}
-          className="btn btn-md dark:bg-red-400 dark:hover:bg-red-500 bg-red-400 hover:bg-red-500 border-none dark:text-slate-600 text-slate-300 "
-        >
-          <svg
-            className="shrink-0 h-8 w-8"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={svgStrokeColor}
-            strokeWidth="1.5"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-            />
-          </svg>
-        </button>
+        <DeleteEntryButton
+          Id={entry.id}
+          onOpenDeleteModal={() =>
+            openDeleteJournalModal(entry.id, editorContentRef.current)
+          }
+        />
+        <DeleteEntryModal
+          isOpen={isOpen}
+          onClose={onClose}
+          id={entry.id}
+          onDelete={handleJournalDelete}
+          currentEntryId={currentEntryId}
+        />
       </div>
       <div className=" absolute left-10 top-20 p-2 flex  ">
         <button
@@ -196,8 +253,8 @@ const Editor = ({ entry }) => {
           </svg>
         </button>
       </div>
-      <div className="md:col-span-2  ">
-        <div className=" w-full min-h-[60vh] card  ">
+      <div className="order-1 lg:order-1 flex flex-col lg:col-span-2 mb-4 lg:mb-0">
+        <div className="card lg:min-h-[60vh]">
           <div className="">
             <CustomEditor
               onChange={handleEditorChange}
@@ -206,9 +263,9 @@ const Editor = ({ entry }) => {
           </div>
         </div>
       </div>
-      <div className=" md:border-l px-8 h-full dark:border-slate-600 border-slate-300 ">
+      <div className="order-2 lg:order-2 flex flex-col lg:border-l lg:px-8 dark:border-slate-600 border-slate-300 lg:col-span-1">
         <div
-          className="flex w-full h-full flex-col mb-6 md:mb-0 gap-4 p-8 card shadow-xl"
+          className="card shadow-xl flex w-full h-full flex-col gap-4 p-8"
           style={{ backgroundColor: color, color: textColor }}
         >
           <h2 className="text-2xl font-bold items-center justify-between self-center pt-4">

@@ -1,7 +1,7 @@
-import { OpenAI } from 'langchain/llms/openai';
-import { PromptTemplate } from 'langchain/prompts';
+import { OpenAI } from '@langchain/openai';
+import { PromptTemplate } from '@langchain/core/prompts';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+import { OpenAIEmbeddings } from '@langchain/openai';
 import { Document } from 'langchain/document';
 import {
   StructuredOutputParser,
@@ -16,11 +16,8 @@ import {
 
 import { LLMChain } from 'langchain/chains';
 
-
 import { z } from 'zod';
 import { prisma } from './db';
-
-
 
 const parser = StructuredOutputParser.fromZodSchema(
   z.object({
@@ -52,7 +49,7 @@ const getPrompt = async (content) => {
 
   const prompt = new PromptTemplate({
     template:
-      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions, no matter what! \n{format_instructions}\n{entry}',
+      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions, just do it! \n{format_instructions}\n{entry}',
     inputVariables: ['entry'],
     partialVariables: { format_instructions },
   });
@@ -141,6 +138,8 @@ export const chatSummary = async (chatContent: string) => {
   }
 };
 
+
+
 interface SessionData {
   chatHistory: {
     userMessage: string;
@@ -228,27 +227,17 @@ export const qa = async (chatId, newMessage, userId) => {
       });
     });
 
-    console.log('Type of docs:', typeof docs);
-    console.log('Value of docs:', docs);
 
-    console.log('Type of chatDocs:', typeof chatDocs);
-    console.log('Value of chatDocs:', chatDocs);
-
-    console.log('Type of newMessage:', typeof newMessage);
-    console.log('Value of newMessage:', newMessage);
-
-    console.log('Type of chatHistoryDocs:', typeof chatHistoryDocs);
-    console.log('Value of chatHistoryDocs:', chatHistoryDocs);
-
-    // Initialize OpenAI Embeddings and Memory Vector Store
 
     console.log('Generated documents for embeddings.');
 
     const combinedDocs = [...chatDocs, ...docs, ...chatHistoryDocs];
-    console.log('Combined document count:', combinedDocs.length);
-    console.log('CombinedDocs for embedding:', combinedDocs);
+
     const embeddings = new OpenAIEmbeddings();
     console.log('OpenAI Embeddings initialized.');
+
+
+    
     const vectorStore = await MemoryVectorStore.fromDocuments(
       combinedDocs,
       embeddings
@@ -257,32 +246,20 @@ export const qa = async (chatId, newMessage, userId) => {
     // Retrieve relevant documents
     const relevantDocs = await vectorStore.similaritySearch(newMessage);
 
-    console.log('Type of relevantDocs:', typeof relevantDocs);
-    console.log('Value of relevantDocs:', relevantDocs);
 
-    // Initialize Memory-backed vector store as a retriever
     const memory = new VectorStoreRetrieverMemory({
-      vectorStoreRetriever: vectorStore.asRetriever(10),
+      vectorStoreRetriever: vectorStore.asRetriever(12),
       memoryKey: 'history',
     });
 
-    console.log('Type of memory:', typeof memory);
-    console.log('Value of memory:', memory);
 
-    // Load the memory context
-    // const context = await memory.loadMemoryVariables({
-    //   sessionData: JSON.stringify(sessionData),
-    // });
 
     const context = await memory.loadMemoryVariables({ prompt: 'newMessage' });
 
-    console.log('Type of context:', typeof context);
-    console.log('Value of context:', context);
 
-    // Initialize the LLM Chain with memory
     const model = new OpenAI({ temperature: 0.6, modelName: 'gpt-3.5-turbo' });
     const prompt = new PromptTemplate({
-      template: `Using the information provided in the previous conversation and relevant documents, respond directly to the user's question. Offer relevant, and practical insights or guidance based on the user's ${newMessage}, ${relevantDocs} and the ${context.history} available. Ask questions and be interested in the user. Adopt the position of a wise and empathic therapist or friend but avoid role-playing or creating fictional scenarios. Address the user by name.
+      template: `Using the information provided in the previous conversation and relevant documents, respond directly to the user's question. Offer relevant, and practical insights or guidance based on the user's ${newMessage}, ${relevantDocs} and the ${context.history} available. Be friendly, ask questions and be interested in the user. Adopt the position of a wise and empathic therapist or friend but avoid role-playing or creating fictional scenarios. 
 
     Previous Conversation: ${context.history}
 
@@ -341,4 +318,3 @@ function updateSessionDataBasedOnResponse(
   // Serialize sessionData before returning
   return JSON.stringify(sessionData);
 }
-

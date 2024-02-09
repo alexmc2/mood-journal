@@ -114,6 +114,7 @@ export function Skeleton() {
     </div>
   );
 }
+//Typing effect for new messages with new lines preserved
 function TypeOnce({
   children,
   isNewMessage,

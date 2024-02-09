@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -33,7 +33,9 @@
     "utils/nodes/EmojiNode.js",
     "next.config.js",
     "postcss.config.js",
-    "components/CustomEditor.tsx"
+    "components/CustomEditor.tsx",
+    "utils/chatbot/embeddings.ts",
+    "embeddings.js"
   ],
   "exclude": ["node_modules"]
 }

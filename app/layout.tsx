@@ -9,11 +9,16 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { Providers } from './providers';
 import CustomEditor from '../components/CustomEditor';
 import ChatThemeProvider from '@/components/chat/theme-provider';
+import { Roboto } from 'next/font/google';
 
 const inter = Inter({
+  weight: '400',
   subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
+});
+
+const roboto = Roboto({
+  weight: '400',
+  subsets: ['latin'],
 });
 
 export const metadata = {
@@ -28,10 +33,10 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en">
         {/* suppressHydrationWarning: https://github.com/vercel/next.js/issues/44343 */}
         <body
-          className={`${inter.variable} font-inter antialiased bg-neutral-100 dark:bg-blue-800 text-slate-600 dark:text-slate-300 no-scrollbar`}
+          className={`${inter.className} font-inter antialiased bg-neutral-100 dark:bg-blue-800 text-slate-600 dark:text-slate-300 no-scrollbar`}
         >
           <Theme>
             <AppProvider>

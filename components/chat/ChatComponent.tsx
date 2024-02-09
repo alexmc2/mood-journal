@@ -93,7 +93,7 @@ export default function ChatComponent({ initialChatId }) {
       { id: newMessageId, isUser: true, text: message, isNewMessage: false },
     ]);
 
-    const endpoint = `/api/chat/${chatId}` 
+    const endpoint = `/api/chat/${chatId}`;
     httpRequest
       .post(endpoint, {
         newMessage: message,
@@ -129,11 +129,11 @@ export default function ChatComponent({ initialChatId }) {
         setLoading(false);
         setMessage('');
         setIsBotProcessing(false);
-     
 
         // Manually reset the height of the textarea
         if (textareaRef.current) {
-          textareaRef.current.style.height = ''; // Reset the height
+          // textareaRef.current.style.height = ''; // Reset the height
+          textareaRef.current.blur();
         }
       });
   }
@@ -180,7 +180,6 @@ export default function ChatComponent({ initialChatId }) {
         >
           <div
             className=" messages w-full mx-auto h-full mb-4 overflow-y-auto flex flex-col gap-8 pt-10 max-[900px]:pt-20 scroll-smooth  "
-          
             ref={scrollRef}
           >
             {messages.map((message) => (
@@ -196,7 +195,7 @@ export default function ChatComponent({ initialChatId }) {
             <div ref={bottomRef} />
           </div>
         </ScrollableFeed>
-        <div className="chat-input-container relative sm:w-[50%]  w:[90%] sm:max-w-[900px] max-w-[1200px] mx-auto mt-auto mb-16 pb-6">
+        <div className="chat-input-container relative xl:w-[50%] w-[80%]  sm:max-w-[900px] max-w-[1200px] mx-auto mt-auto mb-16 pb-6">
           {/* Textarea and button wrapper */}
           <div className="textarea-button-wrapper relative">
             <Input
@@ -250,12 +249,6 @@ export default function ChatComponent({ initialChatId }) {
             </Button>
           </div>
         </div>
-
-        {/* Disclaimer */}
-        {/* <span className="mx-auto mb-6 text-xs mt-3 text-center">
-          ChatGPT may produce inaccurate information about people, places, or
-          facts.
-        </span> */}
       </div>
     </div>
   );

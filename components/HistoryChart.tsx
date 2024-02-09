@@ -25,7 +25,9 @@ const CustomTooltip = ({ payload, label, active }) => {
           style={{ background: analysis.color }}
         ></div>
         <p className="label xs:text-sm md:text-lg p-4">{dateLabel}</p>
-        <p className="label xs:text-md text-xl uppercase p-4">{analysis.mood}</p>
+        <p className="label xs:text-md text-xl uppercase p-4">
+          {analysis.mood}
+        </p>
         <p className="label xs:text-sm md:text-lg p-4 ">
           Sentiment Score: {analysis.sentimentScore}
         </p>
@@ -53,6 +55,17 @@ const CustomDot = ({ cx, cy, payload }) => {
 };
 
 const HistoryChart = ({ data }) => {
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="text-lg text-gray-500">
+          Your history sentiment score chart will appear here.
+        </p>
+      </div>
+    );
+  }
+
+
   return (
     <ResponsiveContainer height="100%" minWidth={600}>
       <LineChart data={data}>
@@ -64,7 +77,15 @@ const HistoryChart = ({ data }) => {
           dot={<CustomDot cx={undefined} cy={undefined} payload={undefined} />}
         />
         <XAxis dataKey="createdAt" />
-        <Tooltip content={<CustomTooltip payload={undefined} label={undefined} active={undefined} />} />
+        <Tooltip
+          content={
+            <CustomTooltip
+              payload={undefined}
+              label={undefined}
+              active={undefined}
+            />
+          }
+        />
       </LineChart>
     </ResponsiveContainer>
   );

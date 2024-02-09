@@ -79,3 +79,13 @@ html {
   right: 0;
   /* Additional styles to ensure proper alignment and appearance */
 }
+
+
+/* globals.css */
+:root {
+    --font: var(--font-inter);
+}
+
+html, body {
+    font-family: var(--font), sans-serif;
+}

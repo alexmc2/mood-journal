@@ -43,7 +43,7 @@ export function decryptToken(token: string, secret: string) {
   return <JWTPayload>verify(token, secret);
 }
 
-//str.replace causing errors, so commented out for now
+
 
 export type CodeMessage = {
   language: string;
@@ -91,6 +91,8 @@ export const getBreakpointValue = (value: string): number => {
   return +screenValue.slice(0, screenValue.indexOf('px'));
 };
 
+
+// Code for expandable sidebar
 export const getBreakpoint = () => {
   let currentBreakpoint;
   let biggestBreakpointValue = 0;

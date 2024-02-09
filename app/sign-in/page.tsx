@@ -1,6 +1,11 @@
 import { SignIn } from '@clerk/nextjs';
 
-const SignInPage = () => {
-  return <SignIn />;
-};
-export default SignInPage;
+export default function Page() {
+  return (
+    <div className="flex justify-center py-40 px-12">
+      <SignIn />
+    </div>
+  );
+}
+
+

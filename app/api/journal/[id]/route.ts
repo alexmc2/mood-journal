@@ -2,12 +2,17 @@ import { analyse } from '@/utils/ai';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { NextResponse } from 'next/server';
-import { createHash } from 'crypto'; // Node.js native module
+import { createHash } from 'crypto';
 import { update } from '@/utils/actions';
+import { generateEmbedding } from '@/utils/chatbot/embeddings';
+import { Document } from '@langchain/core/documents';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { client } from '@/utils/chatbot/supabaseClient';
 
 export const DELETE = async (request: Request, { params }) => {
   const user = await getUserByClerkId();
 
+  // Delete the journal entry
   await prisma.journalEntry.delete({
     where: {
       userId_id: {
@@ -16,6 +21,16 @@ export const DELETE = async (request: Request, { params }) => {
       },
     },
   });
+
+  try {
+    const { data, error } = await client.from('documents').delete().match({
+      'metadata->>journalEntryId': params.id,
+      'metadata->>userId': user.id,
+      'metadata->>type': 'journal',
+    });
+  } catch (error) {
+    console.error('Error deleting corresponding document:', error);
+  }
 
   update(['/journal']);
 
@@ -74,6 +89,27 @@ export const PATCH = async (request, { params }) => {
         contentHash: newContentHash, // Update the content hash
       },
     });
+
+    try {
+      const embedding = await generateEmbedding(updatedEntry.content);
+      const metadata = {
+        journalEntryId: params.id,
+        userId: user.id,
+        type: 'journal',
+        updatedAt: new Date(), // ISO string for compatibility
+      };
+
+      // Update embeddings in Supabase
+      const { error } = await client.from('documents').insert({
+        content: updatedEntry.content,
+        embedding: embedding,
+        metadata,
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error inserting updated journal entry embedding:', error);
+    }
 
     const analysis = await analyse(updatedEntry.content);
 

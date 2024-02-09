@@ -3,14 +3,19 @@
 import React from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 
-export default function CustomEditor({ onChange, initialValue }) {
+export default function CustomEditor({
+  onChange,
+  initialValue,
+
+}) {
+   
+
   return (
     <Editor
       apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
       onEditorChange={onChange}
       initialValue={initialValue}
       init={{
-      
         toolbar:
           'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
         tinycomments_mode: 'embedded',

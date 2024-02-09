@@ -1,24 +1,22 @@
-import ChatComponent from '../../../components/chat/ChatComponent';
-import Logo from '../../../components/Logo'; // Adjust the import path as needed
 
+import Logo from '@/components/chat/ui/pageLogo';
 export default function ChatPage() {
   return (
-    <div>
+    <div className='overflow-hidden'>
       <div
         style={{
+          flex: 1,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          height: '100vh',
+          height: '90vh',
+       
         }}
       >
-        <div style={{ width: '128px', height: '128px' }}>
-          {' '}
-          {/* Adjust the size as needed */}
-          <Logo />
-        </div>
+       
+        <Logo />
       </div>
-      <ChatComponent initialChatId={null} />
+  
     </div>
   );
 }

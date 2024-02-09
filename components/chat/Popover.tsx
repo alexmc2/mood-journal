@@ -1,23 +1,11 @@
 import { useState } from 'react';
 import React from 'react';
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  Button,
-  Tooltip,
-  useDisclosure,
-} from '@nextui-org/react';
+import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { deleteChat } from '@/utils/api';
-import axios from 'axios';
 
-export default function PopoverButton({}) {
+export default function PopoverButton({ chatId, onOpenDeleteModal }) {
   const [visible, setVisible] = useState(false);
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [size, setSize] = React.useState('md');
 
   const lightThemeStrokeColor = '#000000'; //black for light theme
   const darkThemeStrokeColor = '#FFFFFF'; //white for dark theme
@@ -30,20 +18,14 @@ export default function PopoverButton({}) {
   const svgStrokeColor =
     theme === 'dark' ? darkThemeStrokeColor : lightThemeStrokeColor;
 
-  //  const handleDelete = async () => {
-  //    try {
-  //      await deleteChat(chat.id);
-
-  //      router.push('/journal'); // Make sure this is the correct route for redirection
-  //    } catch (error) {
-  //      console.error('Failed to delete chat:', error);
-  //      // Consider adding UI feedback for error
-  //    }
-  //  };
-
+ 
   return (
     <>
-      <Button isIconOnly className="...">
+      <Button
+        isIconOnly
+        onClick={() => onOpenDeleteModal(chatId)}
+        className="..."
+      >
         <svg
           className="shrink-0 h-8 w-8"
           viewBox="0 0 24 24"
