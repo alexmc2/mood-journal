@@ -3,9 +3,11 @@
 import ChatComponent from '../../../../components/chat/ChatComponent';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function ChatIdPage({ params }) {
+export default function ChatIdPage() {
   const searchParams = useSearchParams();
-  const initialChatId = searchParams.get('chatId') || params?.chatId;
+
+  // Assuming `searchParams` is correctly typed as URLSearchParams
+  const initialChatId = searchParams.get ? searchParams.get('chatId') : null;
 
   return <ChatComponent initialChatId={initialChatId} />;
 }
