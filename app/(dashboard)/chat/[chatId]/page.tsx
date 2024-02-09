@@ -3,13 +3,9 @@
 import ChatComponent from '../../../../components/chat/ChatComponent';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-interface ChatIdPageParams {
-  chatId?: string;
-}
-
-export default function ChatIdPage({ params }: { params: ChatIdPageParams }) {
+export default function ChatIdPage() {
   const searchParams = useSearchParams();
-  const initialChatId = searchParams.get('chatId') || params?.chatId;
+  const initialChatId = searchParams.get('chatId');
 
   return <ChatComponent initialChatId={initialChatId} />;
 }
