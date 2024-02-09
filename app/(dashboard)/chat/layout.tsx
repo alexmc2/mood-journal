@@ -2,6 +2,7 @@ import ChatThemeProvider from '@/components/chat/theme-provider';
 import { Toaster } from '@/components/chat/ui/toaster';
 import { ReactNode } from 'react';
 
+
 interface ChatLayoutProps {
   children: ReactNode;
 }

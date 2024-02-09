@@ -61,7 +61,7 @@ const JournalPage = () => {
   }, [currentPage]);
 
   const handlePageChange = (page) => {
-    setCurrentPage(page); // Update current page
+    setCurrentPage(page); 
   };
 
   return (
