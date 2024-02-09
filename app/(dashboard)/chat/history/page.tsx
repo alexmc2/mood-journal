@@ -21,7 +21,7 @@ const getData = async () => {
           analyses.reduce((acc, curr) => acc + curr.sentimentScore, 0) /
             analyses.length
         )
-      : 0; // Return 0 or another default value if there are no analyses
+      : 0; // Return 0 or another default value 
 
   return { analyses, average };
 };
