@@ -39,7 +39,7 @@ export const GET = async (request: Request | NextRequest, { params }: any) => {
 };
 
 // POST request handler for /api/chat/[chatId]
-export const POST = async (request: { json: () => PromiseLike<{ newMessage: any; }> | { newMessage: any; }; }, { params }: any) => {
+export const POST = async (request: Request | NextRequest, { params }: any) => {
   const chatId = params.chatId;
   const { newMessage } = await request.json();
   const user = await getUserByClerkId();
@@ -152,7 +152,7 @@ export const POST = async (request: { json: () => PromiseLike<{ newMessage: any;
 
 // DELETE request handler for /api/chat/[chatId]
 
-export const DELETE = async (request: { url: any; }, { params }: any) => {
+export const DELETE = async (request: Request | NextRequest, { params }: any) => {
   console.log('Params:', params);
   console.log(request.url);
   const user = await getUserByClerkId();

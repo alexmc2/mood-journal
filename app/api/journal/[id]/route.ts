@@ -1,7 +1,7 @@
 import { analyse } from '@/utils/ai';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createHash } from 'crypto';
 import { update } from '@/utils/actions';
 import { generateEmbedding } from '@/utils/chatbot/embeddings';
@@ -9,7 +9,10 @@ import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
-export const DELETE = async (request: Request, { params }: { params: any }) => {
+export const DELETE = async (
+  request: Request | NextRequest,
+  { params }: { params: any }
+) => {
   const user = await getUserByClerkId();
 
   // Delete the journal entry
@@ -37,7 +40,7 @@ export const DELETE = async (request: Request, { params }: { params: any }) => {
   return NextResponse.json({ data: { id: params.id } });
 };
 
-export const GET = async (request: any, { params }: any) => {
+export const GET = async (request: Request | NextRequest, { params }: any) => {
   const user = await getUserByClerkId();
   const entry = await prisma.journalEntry.findUnique({
     where: {
@@ -54,7 +57,7 @@ export const GET = async (request: any, { params }: any) => {
   return NextResponse.json({ data: entry });
 };
 
-export const PATCH = async (request: { json: () => PromiseLike<{ content: any; }> | { content: any; }; }, { params }: any) => {
+export const PATCH = async (request: Request | NextRequest, { params }: any) => {
   const { content } = await request.json();
   const user = await getUserByClerkId();
 

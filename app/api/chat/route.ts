@@ -4,7 +4,7 @@ import { chatSummary } from '@/utils/ai';
 import { qa } from '@/utils/chatbot/chatbotChain';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { OpenAIEmbeddings } from '@langchain/openai';
 import { generateEmbedding } from '@/utils/chatbot/embeddings';
 import { client } from '@/utils/chatbot/supabaseClient';
@@ -12,7 +12,10 @@ import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 // API Route for handling chat messages
-export const POST = async (request: { json: () => PromiseLike<{ newMessage: any; }> | { newMessage: any; }; }, { params }: { params: any }) => {
+export const POST = async (
+  request: Request | NextRequest,
+  { params }: { params: any }
+) => {
   // console.log('POST route hit with request:', request);
 
   const { newMessage } = await request.json();

@@ -1,8 +1,8 @@
 import { prisma } from '@/utils/db';
 import { getUserByClerkId } from '@/utils/auth';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export const GET = async (request: any, { params }: any) => {
+export const GET = async (request: Request | NextRequest, { params }: any) => {
   const user = await getUserByClerkId();
 
   // Retrieve the page number from the request parameters
@@ -32,7 +32,6 @@ export const GET = async (request: any, { params }: any) => {
 
     return NextResponse.json({ data: journalEntries, pageCount });
   } catch (error) {
- 
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }
