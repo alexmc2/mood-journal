@@ -26,6 +26,8 @@ const getData = async () => {
   return { analyses, average };
 };
 
+
+
 const History = async () => {
   const { average, analyses } = await getData();
 

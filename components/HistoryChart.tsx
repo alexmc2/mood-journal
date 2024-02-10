@@ -55,10 +55,9 @@ const CustomDot = ({ cx, cy, payload }: { cx: number, cy: number, payload: any }
 };
 
 type DataItem = {
-  createdAt: string;
+  createdAt: Date;
   sentimentScore: number;
   entryId: string;
-
 };
 
 type HistoryChartProps = {
