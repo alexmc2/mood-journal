@@ -60,7 +60,7 @@ const JournalPage = () => {
     fetchData();
   }, [currentPage]);
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: React.SetStateAction<number>) => {
     setCurrentPage(page); 
   };
 
