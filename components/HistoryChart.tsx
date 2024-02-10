@@ -3,7 +3,7 @@
 import { ResponsiveContainer, LineChart, Line, XAxis, Tooltip } from 'recharts';
 import { useRouter } from 'next/navigation';
 
-const CustomTooltip = ({ payload, label, active }) => {
+const CustomTooltip = ({ payload, label, active }: { payload: any, label: any, active: any }) => {
   console.log(payload);
 
   const dateLabel = new Date(label).toLocaleString('en-us', {
@@ -38,7 +38,7 @@ const CustomTooltip = ({ payload, label, active }) => {
   return null;
 };
 
-const CustomDot = ({ cx, cy, payload }) => {
+const CustomDot = ({ cx, cy, payload }: { cx: number, cy: number, payload: any }) => {
   const router = useRouter(); // Using useRouter hook
 
   return (
@@ -54,7 +54,18 @@ const CustomDot = ({ cx, cy, payload }) => {
   );
 };
 
-const HistoryChart = ({ data }) => {
+type DataItem = {
+  createdAt: string;
+  sentimentScore: number;
+  entryId: string;
+
+};
+
+type HistoryChartProps = {
+  data: DataItem[];
+};
+
+const HistoryChart = ({ data }: HistoryChartProps) => {
   if (!data || data.length === 0) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -74,7 +85,7 @@ const HistoryChart = ({ data }) => {
           dataKey="sentimentScore"
           stroke="#8884d8"
           strokeWidth={2}
-          dot={<CustomDot cx={undefined} cy={undefined} payload={undefined} />}
+          dot={<CustomDot cx={0} cy={0} payload={undefined} />}
         />
         <XAxis dataKey="createdAt" />
         <Tooltip

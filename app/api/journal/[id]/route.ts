@@ -9,7 +9,7 @@ import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
-export const DELETE = async (request: Request, { params }) => {
+export const DELETE = async (request: Request, { params }: { params: any }) => {
   const user = await getUserByClerkId();
 
   // Delete the journal entry
@@ -37,7 +37,7 @@ export const DELETE = async (request: Request, { params }) => {
   return NextResponse.json({ data: { id: params.id } });
 };
 
-export const GET = async (request, { params }) => {
+export const GET = async (request: any, { params }: any) => {
   const user = await getUserByClerkId();
   const entry = await prisma.journalEntry.findUnique({
     where: {
@@ -54,7 +54,7 @@ export const GET = async (request, { params }) => {
   return NextResponse.json({ data: entry });
 };
 
-export const PATCH = async (request, { params }) => {
+export const PATCH = async (request: { json: () => PromiseLike<{ content: any; }> | { content: any; }; }, { params }: any) => {
   const { content } = await request.json();
   const user = await getUserByClerkId();
 

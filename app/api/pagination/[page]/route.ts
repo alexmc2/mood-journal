@@ -2,7 +2,7 @@ import { prisma } from '@/utils/db';
 import { getUserByClerkId } from '@/utils/auth';
 import { NextResponse } from 'next/server';
 
-export const GET = async (request, { params }) => {
+export const GET = async (request: any, { params }: any) => {
   const user = await getUserByClerkId();
 
   // Retrieve the page number from the request parameters

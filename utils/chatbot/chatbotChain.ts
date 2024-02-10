@@ -53,7 +53,7 @@ function sanitizeInput(input: string) {
   return sanitized;
 }
 
-export const qa = async (chatId, newMessage, userId) => {
+export const qa = async (chatId: any, newMessage: string, userId: string) => {
   try {
     const sanitizedMessage = sanitizeInput(newMessage);
 
@@ -122,7 +122,9 @@ export const qa = async (chatId, newMessage, userId) => {
       )
       .join('\n');
 
-    const fetchChatHistory = async (userId, chatId) => {
+    // Recent chat history
+
+    const fetchChatHistory = async (userId: string, chatId: any) => {
       let { data: chatHistory, error } = await client
         .from('documents')
         .select('*')

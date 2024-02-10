@@ -12,7 +12,6 @@ import { useParams } from 'next/navigation';
 import DeleteEntryButton from './DeleteEntryButton';
 import { useAutosave } from 'react-autosave';
 
-
 const createHash = async (content: string | undefined) => {
   const msgBuffer = new TextEncoder().encode(content); // Encode as UTF-8
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer); // Hash the message
@@ -37,13 +36,28 @@ const getContrastYIQ = (hexcolor: string) => {
   return yiq >= 128 ? 'black' : 'white';
 };
 
-const Editor = ({ entry }) => {
+interface Entry {
+  id: string;
+  content?: string;
+  analysis?: {
+    mood?: string;
+    summary?: string;
+    color?: string;
+    subject?: string;
+    negative?: boolean;
+    sentimentScore?: number;
+  };
+}
+
+const Editor = ({ entry }: { entry: Entry }) => {
   const editorContentRef = useRef(entry.content || '');
   const [analysis, setAnalysis] = useState(entry.analysis || {});
   const [isSaving, setIsSaving] = useState(false);
   const [lastAnalyzedContentHash, setLastAnalyzedContentHash] = useState('');
 
-  const [selectedJournalId, setSelectedJournalId] = useState(null);
+  const [selectedJournalId, setSelectedJournalId] = useState<string | null>(
+    null
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const params = useParams();
@@ -61,8 +75,6 @@ const Editor = ({ entry }) => {
   const svgStrokeColor =
     theme === 'dark' ? darkThemeStrokeColor : lightThemeStrokeColor;
 
-
-
   const handleJournalDelete = async () => {
     if (selectedJournalId) {
       try {
@@ -76,7 +88,7 @@ const Editor = ({ entry }) => {
     }
   };
 
-  const openDeleteJournalModal = async (Id, content) => {
+  const openDeleteJournalModal = async (Id: string, content: string) => {
     // Check if the content is empty or contains placeholder text
     if (
       !content ||
@@ -89,7 +101,6 @@ const Editor = ({ entry }) => {
         router.push('/journal'); // Redirect to the journal page
       } catch (error) {
         console.error('Error deleting journal:', error);
-       
       }
     } else {
       // For entries with content, proceed with the normal deletion process
@@ -115,11 +126,9 @@ const Editor = ({ entry }) => {
     createHash(entry.content).then((hash) => setLastAnalyzedContentHash(hash));
   }, [entry.content]);
 
-  const handleEditorChange = (content) => {
+  const handleEditorChange = (content: string) => {
     editorContentRef.current = content;
   };
-
-  
 
   const handleSave = async () => {
     const content = editorContentRef.current; // Use the current ref value
@@ -135,8 +144,6 @@ const Editor = ({ entry }) => {
       } finally {
         setIsSaving(false); // Hide saving spinner
       }
-
-      
 
       //   setTimeout(() => {
       //     const dummyAnalysis = {
@@ -157,7 +164,7 @@ const Editor = ({ entry }) => {
     }
   };
 
-  const autosaveContent = async (content) => {
+  const autosaveContent = async (content: any) => {
     try {
       // Call your API to update the content without triggering analysis
       await updateEntry(entry.id, content);
@@ -216,7 +223,7 @@ const Editor = ({ entry }) => {
           onClose={onClose}
           id={entry.id}
           onDelete={handleJournalDelete}
-          currentEntryId={currentEntryId}
+          currentEntryId={Array.isArray(currentEntryId) ? currentEntryId[0] : currentEntryId}
         />
       </div>
       <div className=" absolute left-10 top-20 p-2 flex  ">

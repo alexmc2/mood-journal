@@ -3,13 +3,15 @@
 import React from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 
+interface CustomEditorProps {
+  onChange: (content: string, editor: any) => void;
+  initialValue: string;
+}
+
 export default function CustomEditor({
   onChange,
   initialValue,
-
-}) {
-   
-
+}: CustomEditorProps) {
   return (
     <Editor
       apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
@@ -24,7 +26,10 @@ export default function CustomEditor({
           { value: 'First.Name', title: 'First Name' },
           { value: 'Email', title: 'Email' },
         ],
-        ai_request: (request, respondWith) =>
+        ai_request: (
+          request: any,
+          respondWith: { string: (arg0: () => Promise<never>) => any }
+        ) =>
           respondWith.string(() =>
             Promise.reject('See docs to implement AI Assistant')
           ),

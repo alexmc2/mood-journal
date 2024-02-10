@@ -20,7 +20,7 @@ type MessageType = {
   isNewMessage?: boolean;
 };
 
-export default function ChatComponent({ initialChatId }) {
+export default function ChatComponent({ initialChatId }: { initialChatId: string }) {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -61,7 +61,7 @@ export default function ChatComponent({ initialChatId }) {
         .then((res) => {
           const fetchedMessages = res.data.data.messages;
           setMessages(
-            fetchedMessages.map((msg) => ({
+            fetchedMessages.map((msg: { id: any; text: any; userId: null; }) => ({
               id: msg.id,
               text: msg.text,
               isUser: msg.userId !== null,

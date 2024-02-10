@@ -4,7 +4,15 @@ import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 
-export default function DeleteEntryButton({ Id, onOpenDeleteModal }) {
+interface DeleteEntryButtonProps {
+  Id: string; // or number, depending on your data
+  onOpenDeleteModal: (id: string) => void; // or (id: number) => void
+}
+
+export default function DeleteEntryButton({
+  Id,
+  onOpenDeleteModal,
+}: DeleteEntryButtonProps) {
   const [visible, setVisible] = useState(false);
 
   const lightThemeStrokeColor = '#000000'; //black for light theme

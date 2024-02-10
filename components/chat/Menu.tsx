@@ -9,7 +9,7 @@ import axios, { AxiosError } from 'axios';
 import { useToast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 
 import {
   Sheet,
@@ -109,7 +109,7 @@ export default function Menu({ clear }: { clear: () => void }) {
     }
   };
 
-  const openDeleteModal = (chatId) => {
+  const openDeleteModal = (chatId: SetStateAction<null>) => {
     setSelectedChatId(chatId);
     onOpen();
   };

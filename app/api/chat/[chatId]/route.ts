@@ -10,7 +10,7 @@ import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
-export const GET = async (request, { params }) => {
+export const GET = async (request: { url: any; }, { params }: any) => {
   console.log('Params:', params);
   console.log(request.url);
 
@@ -39,7 +39,7 @@ export const GET = async (request, { params }) => {
 };
 
 // POST request handler for /api/chat/[chatId]
-export const POST = async (request, { params }) => {
+export const POST = async (request: { json: () => PromiseLike<{ newMessage: any; }> | { newMessage: any; }; }, { params }: any) => {
   const chatId = params.chatId;
   const { newMessage } = await request.json();
   const user = await getUserByClerkId();
@@ -152,7 +152,7 @@ export const POST = async (request, { params }) => {
 
 // DELETE request handler for /api/chat/[chatId]
 
-export const DELETE = async (request, { params }) => {
+export const DELETE = async (request: { url: any; }, { params }: any) => {
   console.log('Params:', params);
   console.log(request.url);
   const user = await getUserByClerkId();

@@ -2,10 +2,10 @@
 
 import axios from 'axios';
 
-const createURL = (path) => `${window.location.origin}${path}`;
+const createURL = (path: string) => `${window.location.origin}${path}`;
 
 // Fetch a journal entry
-export const fetchEntry = async (id) => {
+export const fetchEntry = async (id: string) => {
   try {
     const response = await axios.get(createURL(`/api/journal/${id}`));
     return response.data.data;
@@ -16,7 +16,7 @@ export const fetchEntry = async (id) => {
 };
 
 // Delete a journal entry
-export const deleteEntry = async (id) => {
+export const deleteEntry = async (id: string) => {
   try {
     const response = await axios.delete(createURL(`/api/journal/${id}`));
     return response.data;
@@ -27,7 +27,7 @@ export const deleteEntry = async (id) => {
 };
 
 // Update a journal entry
-export const updateEntry = async (id, content) => {
+export const updateEntry = async (id: string, content: string) => {
   try {
     const response = await axios.patch(createURL(`/api/journal/${id}`), {
       content,
@@ -40,7 +40,7 @@ export const updateEntry = async (id, content) => {
 };
 
 // Update a journal entry
-export const updateAutosaveEntry = async (id, content) => {
+export const updateAutosaveEntry = async (id: any, content: any) => {
   try {
     const response = await axios.patch(createURL(`/api/journal/${id}`), {
       content,
@@ -75,7 +75,7 @@ export const fetchAllChats = async () => {
 };
 
 // Fetch a specific chat by ID
-export const fetchChat = async (chatId) => {
+export const fetchChat = async (chatId: any) => {
   try {
     const response = await axios.get(createURL(`/api/chat/${chatId}`));
     return response.data.data;
@@ -86,7 +86,7 @@ export const fetchChat = async (chatId) => {
 };
 
 // Post a new message to a specific chat
-export const postMessageToChat = async (chatId, newMessage) => {
+export const postMessageToChat = async (chatId: any, newMessage: any) => {
   try {
     const response = await axios.post(createURL(`/api/chat/${chatId}`), {
       newMessage,
@@ -99,7 +99,7 @@ export const postMessageToChat = async (chatId, newMessage) => {
 };
 
 // Create a new chat
-export const newChat = async (chatId, newMessage) => {
+export const newChat = async (chatId: any, newMessage: any) => {
   try {
     const response = await axios.post(createURL('/api/chat/'), {
       chatId,
@@ -113,7 +113,7 @@ export const newChat = async (chatId, newMessage) => {
 };
 
 // Delete a specific chat
-export const deleteChat = async (chatId) => {
+export const deleteChat = async (chatId: string) => {
   try {
     const response = await axios.delete(createURL(`/api/chat/${chatId}`));
     return response.data;

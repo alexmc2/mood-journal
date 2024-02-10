@@ -2,8 +2,13 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { deleteEntry } from '@/utils/api';
 
-
-
+interface DeleteEntryModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  id: string;
+  onDelete: (id: string) => void; 
+  currentEntryId: string; 
+}
 
 export default function DeleteEntryModal({
   isOpen,
@@ -11,7 +16,7 @@ export default function DeleteEntryModal({
   id,
   onDelete,
   currentEntryId,
-}) {
+}: DeleteEntryModalProps) {
   const router = useRouter();
 
   const handleDelete = async () => {
@@ -30,7 +35,7 @@ export default function DeleteEntryModal({
     }
   };
 
-  const handleClose = (event) => {
+  const handleClose = (event: { target: any; currentTarget: any; }) => {
     // Close the modal when the backdrop is clicked
     if (event.target === event.currentTarget) {
       onClose();

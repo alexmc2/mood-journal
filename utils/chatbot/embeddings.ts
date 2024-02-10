@@ -1,4 +1,4 @@
-import client from './supabaseClient'; // Import the Supabase client
+
 import { OpenAIEmbeddings } from '@langchain/openai';
 
 import { Document } from 'langchain/document';
@@ -9,7 +9,7 @@ const embeddings = new OpenAIEmbeddings();
 
 
 
-export async function generateEmbedding(text) {
+export async function generateEmbedding(text: string) {
   try {
     const response = await embeddings.embedQuery(text);
     return response;

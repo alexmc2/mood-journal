@@ -27,14 +27,10 @@ import { AgentExecutor, type AgentStep } from 'langchain/agents';
 import { formatToOpenAIFunctionMessages } from 'langchain/agents/format_scratchpad';
 import { OpenAIFunctionsAgentOutputParser } from 'langchain/agents/openai/output_parser';
 
-import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
-import { ConversationChain, LLMChain } from 'langchain/chains';
 
-import { AIMessage, HumanMessage } from '@langchain/core/messages';
-import { createRetrieverTool } from 'langchain/tools/retriever';
-import { createOpenAIToolsAgent, createReactAgent } from 'langchain/agents';
 import { DynamicTool, Tool } from '@langchain/core/tools';
 import { convertToOpenAIFunction } from '@langchain/core/utils/function_calling';
+import { VectorStoreRetrieverInput } from '@langchain/core/vectorstores';
 
 const privateKey = process.env.SUPABASE_PRIVATE_KEY;
 if (!privateKey) throw new Error(`Expected env var SUPABASE_PRIVATE_KEY`);
@@ -50,7 +46,7 @@ const tracer = new LangChainTracer({
   client: langsmithClient,
 });
 
-export const qa = async (chatId, newMessage, userId) => {
+export const qa = async (chatId: any, newMessage: { newMessage: number | Partial<VectorStoreRetrieverInput<SupabaseVectorStore>> | undefined; }, userId: any) => {
   try {
     //context
     const metadataFilter = {
@@ -76,7 +72,7 @@ export const qa = async (chatId, newMessage, userId) => {
 
     //chat history
 
-    const fetchChatHistory = async (userId, chatId) => {
+    const fetchChatHistory = async (userId: any, chatId: any) => {
       let { data: chatHistory, error } = await client
         .from('documents')
         .select('*')
@@ -99,7 +95,7 @@ export const qa = async (chatId, newMessage, userId) => {
     };
 
     // Function to serialize chat history into a readable string format.
-    const serializeChatHistory = (chatHistory) =>
+    const serializeChatHistory = (chatHistory: any[]) =>
       chatHistory
         .map((doc) => {
           const { content, metadata } = doc;
@@ -239,7 +235,7 @@ export const qa = async (chatId, newMessage, userId) => {
 
       chatHistory: chatHistoryString,
       verbose: true,
-      handleParsingErrors: async (error, context) => {
+      handleParsingErrors: async (error: any, context: any) => {
         console.log('Caught parsing error:', error);
         // Modify the context.input here based on the error
         // For example, if the error is due to an invalid date format, you can correct it

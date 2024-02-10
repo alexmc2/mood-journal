@@ -44,7 +44,7 @@ const parser = StructuredOutputParser.fromZodSchema(
   })
 );
 
-const getPrompt = async (content) => {
+const getPrompt = async (content: string) => {
   const format_instructions = parser.getFormatInstructions();
 
   const prompt = new PromptTemplate({
@@ -101,7 +101,7 @@ const chatParser = StructuredOutputParser.fromZodSchema(
   })
 );
 
-const getChatSummaryPrompt = async (chatContent) => {
+const getChatSummaryPrompt = async (chatContent: string) => {
   const format_instructions = chatParser.getFormatInstructions();
 
   const prompt = new PromptTemplate({
@@ -148,7 +148,7 @@ interface SessionData {
   }[];
 }
 
-export const qa = async (chatId, newMessage, userId) => {
+export const qa = async (chatId: any, newMessage: string, userId: any) => {
   try {
     // Retrieve or create a user session
     console.log('Starting qa function for user:', userId);

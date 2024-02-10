@@ -12,7 +12,7 @@ import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 // API Route for handling chat messages
-export const POST = async (request, { params } = {}) => {
+export const POST = async (request: { json: () => PromiseLike<{ newMessage: any; }> | { newMessage: any; }; }, { params }: { params: any }) => {
   // console.log('POST route hit with request:', request);
 
   const { newMessage } = await request.json();

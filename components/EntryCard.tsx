@@ -1,7 +1,7 @@
 'use client';
 import { Divider } from '@nextui-org/react';
 
-const truncateText = (text, maxLength) => {
+const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
     return text.substring(0, maxLength) + '...';
   }
@@ -22,7 +22,7 @@ const getContrastYIQ = (hexcolor: string) => {
   return yiq >= 128 ? 'black' : 'white';
 };
 
-const EntryCard = ({ entry }) => {
+const EntryCard = ({ entry }: { entry: any }) => {
   const date = new Date(entry.createdAt).toDateString();
   const maxLength = 40; // Define the maximum length of the summary text
 

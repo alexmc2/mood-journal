@@ -1,8 +1,14 @@
-
-
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { deleteChat } from '@/utils/api';
+
+interface DeleteModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  chatId: string; // or number, depending on your data
+  onDelete: (chatId: string) => void; // or (chatId: number) => void
+  currentChatId: string; // or number
+}
 
 export default function DeleteModal({
   isOpen,
@@ -10,7 +16,7 @@ export default function DeleteModal({
   chatId,
   onDelete,
   currentChatId,
-}) {
+}: DeleteModalProps) {
   const router = useRouter();
 
   const handleDelete = async () => {
