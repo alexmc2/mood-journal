@@ -9,5 +9,5 @@ export default function ChatIdPage() {
   // Assuming `searchParams` is correctly typed as URLSearchParams
   const initialChatId = searchParams.get ? searchParams.get('chatId') : null;
 
-  return <ChatComponent initialChatId={initialChatId} />;
+  return <ChatComponent initialChatId={initialChatId ?? ''} />;
 }
