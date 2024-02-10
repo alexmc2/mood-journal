@@ -3,14 +3,14 @@
 import { qa } from '@/utils/chatbot/chatbotChain';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generateEmbedding } from '@/utils/chatbot/embeddings';
 import { createClient } from '@supabase/supabase-js';
 import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
-export const GET = async (request: { url: any; }, { params }: any) => {
+export const GET = async (request: Request | NextRequest, { params }: any) => {
   console.log('Params:', params);
   console.log(request.url);
 
