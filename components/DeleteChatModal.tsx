@@ -35,7 +35,7 @@ export default function DeleteModal({
     }
   };
 
-  const handleClose = (event) => {
+  const handleClose = (event: { target: any; currentTarget: any; }) => {
     // Close the modal when the backdrop is clicked
     if (event.target === event.currentTarget) {
       onClose();
