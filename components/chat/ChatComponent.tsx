@@ -2,7 +2,7 @@
 import Menu from '@/components/chat/Menu';
 import Message, { Skeleton } from '@/components/chat/Message';
 import { Button } from '@nextui-org/react';
-import ArrowIcon from '@/components/icons/arrow';
+import { ArrowIcon } from '@/components/icons/arrow';
 import { Input } from '@/components/chat/ui/input';
 import { useToast } from '@/components/chat/ui/use-toast';
 import { httpRequest } from '@/utils/interceptor';
@@ -20,7 +20,11 @@ type MessageType = {
   isNewMessage?: boolean;
 };
 
-export default function ChatComponent({ initialChatId }: { initialChatId: string }) {
+export default function ChatComponent({
+  initialChatId,
+}: {
+  initialChatId: string;
+}) {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -61,12 +65,14 @@ export default function ChatComponent({ initialChatId }: { initialChatId: string
         .then((res) => {
           const fetchedMessages = res.data.data.messages;
           setMessages(
-            fetchedMessages.map((msg: { id: any; text: any; userId: null; }) => ({
-              id: msg.id,
-              text: msg.text,
-              isUser: msg.userId !== null,
-              isNewMessage: false,
-            }))
+            fetchedMessages.map(
+              (msg: { id: any; text: any; userId: null }) => ({
+                id: msg.id,
+                text: msg.text,
+                isUser: msg.userId !== null,
+                isNewMessage: false,
+              })
+            )
           );
         })
         .catch((err) => {

@@ -4,8 +4,7 @@ interface ArrowIconProps {
   className?: string;
 }
 
-
-const ArrowIcon: React.FC<ArrowIconProps> = ({ className }) => {
+export const ArrowIcon: React.FC<ArrowIconProps> = ({ className }) => {
   return (
     <svg
       className={`shrink-0 h-8 w-8 ${className}`}
@@ -23,3 +22,5 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({ className }) => {
     </svg>
   );
 };
+
+

@@ -1,9 +1,13 @@
 import React from 'react';
 
-export default function ChatIcon({ color = 'currentColor' }) {
+interface ChatIconProps {
+  className?: string;
+  color?: string;
+}
+
+export const ChatIcon: React.FC<ChatIconProps> = ({ className, color }) => {
   return (
     <svg
-     
       className="shrink-0 h-10 w-10"
       viewBox="0 0 24 24"
       fill="none"
@@ -18,4 +22,4 @@ export default function ChatIcon({ color = 'currentColor' }) {
       />
     </svg>
   );
-}
+};

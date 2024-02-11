@@ -13,7 +13,7 @@ import Link from 'next/link';
 import HomeIcon from './icons/home';
 import HistoryIcon from './icons/history';
 import JournalIcon from './icons/journal';
-import ChatIcon from './icons/chat';
+import { ChatIcon } from './icons/chat';
 import newEntryIcon from './icons/newEntry';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
