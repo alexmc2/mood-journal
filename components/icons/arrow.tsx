@@ -1,6 +1,11 @@
 import React from 'react';
 
-export default function ArrowIcon({ className }) {
+interface ArrowIconProps {
+  className?: string;
+}
+
+
+const ArrowIcon: React.FC<ArrowIconProps> = ({ className }) => {
   return (
     <svg
       className={`shrink-0 h-8 w-8 ${className}`}
@@ -17,4 +22,4 @@ export default function ArrowIcon({ className }) {
       />
     </svg>
   );
-}
+};

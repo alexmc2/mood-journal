@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function HistoryIcon({ className, color = 'currentColor' }) {
+export default function HistoryIcon({ color = 'currentColor' }) {
   return (
     <svg
       className="shrink-0 h-10 w-10"

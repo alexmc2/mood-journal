@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function newEntryIcon({ className, color = 'currentColor' }) {
+export default function newEntryIcon({ color = 'currentColor' }) {
   return (
     <svg
       className="shrink-0 h-10 w-10"

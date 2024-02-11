@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function ChatIcon({ className, color = 'currentColor' }) {
+export default function ChatIcon({ color = 'currentColor' }) {
   return (
     <svg
      
