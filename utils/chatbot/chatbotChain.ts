@@ -55,6 +55,7 @@ function sanitizeInput(input: string) {
 
 export const runtime = 'edge';
 
+
 export const qa = async (chatId: any, newMessage: string, userId: string) => {
   try {
     const sanitizedMessage = sanitizeInput(newMessage);
@@ -172,6 +173,8 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       modelName: 'gpt-3.5-turbo-0125',
       temperature: 0.6,
       verbose: true,
+      streaming: true,
+      
     });
     const memory = new BufferMemory({
       returnMessages: true,
@@ -187,7 +190,6 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       sanitizedMessage: sanitizedMessage,
     });
 
-  
     const historyAwarePrompt = ChatPromptTemplate.fromMessages([
       // Instruction to the AI on how to approach the conversation
       [
@@ -243,8 +245,6 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         output: response,
       }
     );
-
-
 
     return response;
   } catch (error) {

@@ -10,6 +10,10 @@ import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
+export const runtime = 'nodejs';
+
+export const dynamic = 'force-dynamic';
+
 export const GET = async (request: Request | NextRequest, { params }: any) => {
   console.log('Params:', params);
   console.log(request.url);
@@ -152,7 +156,10 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
 
 // DELETE request handler for /api/chat/[chatId]
 
-export const DELETE = async (request: Request | NextRequest, { params }: any) => {
+export const DELETE = async (
+  request: Request | NextRequest,
+  { params }: any
+) => {
   console.log('Params:', params);
   console.log(request.url);
   const user = await getUserByClerkId();
