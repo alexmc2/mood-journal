@@ -151,14 +151,13 @@ export default function Menu({ clear }: { clear: () => void }) {
             </div>
           </SheetHeader>
         </SheetContent>
-      
 
         <DeleteModal
           isOpen={isOpen}
           onClose={onClose}
-          chatId={selectedChatId}
+          chatId={selectedChatId || ''}
           onDelete={handleChatDelete}
-          currentChatId={currentChatId}
+          currentChatId={Array.isArray(currentChatId) ? currentChatId[0] : currentChatId}
         />
       </Sheet>
     </>
