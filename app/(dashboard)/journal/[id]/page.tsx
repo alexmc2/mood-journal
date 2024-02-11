@@ -25,11 +25,13 @@ const getEntry = async (id: string) => {
 const EntryPage = async ({ params }: { params: any }) => {
   const entry = await getEntry(params.id);
 
+  if (!entry) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
-   
-        <Editor entry={entry} />
-      
+      <Editor entry={entry} />
     </div>
   );
 };

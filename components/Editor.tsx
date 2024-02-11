@@ -46,12 +46,12 @@ interface Entry {
     subject?: string;
     negative?: boolean;
     sentimentScore?: number;
-  };
+  } | null;
 }
 
-const Editor = ({ entry }: { entry: Entry }) => {
-  const editorContentRef = useRef(entry.content || '');
-  const [analysis, setAnalysis] = useState(entry.analysis || {});
+const Editor = ({ entry }: { entry: Entry | null }) => {
+  const editorContentRef = useRef(entry?.content || '');
+  const [analysis, setAnalysis] = useState(entry?.analysis || {});
   const [isSaving, setIsSaving] = useState(false);
   const [lastAnalyzedContentHash, setLastAnalyzedContentHash] = useState('');
 
@@ -112,7 +112,7 @@ const Editor = ({ entry }: { entry: Entry }) => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const savedContent = await fetchEntry(entry.id);
+        const savedContent = await fetchEntry(entry?.id || '');
         editorContentRef.current = savedContent.content;
       } catch (error) {
         console.error('Error fetching content:', error);
@@ -120,11 +120,15 @@ const Editor = ({ entry }: { entry: Entry }) => {
     };
 
     fetchContent();
-  }, [entry.id]);
+  }, [entry?.id]);
 
   useEffect(() => {
-    createHash(entry.content).then((hash) => setLastAnalyzedContentHash(hash));
-  }, [entry.content]);
+    if (entry) {
+      createHash(entry.content).then((hash) =>
+        setLastAnalyzedContentHash(hash)
+      );
+    }
+  }, [entry, entry?.content]);
 
   const handleEditorChange = (content: string) => {
     editorContentRef.current = content;
@@ -136,8 +140,10 @@ const Editor = ({ entry }: { entry: Entry }) => {
     if (contentHash !== lastAnalyzedContentHash) {
       setIsSaving(true); // Show saving spinner
       try {
-        const data = await updateEntry(entry.id, editorContentRef.current);
-        setAnalysis(data.analysis || {});
+        if (entry) {
+          const data = await updateEntry(entry.id, editorContentRef.current);
+          setAnalysis(data.analysis || {});
+        }
         setLastAnalyzedContentHash(contentHash); // Update the hash
       } catch (error) {
         console.error('Error saving entry:', error);
@@ -167,7 +173,9 @@ const Editor = ({ entry }: { entry: Entry }) => {
   const autosaveContent = async (content: any) => {
     try {
       // Call your API to update the content without triggering analysis
-      await updateEntry(entry.id, content);
+      if (entry) {
+        await updateEntry(entry.id, content);
+      }
       console.log('Content autosaved');
     } catch (error) {
       console.error('Error during autosave:', error);
@@ -213,17 +221,19 @@ const Editor = ({ entry }: { entry: Entry }) => {
       </div>
       <div className=" absolute left-28 top-20 p-2 flex  ">
         <DeleteEntryButton
-          Id={entry.id}
+          Id={entry ? entry.id : ''}
           onOpenDeleteModal={() =>
-            openDeleteJournalModal(entry.id, editorContentRef.current)
+            entry && openDeleteJournalModal(entry.id, editorContentRef.current)
           }
         />
         <DeleteEntryModal
           isOpen={isOpen}
           onClose={onClose}
-          id={entry.id}
+          id={entry ? entry.id : ''}
           onDelete={handleJournalDelete}
-          currentEntryId={Array.isArray(currentEntryId) ? currentEntryId[0] : currentEntryId}
+          currentEntryId={
+            Array.isArray(currentEntryId) ? currentEntryId[0] : currentEntryId
+          }
         />
       </div>
       <div className=" absolute left-10 top-20 p-2 flex  ">

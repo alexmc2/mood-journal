@@ -1,15 +1,10 @@
+import React from 'react';
 import ChatThemeProvider from '@/components/chat/theme-provider';
 import { Toaster } from '@/components/chat/ui/toaster';
-import { ReactNode } from 'react';
 
-
-interface ChatLayoutProps {
-  children: ReactNode;
-}
-
-export default function ChatLayout({ children }: ChatLayoutProps) {
+export default function ChatLayout({ children }: React.PropsWithChildren<{}>) {
   return (
-    <div className="flex flex-col h-full    ">
+    <div className="flex flex-col h-full">
       <ChatThemeProvider>
         <Toaster />
         {children}
