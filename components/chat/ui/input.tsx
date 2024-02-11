@@ -11,7 +11,7 @@ type InputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
 
 const Input = React.forwardRef<HTMLTextAreaElement, InputProps>(
   ({ className, value, onKeyDown, ...props }, ref) => {
-    const handleHeightChange = (height, { rowHeight }) => {
+    const handleHeightChange = (height: any, { rowHeight }: any) => {
       console.log(
         `Textarea height changed to ${height}, row height is ${rowHeight}`
       );
