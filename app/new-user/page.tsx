@@ -2,7 +2,7 @@ import { prisma } from '@/utils/db';
 import { auth, currentUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 export const dynamic = 'force-dynamic';
 
