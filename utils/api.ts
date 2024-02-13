@@ -39,18 +39,18 @@ export const updateEntry = async (id: string, content: string) => {
   }
 };
 
-// Update a journal entry
-export const updateAutosaveEntry = async (id: any, content: any) => {
-  try {
-    const response = await axios.patch(createURL(`/api/journal/${id}`), {
-      content,
-    });
-    return response.data.data;
-  } catch (error) {
-    console.error('Error in updateEntry:', error);
-    throw error;
-  }
-};
+// // Update a journal entry
+// export const updateAutosaveEntry = async (id: any, content: any) => {
+//   try {
+//     const response = await axios.patch(createURL(`/api/journal/${id}`), {
+//       content,
+//     });
+//     return response.data.data;
+//   } catch (error) {
+//     console.error('Error in updateEntry:', error);
+//     throw error;
+//   }
+// };
 
 // Create a new journal entry
 export const newEntry = async () => {
