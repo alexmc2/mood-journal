@@ -53,13 +53,6 @@ function sanitizeInput(input: string) {
   return sanitized;
 }
 
-
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-
-
-
-
 export const qa = async (chatId: any, newMessage: string, userId: string) => {
   try {
     const sanitizedMessage = sanitizeInput(newMessage);
@@ -178,7 +171,6 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       temperature: 0.6,
       verbose: true,
       streaming: true,
-      
     });
     const memory = new BufferMemory({
       returnMessages: true,

@@ -9,9 +9,7 @@ import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
-export const runtime = 'nodejs';
 
-export const dynamic = 'force-dynamic';
 
 
 export const DELETE = async (

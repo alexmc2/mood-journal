@@ -2,9 +2,7 @@ import { prisma } from '@/utils/db';
 import { getUserByClerkId } from '@/utils/auth';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const runtime = 'edge';
 
-export const dynamic = 'force-dynamic';
 
 export const GET = async (request: Request | NextRequest, { params }: any) => {
   const user = await getUserByClerkId();
