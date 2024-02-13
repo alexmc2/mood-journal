@@ -12,6 +12,7 @@ import { v4 as idGen } from 'uuid';
 import ScrollableFeed from 'react-scrollable-feed';
 import { useRouter } from 'next/navigation';
 import { ArrowDownIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { useChat } from 'ai/react';
 
 type MessageType = {
   id: string;
@@ -25,6 +26,7 @@ export default function ChatComponent({
 }: {
   initialChatId: string;
 }) {
+  
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);

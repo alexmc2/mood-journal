@@ -53,7 +53,10 @@ function sanitizeInput(input: string) {
   return sanitized;
 }
 
+
 export const runtime = 'edge';
+
+
 
 
 export const qa = async (chatId: any, newMessage: string, userId: string) => {

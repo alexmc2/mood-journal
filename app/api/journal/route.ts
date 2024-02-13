@@ -9,6 +9,9 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
 
+export const runtime = 'edge';
+
+export const dynamic = 'force-dynamic';
 
 export const POST = async () => {
   const user = await getUserByClerkId();

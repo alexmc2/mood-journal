@@ -11,6 +11,10 @@ import { client } from '@/utils/chatbot/supabaseClient';
 import { Document } from 'langchain/document';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
+
+export const runtime = 'edge';
+
+
 // API Route for handling chat messages
 export const POST = async (
   request: Request | NextRequest,

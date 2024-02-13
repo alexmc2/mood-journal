@@ -10,7 +10,7 @@ import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +31,9 @@ export const GET = async (request: Request | NextRequest, { params }: any) => {
           createdAt: 'asc',
         },
       },
+      
     },
+ 
   });
 
   if (!chat) {
@@ -113,6 +115,7 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
       isUser: false,
       createdAt: new Date(),
     },
+    
   });
 
   try {

@@ -9,6 +9,11 @@ import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
+export const runtime = 'edge';
+
+export const dynamic = 'force-dynamic';
+
+
 export const DELETE = async (
   request: Request | NextRequest,
   { params }: { params: any }
@@ -52,12 +57,16 @@ export const GET = async (request: Request | NextRequest, { params }: any) => {
     include: {
       analysis: true,
     },
+    cacheStrategy: { ttl: 60 },
   });
   console.log(entry);
   return NextResponse.json({ data: entry });
 };
 
-export const PATCH = async (request: Request | NextRequest, { params }: any) => {
+export const PATCH = async (
+  request: Request | NextRequest,
+  { params }: any
+) => {
   const { content } = await request.json();
   const user = await getUserByClerkId();
 

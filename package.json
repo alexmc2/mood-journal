@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "prisma generate"
+    "lint": "next lint"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.27.4",
@@ -20,7 +19,8 @@
     "@material-tailwind/react": "^2.1.7",
     "@nextui-org/react": "^2.2.9",
     "@planetscale/database": "^1.13.0",
-    "@prisma/client": "^5.8.1",
+    "@prisma/client": "^5.9.1",
+    "@prisma/extension-accelerate": "^0.6.3",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -94,7 +94,7 @@
     "@vitejs/plugin-react-swc": "^3.5.0",
     "daisyui": "^4.4.19",
     "jsdom": "^23.0.1",
-    "prisma": "^5.9.0",
+    "prisma": "^5.9.1",
     "supabase": "1.127.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
