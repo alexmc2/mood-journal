@@ -1,14 +1,14 @@
-
-
-import axios from 'axios';
-
 const createURL = (path: string) => `${window.location.origin}${path}`;
 
 // Fetch a journal entry
 export const fetchEntry = async (id: string) => {
   try {
-    const response = await axios.get(createURL(`/api/journal/${id}`));
-    return response.data.data;
+    const response = await fetch(createURL(`/api/journal/${id}`));
+    if (!response.ok) {
+      throw new Error('Failed to fetch journal entry');
+    }
+    const data = await response.json();
+    return data.data;
   } catch (error) {
     console.error('Error in fetchEntry:', error);
     throw error;
@@ -18,8 +18,14 @@ export const fetchEntry = async (id: string) => {
 // Delete a journal entry
 export const deleteEntry = async (id: string) => {
   try {
-    const response = await axios.delete(createURL(`/api/journal/${id}`));
-    return response.data;
+    const response = await fetch(createURL(`/api/journal/${id}`), {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete journal entry');
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error in deleteEntry:', error);
     throw error;
@@ -29,10 +35,18 @@ export const deleteEntry = async (id: string) => {
 // Update a journal entry
 export const updateEntry = async (id: string, content: string) => {
   try {
-    const response = await axios.patch(createURL(`/api/journal/${id}`), {
-      content,
+    const response = await fetch(createURL(`/api/journal/${id}`), {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content }),
     });
-    return response.data.data;
+    if (!response.ok) {
+      throw new Error('Failed to update journal entry');
+    }
+    const data = await response.json();
+    return data.data;
   } catch (error) {
     console.error('Error in updateEntry:', error);
     throw error;
@@ -55,8 +69,14 @@ export const updateEntry = async (id: string, content: string) => {
 // Create a new journal entry
 export const newEntry = async () => {
   try {
-    const response = await axios.post(createURL('/api/journal'));
-    return response.data.data;
+    const response = await fetch(createURL('/api/journal'), {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to create new journal entry');
+    }
+    const data = await response.json();
+    return data.data;
   } catch (error) {
     console.error('Error in newEntry:', error);
     throw error;
@@ -66,8 +86,12 @@ export const newEntry = async () => {
 // Fetch all chats
 export const fetchAllChats = async () => {
   try {
-    const response = await axios.get(createURL('/api/chat'));
-    return response.data.chats;
+    const response = await fetch(createURL('/api/chat'));
+    if (!response.ok) {
+      throw new Error('Failed to fetch all chats');
+    }
+    const data = await response.json();
+    return data.chats;
   } catch (error) {
     console.error('Error in fetchAllChats:', error);
     throw error;
@@ -77,8 +101,12 @@ export const fetchAllChats = async () => {
 // Fetch a specific chat by ID
 export const fetchChat = async (chatId: any) => {
   try {
-    const response = await axios.get(createURL(`/api/chat/${chatId}`));
-    return response.data.data;
+    const response = await fetch(createURL(`/api/chat/${chatId}`));
+    if (!response.ok) {
+      throw new Error('Failed to fetch chat');
+    }
+    const data = await response.json();
+    return data.data;
   } catch (error) {
     console.error('Error in fetchChat:', error);
     throw error;
@@ -88,10 +116,18 @@ export const fetchChat = async (chatId: any) => {
 // Post a new message to a specific chat
 export const postMessageToChat = async (chatId: any, newMessage: any) => {
   try {
-    const response = await axios.post(createURL(`/api/chat/${chatId}`), {
-      newMessage,
+    const response = await fetch(createURL(`/api/chat/${chatId}`), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ newMessage }),
     });
-    return response.data;
+    if (!response.ok) {
+      throw new Error('Failed to post message to chat');
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error in postMessageToChat:', error);
     throw error;
@@ -101,22 +137,34 @@ export const postMessageToChat = async (chatId: any, newMessage: any) => {
 // Create a new chat
 export const newChat = async (chatId: any, newMessage: any) => {
   try {
-    const response = await axios.post(createURL('/api/chat/'), {
-      chatId,
-      newMessage,
+    const response = await fetch(createURL('/api/chat'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ chatId, newMessage }),
     });
-    return response.data;
+    if (!response.ok) {
+      throw new Error('Failed to create new chat');
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error in newChat:', error);
     throw error;
   }
 };
-
 // Delete a specific chat
 export const deleteChat = async (chatId: string) => {
   try {
-    const response = await axios.delete(createURL(`/api/chat/${chatId}`));
-    return response.data;
+    const response = await fetch(createURL(`/api/chat/${chatId}`), {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete chat');
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error in deleteChat:', error);
     throw error;

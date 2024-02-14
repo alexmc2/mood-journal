@@ -39,7 +39,7 @@
     "@types/tinymce": "^4.6.9",
     "ai": "^2.2.31",
     "autoprefixer": "^10.4.16",
-    "aws-amplify": "^6.0.16",
+
     "axios": "^1.6.3",
     "babel-polyfill": "^6.26.0",
     "bcrypt": "^5.1.1",
@@ -85,8 +85,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@aws-amplify/backend": "^0.12.1",
-    "@aws-amplify/backend-cli": "^0.11.1",
+
     "@tailwindcss/typography": "^0.5.10",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
@@ -96,8 +95,7 @@
     "@types/react-syntax-highlighter": "^15.5.11",
     "@types/uuid": "^9.0.7",
     "@vitejs/plugin-react-swc": "^3.5.0",
-    "aws-cdk": "^2.127.0",
-    "aws-cdk-lib": "^2.127.0",
+
     "constructs": "^10.3.0",
     "daisyui": "^4.4.19",
     "jsdom": "^23.0.1",
