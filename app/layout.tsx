@@ -33,6 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
+  
       <html lang="en">
         {/* suppressHydrationWarning: https://github.com/vercel/next.js/issues/44343 */}
         <body

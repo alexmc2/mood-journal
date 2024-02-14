@@ -1,10 +1,9 @@
 import { auth } from '@clerk/nextjs';
 import Link from 'next/link';
 
-
 export default async function Home() {
   const { userId } = await auth();
- let href = userId ? '/journal' : '/new-user';
+  let href = userId ? '/journal' : '/new-user';
 
   return (
     <div className="min-h-screen overflow-x-hidden overflow-y-hidden flex flex-col justify-between items-center">
@@ -32,8 +31,6 @@ export default async function Home() {
                   Get Started
                 </button>
               </Link>
-
-            
             </div>
           </div>
         </div>
