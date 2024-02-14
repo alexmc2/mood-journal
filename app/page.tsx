@@ -33,13 +33,7 @@ export default async function Home() {
                 </button>
               </Link>
 
-              {/* <Link
-                href={href}
-                className="flex content-center gap-2 px-4 py-2 font-semibold text-white transition-colors duration-200 rounded-lg bg-primary-600 hover:bg-primary-700"
-              >
-                Get Started
-                <div className="m-auto"></div>
-              </Link> */}
+            
             </div>
           </div>
         </div>
