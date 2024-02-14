@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { useOrganization, useSession, useUser } from '@clerk/nextjs';
@@ -124,8 +125,7 @@ export function JournalLinks() {
 }
 
 export function ChatLinks() {
-  const { isLoaded, organization } = useOrganization();
-  const [jsonOutput, setJsonOutput] = useState(false);
+
 
 
 
