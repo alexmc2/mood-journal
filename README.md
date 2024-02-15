@@ -8,9 +8,13 @@ Mood Journal is a web application designed to help users track their emotional w
 ## Features
 - **Journal Entries**: Users can create and manage journal entries to track their mood and thoughts. 
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707957369/Screenshot_from_2024-02-15_00-35-11_pg6ffr.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009292/Screenshot_from_2024-02-15_15-01-19_pvfykk.png)
+
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707957964/Screenshot_from_2024-02-15_00-45-32_tdruzl.png)
+
+
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009038/Screenshot_from_2024-02-15_14-56-52_cul0ix.png)
 
 
 
@@ -18,7 +22,13 @@ Mood Journal is a web application designed to help users track their emotional w
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707959899/Screenshot_from_2024-02-15_01-17-43_vjic9t.png)
 
+
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707960558/Screenshot_from_2024-02-15_01-27-58_vrjxyt.png)
+
+
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707962042/Screenshot_from_2024-02-15_01-52-06_hvrmu4.png)
+
+
 
 
 - **Mood Insights**: Analyze mood patterns over time with visual charts and summaries.

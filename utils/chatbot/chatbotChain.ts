@@ -47,8 +47,7 @@ function sanitizeInput(input: string) {
   // Escape template literals by replacing `$` with `\$`
   const sanitized = input.replace(/\$\{/g, '\\${');
 
-  // Add more sanitization rules as needed, e.g., escaping HTML tags, etc.
-  // Example: .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+ 
 
   return sanitized;
 }
@@ -190,7 +189,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       // Instruction to the AI on how to approach the conversation
       [
         'system',
-        "Adopt the position of a wise and empathic friend and respond directly to the user's latest message. Offer relevant and practical insights or guidance based on the content and flow of the chat. AI has access to historical chats and relevant journal entries and these can be used to provide background information. Only bring these up if they are relevant to current chat, no matter what! Compliment the user when appropriate.",
+        "Adopt the position of a wise and empathic friend and respond directly to the user's latest message. Offer relevant and practical insights or guidance based on the content and flow of the chat. AI has access to historical chats and relevant journal entries and these can be used to provide background information. Only bring these up if they are relevant to current chat, no matter what! Encourage the user when it is appropriate.",
       ],
 
       // Placeholder for dynamically including the conversation history
