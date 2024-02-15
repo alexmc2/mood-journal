@@ -19,7 +19,6 @@
     "@lexical/react": "^0.12.5",
     "@material-tailwind/react": "^2.1.7",
     "@nextui-org/react": "^2.2.9",
-    "@planetscale/database": "^1.13.0",
     "@prisma/client": "^5.9.1",
     "@prisma/extension-accelerate": "^0.6.3",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -39,7 +38,6 @@
     "@types/tinymce": "^4.6.9",
     "ai": "^2.2.31",
     "autoprefixer": "^10.4.16",
-
     "axios": "^1.6.3",
     "babel-polyfill": "^6.26.0",
     "bcrypt": "^5.1.1",
@@ -95,7 +93,6 @@
     "@types/react-syntax-highlighter": "^15.5.11",
     "@types/uuid": "^9.0.7",
     "@vitejs/plugin-react-swc": "^3.5.0",
-
     "constructs": "^10.3.0",
     "daisyui": "^4.4.19",
     "jsdom": "^23.0.1",

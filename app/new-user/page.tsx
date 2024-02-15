@@ -50,3 +50,6 @@ const NewUser = async () => {
 };
 
 export default NewUser;
+
+
+
