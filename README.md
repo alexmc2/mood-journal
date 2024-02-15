@@ -15,13 +15,6 @@ Mood Journal is a web application designed to help users track their emotional w
 - **Frontend**: Next.js, Tailwind CSS
 - **Backend**: Supabase, Prisma
 - **AI & Chatbot**: LangChain, OpenAI
-- **Other Libraries**: React, Heroicons, Headless UI
 
-## Installation & Getting Started
 
-To set up the Mood Journal app locally, follow these steps:
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/alexmc2/mood-journal.git
-   cd mood-journal
