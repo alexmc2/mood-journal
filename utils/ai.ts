@@ -123,14 +123,14 @@ export const chatSummary = async (chatContent: string) => {
   }
 
   const input = await getChatSummaryPrompt(chatContent);
-  const model = new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo' });
+  const model = new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo-0125' });
   const output = await model.call(input);
 
   try {
     return chatParser.parse(output);
   } catch (e) {
     const fixParser = OutputFixingParser.fromLLM(
-      new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' }),
+      new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo-0125' }),
       chatParser
     );
     const fix = await fixParser.parse(output);
