@@ -54,11 +54,26 @@ The initial chatbot version faced issues with memory and token limits, causing c
 
 
 
-
 ## Tech Stack
-- **Frontend**: Next.js, Tailwind CSS
-- **Backend**: Supabase, Prisma
-- **AI & Chatbot**: LangChain, OpenAI
+
+- **Frontend**: 
+
+![Next.js](https://img.shields.io/badge/-Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/-Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+
+- **Backend**: 
+
+![Supabase](https://img.shields.io/badge/-Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Prisma](https://img.shields.io/badge/-Prisma-3982CE?style=for-the-badge&logo=prisma&logoColor=white)
+
+
+- **AI & Chatbot**: 
+
+![LangChain](https://img.shields.io/badge/-LangChain-FFA500?style=for-the-badge&logo=langchain&logoColor=white)
+![OpenAI](https://img.shields.io/badge/-OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
+
+
 
 
 
