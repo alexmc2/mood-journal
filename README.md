@@ -3,10 +3,11 @@
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707955351/Screenshot_from_2024-02-14_13-35-29_qi7i4u.png)
 
 ## Overview
-Mood Journal is a web application designed to help users track their emotional well-being through journaling. It features an OpenAI and Langchain-powered chatbot that interacts with users, providing insights based on their journal entries and previous conversations.
+Mood Journal is a web application designed to help users track their emotional well-being through journaling. It features a Langchain-powered chatbot that interacts with users, providing insights based on their journal entries and previous conversations.
 
 ## Features
-- **Journal Entries**: Users can create and manage journal entries to track their mood and thoughts. 
+
+- **Journal Entries**: Users can create and manage journal entries to track their mood and thoughts. The application integrates TinyMCE as the rich text editor, offering enhanced formatting options for a better journaling experience.
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009292/Screenshot_from_2024-02-15_15-01-19_pvfykk.png)
 
@@ -20,22 +21,36 @@ Mood Journal is a web application designed to help users track their emotional w
 
 - **AI Chatbot**: An AI-powered chatbot offers personalised interactions, using users' journals and chat history for context-aware responses.
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707959899/Screenshot_from_2024-02-15_01-17-43_vjic9t.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009633/Screenshot_from_2024-02-15_15-06-39_k60ji9.png)
 
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707960558/Screenshot_from_2024-02-15_01-27-58_vrjxyt.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009828/Screenshot_from_2024-02-15_15-09-54_xakevr.png)
 
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707962042/Screenshot_from_2024-02-15_01-52-06_hvrmu4.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708010037/Screenshot_from_2024-02-15_15-13-15_l0m0x7.png)
 
 
 
 
 - **Mood Insights**: Analyze mood patterns over time with visual charts and summaries.
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707960834/Screenshot_from_2024-02-15_01-33-37_ytdafo.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708010194/Screenshot_from_2024-02-15_15-16-15_tddiuf.png)
+
 
 - **Authentication**: Utilises Clerk for user authentication.
+
+
+## Chatbot Implementation Overview
+
+The Mood Journal app includes an AI chatbot that interacts with users by providing insights based on their journal entries and chat history. This README section outlines the development of the chatbot, focusing on the challenges encountered and the solutions implemented.
+
+**LangChain Integration**: The biggest challenge was integrating LangChain for personalized chat experiences, especially managing user-specific chat history in a serverless environment like Next.js. LangChain's documentation mainly covers local chat memory persistence, which isn't directly applicable to serverless architectures. Due to limited examples of LangChain memory in production, developing a functional chat memory solution required navigating through a significant learning curve.
+
+The initial chatbot version faced issues with memory and token limits, causing crashes. Gaining access to LangSmith was a turning point, providing the tools needed to overcome LangChain's complexities. After testing various configurations, a relatively simple runnable chain using LangChain Expression Language (LCEL) was chosen. This approach balances the need for rich context against the limitations of token limits and API response times.
+
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708043195/Screenshot_from_2024-02-16_00-26-16_vgjwfu.png)
+
+**Database** The app uses Supabase with the Pgvector extension for data storage. It stores vector representations of chat messages and journal entries using OpenAI embeddings. This setup ensures the chatbot can access relevant historical data for meaningful interactions. Recent chat history is retrieved as text from the database and used by LangChain's buffer memory to maintain continuity in ongoing chats.
 
 
 

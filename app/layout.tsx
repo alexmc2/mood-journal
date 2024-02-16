@@ -7,8 +7,7 @@ import Theme from './theme-provider';
 import AppProvider from './app-provider';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Providers } from './providers';
-import CustomEditor from '../components/CustomEditor';
-import ChatThemeProvider from '@/components/chat/theme-provider';
+import { Analytics } from '@vercel/analytics/react';
 import { Roboto } from 'next/font/google';
 
 const inter = Inter({
@@ -33,7 +32,6 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-  
       <html lang="en">
         {/* suppressHydrationWarning: https://github.com/vercel/next.js/issues/44343 */}
         <body
@@ -41,7 +39,9 @@ export default function RootLayout({
         >
           <Theme>
             <AppProvider>
-              <Providers>{children}</Providers>
+              <Providers>
+                {children} <Analytics />
+              </Providers>
             </AppProvider>
           </Theme>
         </body>

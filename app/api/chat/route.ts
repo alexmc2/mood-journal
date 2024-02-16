@@ -14,6 +14,7 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 
 
+
 // API Route for handling chat messages
 export const POST = async (
   request: Request | NextRequest,

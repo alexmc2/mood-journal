@@ -36,6 +36,7 @@
     "@types/react-dom": "18.2.17",
     "@types/react-flatpickr": "^3.8.11",
     "@types/tinymce": "^4.6.9",
+    "@vercel/analytics": "^1.1.4",
     "ai": "^2.2.31",
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.3",
@@ -83,7 +84,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-
     "@tailwindcss/typography": "^0.5.10",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
