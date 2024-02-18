@@ -2,7 +2,7 @@
 
 import { chatSummary } from '@/utils/ai';
 import { qa } from '@/utils/chatbot/chatbotChain';
-import { getUserByClerkId } from '@/utils/chatbot/auth';
+import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server';
 import { OpenAIEmbeddings } from '@langchain/openai';

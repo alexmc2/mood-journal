@@ -1,7 +1,7 @@
 import React from 'react';
 import Editor from '@/components/Editor';
 
-import { getUserByClerkId } from '@/utils/chatbot/auth';
+import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 
 const getEntry = async (id: string) => {

@@ -1,4 +1,4 @@
-import { getUserByClerkId } from '@/utils/chatbot/auth';
+import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
