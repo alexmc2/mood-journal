@@ -27,6 +27,7 @@ model User {
   chatSessions ChatSession[]
   messages Message[]
   documents documents[]
+   magicTokens MagicToken[]
 }
 
 model JournalEntry {
@@ -138,4 +139,16 @@ model documents {
   @@index([userId])
   @@index([journalEntryId])
   @@index([chatId])
+}
+
+
+model MagicToken {
+  id         String    @id @default(uuid())
+  user_id    String
+  token      String    @unique
+  expires_at DateTime
+
+  user       User      @relation(fields: [user_id], references: [id])
+ 
+  @@map("magic_tokens")
 }

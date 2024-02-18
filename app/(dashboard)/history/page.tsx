@@ -1,5 +1,5 @@
 import HistoryChart from '@/components/HistoryChart';
-import { getUserByClerkId } from '@/utils/auth';
+import { getUserByClerkId } from '@/utils/chatbot/auth';
 import { prisma } from '@/utils/db';
 
 const getData = async () => {
@@ -21,12 +21,10 @@ const getData = async () => {
           analyses.reduce((acc, curr) => acc + curr.sentimentScore, 0) /
             analyses.length
         )
-      : 0; // Return 0 or another default value 
+      : 0; // Return 0 or another default value
 
   return { analyses, average };
 };
-
-
 
 const History = async () => {
   const { average, analyses } = await getData();

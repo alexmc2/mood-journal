@@ -1,5 +1,5 @@
 import { analyse } from '@/utils/ai';
-import { getUserByClerkId } from '@/utils/auth';
+import { getUserByClerkId } from '@/utils/chatbot/auth';
 import { prisma } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server';
 import { createHash } from 'crypto';
@@ -8,9 +8,6 @@ import { generateEmbedding } from '@/utils/chatbot/embeddings';
 import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
-
-
-
 
 export const DELETE = async (
   request: Request | NextRequest,
@@ -55,7 +52,6 @@ export const GET = async (request: Request | NextRequest, { params }: any) => {
     include: {
       analysis: true,
     },
-
   });
   console.log(entry);
   return NextResponse.json({ data: entry });

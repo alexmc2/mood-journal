@@ -1,32 +1,19 @@
-import { StringOutputParser } from '@langchain/core/output_parsers';
 // Chatbot version that uses a chain of runnables to process the question and return an answer.
 
+import { StringOutputParser } from '@langchain/core/output_parsers';
 import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
 import { HumanMessage, AIMessage, BaseMessage } from '@langchain/core/messages';
-
-import { formatDocumentsAsString } from 'langchain/util/document';
-import { Document } from '@langchain/core/documents';
-
 import { RunnableSequence } from '@langchain/core/runnables';
-
 import { SupabaseVectorStore } from '@langchain/community/vectorstores/supabase';
-
 import { createClient } from '@supabase/supabase-js';
-import { SupabaseHybridSearch } from '@langchain/community/retrievers/supabase';
-
 import { Client } from 'langsmith';
 import { LangChainTracer } from 'langchain/callbacks';
-
 import {
   ChatPromptTemplate,
-  HumanMessagePromptTemplate,
   MessagesPlaceholder,
-  PromptTemplate,
 } from '@langchain/core/prompts';
-
 import {
   BufferMemory,
-  ConversationSummaryBufferMemory,
 } from 'langchain/memory';
 
 const privateKey = process.env.SUPABASE_PRIVATE_KEY;
@@ -46,8 +33,6 @@ const tracer = new LangChainTracer({
 function sanitizeInput(input: string) {
   // Escape template literals by replacing `$` with `\$`
   const sanitized = input.replace(/\$\{/g, '\\${');
-
- 
 
   return sanitized;
 }
@@ -112,8 +97,6 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       metadataFilter2 || metadataFilter3
     );
 
-   
-
     const formattedrelevantPastChats = relevantPastChats
       .map(
         (doc) =>
@@ -152,14 +135,13 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
       return messageInstances;
     };
-    
 
     const chatHistory = await fetchChatHistory(userId, chatId);
     console.log('chatHistory', chatHistory);
 
     const chatHistoryString = (chatHistory ?? [])
       .map((message) => {
-        // Check the constructor name of the message object
+     
         const label =
           message.constructor.name === 'HumanMessage' ? 'Human' : 'AI';
         return `${label}: ${message.content}`;

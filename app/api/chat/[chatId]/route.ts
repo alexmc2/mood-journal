@@ -1,7 +1,7 @@
 // api/chat/[chatId]/route.ts
 
 import { qa } from '@/utils/chatbot/chatbotChain';
-import { getUserByClerkId } from '@/utils/auth';
+import { getUserByClerkId } from '@/utils/chatbot/auth';
 import { prisma } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server';
 import { generateEmbedding } from '@/utils/chatbot/embeddings';
@@ -9,8 +9,6 @@ import { createClient } from '@supabase/supabase-js';
 import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
-
-
 
 export const GET = async (request: Request | NextRequest, { params }: any) => {
   console.log('Params:', params);
@@ -29,9 +27,7 @@ export const GET = async (request: Request | NextRequest, { params }: any) => {
           createdAt: 'asc',
         },
       },
-      
     },
- 
   });
 
   if (!chat) {
@@ -113,7 +109,6 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
       isUser: false,
       createdAt: new Date(),
     },
-    
   });
 
   try {

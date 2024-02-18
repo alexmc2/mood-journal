@@ -4,7 +4,6 @@ import tailwindConfigFile from '@/tailwind.config.js';
 import { twMerge } from 'tailwind-merge';
 import { type ClassValue, clsx } from 'clsx';
 
-// import { Configuration, OpenAIApi } from 'openai';
 import { NextResponse } from 'next/server';
 import ServerError, { JWTPayload } from './types';
 import { verify } from 'jsonwebtoken';
@@ -12,13 +11,6 @@ import { verify } from 'jsonwebtoken';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-// export function getOpenAIApiInstance(apiKey: string) {
-//   const configuration = new Configuration({
-//     apiKey,
-//   });
-//   return new OpenAIApi(configuration);
-// }
 
 export function errorHandler(err: unknown) {
   if (err instanceof ServerError) {
@@ -42,8 +34,6 @@ export function errorHandler(err: unknown) {
 export function decryptToken(token: string, secret: string) {
   return <JWTPayload>verify(token, secret);
 }
-
-
 
 export type CodeMessage = {
   language: string;
@@ -83,14 +73,12 @@ export function parseCode(str: string) {
   };
 }
 
-
 export const tailwindConfig = resolveConfig(tailwindConfigFile) as any;
 
 export const getBreakpointValue = (value: string): number => {
   const screenValue = tailwindConfig.theme.screens[value];
   return +screenValue.slice(0, screenValue.indexOf('px'));
 };
-
 
 // Code for expandable sidebar
 export const getBreakpoint = () => {

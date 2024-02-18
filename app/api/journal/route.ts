@@ -1,4 +1,4 @@
-import { getUserByClerkId } from '@/utils/auth';
+import { getUserByClerkId } from '@/utils/chatbot/auth';
 import { prisma } from '@/utils/db';
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
@@ -7,7 +7,6 @@ import { generateEmbedding } from '@/utils/chatbot/embeddings';
 import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
-
 
 export const POST = async () => {
   const user = await getUserByClerkId();
@@ -31,9 +30,10 @@ export const POST = async () => {
       new Document({ pageContent: entry.content }),
     ]);
 
-     for (const doc of splitDocs) {
-      try { // Process each chunk
-  
+    for (const doc of splitDocs) {
+      try {
+        // Process each chunk
+
         const embedding = await generateEmbedding(doc.pageContent);
         const metadata = {
           journalEntryId: entry.id,

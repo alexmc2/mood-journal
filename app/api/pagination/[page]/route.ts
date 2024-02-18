@@ -1,8 +1,6 @@
 import { prisma } from '@/utils/db';
-import { getUserByClerkId } from '@/utils/auth';
+import { getUserByClerkId } from '@/utils/chatbot/auth';
 import { NextRequest, NextResponse } from 'next/server';
-
-
 
 export const GET = async (request: Request | NextRequest, { params }: any) => {
   const user = await getUserByClerkId();

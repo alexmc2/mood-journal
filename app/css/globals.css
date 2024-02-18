@@ -89,3 +89,11 @@ html {
 html, body {
     font-family: var(--font), sans-serif;
 }
+
+
+.user-button-wrapper {
+  /* Scale up the button */
+  transform: scale(1.5);
+  /* Ensure the transform doesn't cut off */
+  display: inline-block;
+}

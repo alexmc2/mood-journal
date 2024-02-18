@@ -11,10 +11,6 @@ import { SupabaseHybridSearch } from '@langchain/community/retrievers/supabase';
 
 import { Client } from 'langsmith';
 import { LangChainTracer } from 'langchain/callbacks';
-import {
-  ConversationSummaryBufferMemory,
-  VectorStoreRetrieverMemory,
-} from 'langchain/memory';
 
 import {
   PromptTemplate,
@@ -26,7 +22,6 @@ import { AgentExecutor, type AgentStep } from 'langchain/agents';
 
 import { formatToOpenAIFunctionMessages } from 'langchain/agents/format_scratchpad';
 import { OpenAIFunctionsAgentOutputParser } from 'langchain/agents/openai/output_parser';
-
 
 import { DynamicTool, Tool } from '@langchain/core/tools';
 import { convertToOpenAIFunction } from '@langchain/core/utils/function_calling';
@@ -46,7 +41,16 @@ const tracer = new LangChainTracer({
   client: langsmithClient,
 });
 
-export const qa = async (chatId: any, newMessage: { newMessage: number | Partial<VectorStoreRetrieverInput<SupabaseVectorStore>> | undefined; }, userId: any) => {
+export const qa = async (
+  chatId: any,
+  newMessage: {
+    newMessage:
+      | number
+      | Partial<VectorStoreRetrieverInput<SupabaseVectorStore>>
+      | undefined;
+  },
+  userId: any
+) => {
   try {
     //context
     const metadataFilter = {
@@ -134,53 +138,54 @@ export const qa = async (chatId: any, newMessage: { newMessage: number | Partial
 
     const tools = [retrieverTool];
 
-    //     const chatPrompt = ChatPromptTemplate.fromTemplate(
-    //       `Assistant is designed to offer support and understanding, providing a safe space for sharing feelings and thoughts. Adopt the position of a wise and empathic friend but avoid role-playing or creating fictional scenarios. Using the information provided in the previous conversations and relevant documents, respond to the user in a friendly, kind and familiar way. Offer relevant, and practical insights or guidance. Be friendly, ask questions and be interested in the user. Compliment the user when it is appropriate.
+    const chatPrompt = ChatPromptTemplate.fromTemplate(
+      `Assistant is designed to offer support and understanding, providing a safe space for sharing feelings and thoughts. Adopt the position of a wise and empathic friend but avoid role-playing or creating fictional scenarios. Using the information provided in the previous conversations and relevant documents, respond to the user in a friendly, kind and familiar way. Offer relevant, and practical insights or guidance. Be friendly, ask questions and be interested in the user. Compliment the user when it is appropriate.
 
-    // Assistant leverages its capabilities to engage in meaningful conversations, drawing upon a wide range of knowledge to offer insights and suggestions. It's constantly learning from interactions to improve its ability to assist effectively.
+    Assistant leverages its capabilities to engage in meaningful conversations, drawing upon a wide range of knowledge to offer insights and suggestions. It's constantly learning from interactions to improve its ability to assist effectively.
 
-    // In this conversation, Assistant will:
-    // - Listen attentively to what's shared.
-    // - Offer empathy and understanding.
-    // - Provide supportive feedback and suggestions based on the conversation.
-    // - Encourage reflection and self-awareness.
+    In this conversation, Assistant will:
+    - Listen attentively to what's shared.
+    - Offer empathy and understanding.
+    - Provide supportive feedback and suggestions based on the conversation.
+    - Encourage reflection and self-awareness.
 
-    // TOOL USAGE:
-    // -----------
-    // Assistant has access to the following tools that can provide additonal context and information, in the form of historical chat messages and journals. These tools can be used to provide more accurate and relevant responses to the user's needs. You should access these tools frequently to provide the best possible support to the user.
+    TOOL USAGE:
+    -----------
+    Assistant has access to the following tools that can provide additonal context and information, in the form of historical chat messages and journals. These tools can be used to provide more accurate and relevant responses to the user's needs. You should access these tools frequently to provide the best possible support to the user.
 
-    // {tools}
-    // Thought: Do I need to use a tool? Yes/No
-    // Action: Respond to the user based on the additional context provided by the tool.
-    // Action Input: [Input for the action]
-    // Observation: [Result of the action]
+    {tools}
+    Thought: Do I need to use a tool? Yes/No
+    Action: Respond to the user based on the additional context provided by the tool.
+    Action Input: [Input for the action]
+    Observation: [Result of the action]
 
-    // When directly responding to the human without tool usage, use:
-    // Thought: Do I need to use a tool? No
-    // Final Answer: [Your empathetic and supportive response]
+    When directly responding to the human without tool usage, use:
+    Thought: Do I need to use a tool? No
+    Final Answer: [Your empathetic and supportive response]
 
-    // CONVERSATION FLOW:
-    // ------------------
-    // Adopt the position of a wise and empathic friend but avoid role-playing or creating fictional scenarios. The conversation should flow naturally, with Assistant considering the emotional context and the user's needs.
+    CONVERSATION FLOW:
+    ------------------
+    Adopt the position of a wise and empathic friend but avoid role-playing or creating fictional scenarios. The conversation should flow naturally, with Assistant considering the emotional context and the user's needs.
 
-    // Previous conversation history:
-    // {chatHistory}
+    Previous conversation history:
+    {chatHistory}
 
-    // New input: {newMessage}
-    // {agent_scratchpad}`
-    //     );
+    New input: {newMessage}
+    {agent_scratchpad}`
+    );
 
-    const chatPrompt = ChatPromptTemplate.fromMessages([
-      [
-        'system',
-        'You are very powerful assistant, and a friend to the user. You have access to {tools} and {chatHistory}.',
-      ],
-      ['human', '{newMessage}'],
+    //Simple chat prompt
 
-      new MessagesPlaceholder('agent_scratchpad'),
-    ]);
+    // const chatPrompt = ChatPromptTemplate.fromMessages([
+    //   [
+    //     'system',
+    //     'You are very powerful assistant, and a friend to the user. You have access to {tools} and {chatHistory}.',
+    //   ],
+    //   ['human', '{newMessage}'],
 
-    // Since we're adjusting to use only GPT-3.5-turbo, we'll use it for both operations
+    //   new MessagesPlaceholder('agent_scratchpad'),
+    // ]);
+
     const chatModel = new ChatOpenAI({
       modelName: 'gpt-3.5-turbo-1106',
       temperature: 0.6,
@@ -237,10 +242,6 @@ export const qa = async (chatId: any, newMessage: { newMessage: number | Partial
       verbose: true,
       handleParsingErrors: async (error: any, context: any) => {
         console.log('Caught parsing error:', error);
-        // Modify the context.input here based on the error
-        // For example, if the error is due to an invalid date format, you can correct it
-        // context.input = correctDateFormat(context.input);
-        // Then rerun the executor with the corrected input
         const result = await response.invoke(context);
         return result;
       },

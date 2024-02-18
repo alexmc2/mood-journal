@@ -35,7 +35,10 @@
     "postcss.config.js",
     "components/CustomEditor.tsx",
     "utils/chatbot/embeddings.ts",
-    "embeddings.js"
+    "embeddings.js",
+    "app/api/auth/requestMagicLink/route.js",
+    "app/api/auth/verification/route.js",
+    "utils/database.js"
   ],
   "exclude": ["node_modules"]
 }

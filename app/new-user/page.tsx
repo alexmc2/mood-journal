@@ -38,8 +38,7 @@ const createNewUser = async () => {
     console.log('No user found, redirecting to /journal.');
   }
 
-  redirect('/journal');
-
+  redirect('/home');
 };
 
 const NewUser = async () => {
@@ -50,6 +49,3 @@ const NewUser = async () => {
 };
 
 export default NewUser;
-
-
-
