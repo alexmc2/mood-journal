@@ -39,6 +39,6 @@
     "app/api/auth/requestMagicLink/route.js",
     "app/api/auth/verification/route.js",
     "utils/database.js"
-  ],
+, "utils/chatbot/deleteChats.js"  ],
   "exclude": ["node_modules"]
 }

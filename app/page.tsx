@@ -4,7 +4,6 @@
 // import Link from 'next/link';
 // import { useRouter } from 'next/navigation';
 
-
 // export default function Home() {
 //   const [email, setEmail] = useState('');
 //   const [message, setMessage] = useState('');
@@ -91,7 +90,6 @@
 //   );
 // }
 
-
 import { auth } from '@clerk/nextjs';
 import Link from 'next/link';
 
@@ -114,17 +112,19 @@ export default async function Home() {
           />
         </video>
         <div className="relative z-10 text-white sm:px-2 md:px-3 px-4 text-center sm:max-w-screen-md max-w-screen-sm font-bold flex flex-col items-center">
-          <div className="w-full max-w-[900px] px-10 mx-auto sm:text-center md:text-left">
-            <h1 className="text-5xl md:text-6xl mb-8 text-white">
-              MOOD JOURNAL
-            </h1>
-            <p className="text-4xl text-white/90 mb-8">Track your mood</p>
-            <div>
-              <Link href={href}>
-                <button className="bg-blue-500 px-4 py-2 btn-info text-white btn btn-lg md:btn-lg lg:btn-lg border-none text-xl ">
-                 Login
-                </button>
-              </Link>
+          <div className="w-full max-w-[900px]  px-2 card bg-black/50 ">
+            <div className="card-body">
+              <h1 className="text-3xl md:text-5xl pb-4  text-white">
+                MOOD JOURNAL
+              </h1>
+              {/* <p className="md:text-4xl text-3xl text-white/90 mb-8">Track your mood</p> */}
+              <div>
+                <Link href={href}>
+                  <button className="bg-blue-500 px-4  btn-info text-white btn btn-wide border-none text-xl ">
+                    Enter
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

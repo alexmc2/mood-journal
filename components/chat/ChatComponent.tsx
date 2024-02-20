@@ -26,7 +26,6 @@ export default function ChatComponent({
 }: {
   initialChatId: string;
 }) {
-  
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -203,7 +202,7 @@ export default function ChatComponent({
             <div ref={bottomRef} />
           </div>
         </ScrollableFeed>
-        <div className="chat-input-container relative xl:w-[50%] w-[80%]  sm:max-w-[900px] max-w-[1200px] mx-auto mt-auto mb-16 pb-6">
+        <div className="chat-input-container relative xl:w-[50%] w-[80%]  sm:max-w-[900px] max-w-[1200px] mx-auto mt-auto md:mb-16 md:pb-6 mb-16 pb-12">
           {/* Textarea and button wrapper */}
           <div className="textarea-button-wrapper relative">
             <Input

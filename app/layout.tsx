@@ -11,8 +11,9 @@ import { Analytics } from '@vercel/analytics/react';
 import { Roboto } from 'next/font/google';
 
 const inter = Inter({
-  weight: '400',
   subsets: ['latin'],
+  display: 'swap',
+  adjustFontFallback: false,
 });
 
 const roboto = Roboto({

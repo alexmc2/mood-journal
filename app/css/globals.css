@@ -6,51 +6,52 @@
 @import './utility-patterns.css';
 
 @layer utilities {
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-     /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-    }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
 .dark {
-    color-scheme: dark;
+  color-scheme: dark;
 }
 
 /* ===== Scrollbar CSS ===== */
 /* Firefox */
 * {
-    scrollbar-width: thin;
-    scrollbar-color: #a0a0a0 #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #a0a0a0 #ffffff;
 }
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-    width: 4px;
+  width: 4px;
 }
 
 *::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: #a0a0a0;
-    border-radius: 7px;
-    border: 2px solid #a0a0a0;
+  background-color: #a0a0a0;
+  border-radius: 7px;
+  border: 2px solid #a0a0a0;
 }
 
 html {
-    font-family: var(--font);
+  font-family: var(--font);
 }
-
 
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 60px); /* Adjust 60px if the header is a different height */
+  height: calc(
+    100vh - 60px
+  ); /* Adjust 60px if the header is a different height */
   overflow: hidden; /* Prevent scrolling on the chat container */
 }
 
@@ -63,7 +64,6 @@ html {
 .input-container {
   padding: 1rem; /* Add padding if necessary */
 }
-
 
 .css-fix {
   white-space: pre-line; /* or pre-line */
@@ -80,20 +80,45 @@ html {
   /* Additional styles to ensure proper alignment and appearance */
 }
 
-
 /* globals.css */
 :root {
-    --font: var(--font-inter);
+  --font: var(--font-inter);
 }
 
-html, body {
-    font-family: var(--font), sans-serif;
+html,
+body {
+  font-family: var(--font), sans-serif;
 }
-
 
 .user-button-wrapper {
   /* Scale up the button */
   transform: scale(1.5);
   /* Ensure the transform doesn't cut off */
   display: inline-block;
+}
+
+@keyframes thinkingDots {
+  0%,
+  25% {
+    content: '';
+  }
+  26%,
+  50% {
+    content: '.';
+  }
+  51%,
+  75% {
+    content: '..';
+  }
+  76%,
+  100% {
+    content: '...';
+  }
+}
+
+.thinking-dots::after {
+  animation: thinkingDots 1.3s infinite;
+  content: '';
+  display: inline-block;
+  width: 1ch;
 }

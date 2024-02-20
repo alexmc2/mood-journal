@@ -1,51 +1,51 @@
-import { prisma } from '@/utils/db';
-import { currentUser } from '@clerk/nextjs';
-import { redirect } from 'next/navigation';
+'use client';
 
-const createNewUser = async () => {
-  console.log('Starting createNewUser function.');
-  const user = await currentUser();
-  console.log('currentUser():', user);
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-  if (user) {
-    console.log('User found, checking for existing user in database.');
-    const match = await prisma.user.findUnique({
-      where: {
-        clerkId: user.id,
-      },
-    });
-    console.log('Database search result for user:', match);
+export default function NewUser() {
+  const router = useRouter();
 
-    if (!match) {
-      console.log(
-        'No matching user found, creating new user with email:',
-        user.emailAddresses[0].emailAddress
-      );
-      const newUser = await prisma.user.create({
-        data: {
-          clerkId: user.id,
-          email: user.emailAddresses[0].emailAddress,
-        },
-      });
-      console.log('New user created:', newUser);
-      return newUser;
-    } else {
-      console.log(
-        'Matching user already exists in the database, not creating a new user.'
-      );
+  useEffect(() => {
+    async function fetchUserStatus() {
+      console.log('Fetching user status from /api/user');
+      const response = await fetch('/api/user');
+      const result = await response.json();
+      console.log('Fetch response:', result);
+
+      if (response.ok && result.success) {
+        console.log('User setup successful, redirecting to /home');
+        router.push('/home');
+      } else {
+        console.log(
+          'User setup failed or not authenticated, redirecting to sign-in'
+        );
+        window.location.href = '/sign-in';
+      }
     }
-  } else {
-    console.log('No user found, redirecting to /journal.');
-  }
 
-  redirect('/home');
-};
+    fetchUserStatus();
+  }, [router]);
 
-const NewUser = async () => {
-  console.log('NewUser page function started.');
-  await createNewUser();
-  console.log('NewUser page function finished. Now rendering...');
-  return <div>...loading</div>;
-};
+  return (
+    <div className="min-h-screen overflow-x-hidden overflow-y-hidden flex flex-col justify-between items-center">
+      <div className="relative w-full h-screen flex flex-col justify-center items-center">
+        <div className="relative z-10 text-white sm:px-2 md:px-3 px-4 text-center sm:max-w-screen-md max-w-screen-sm font-bold flex flex-col items-center">
+          <div className="w-full max-w-[900px]  px-2 card bg-black/50 ">
+            <div className="card-body ">
+              <h1 className="text-3xl md:text-5xl pb-4  text-white ">
+                MOOD JOURNAL
+              </h1>
 
-export default NewUser;
+              <div>
+                <div className="px-4 text-white text-xl">
+                  Loading<span className="thinking-dots"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
