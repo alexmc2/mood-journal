@@ -1,5 +1,5 @@
 // app/api/deleteChat/route.ts
-import { prisma } from '../../../utils/db'; // Adjust the import path as necessary
+import { prisma } from '../../../utils/db'; 
 
 // Named export for the POST method
 export async function POST(req: Request) {
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         },
       });
 
-      // Iterate over the found empty chats and delete them
+   
       for (const chat of emptyChats) {
         await prisma.chat.delete({
           where: {
@@ -29,7 +29,6 @@ export async function POST(req: Request) {
         });
       }
 
-      // Return a success response indicating the cleanup was successful
       return new Response(
         JSON.stringify({
           success: true,
@@ -64,3 +63,5 @@ export async function POST(req: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
 }
+
+// 
