@@ -1,6 +1,6 @@
 # Mood Journal
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707955351/Screenshot_from_2024-02-14_13-35-29_qi7i4u.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708449926/Screenshot_from_2024-02-20_17-25-12_zovwjv.png)
 
 ## Overview
 
@@ -9,6 +9,8 @@ Mood Journal is a web application designed to help users track their emotional w
 ## Features
 
 - **Journal Entries**: Users can create and manage journal entries to track their mood and thoughts. The application integrates TinyMCE as the rich text editor, offering enhanced formatting options for a better journaling experience. Upon save, an AI analysis is invoked, summarising the journal entry and attributing a sentiment score. These can be used to chart sentiment scores over time.
+
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708449805/Screenshot_from_2024-02-20_17-22-06_lpnicy.png)
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009292/Screenshot_from_2024-02-15_15-01-19_pvfykk.png)
 
