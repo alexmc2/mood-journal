@@ -1,15 +1,20 @@
-import { prisma } from '../../../utils/db'; // Adjust the import path as necessary
+// Import the necessary types from Next.js
+import { NextApiRequest, NextApiResponse } from 'next';
+import { prisma } from '../../../utils/db'; 
 
-// Named export for the POST method
-export async function POST(req: { headers: { get: (arg0: string) => any; }; }) {
-  // Secret token you generated
-  const SECRET_TOKEN = process.env.CRON_JWT_SECRET;
-  const authorizationHeader = req.headers.get('authorization');
+// Your API route handler
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+
+  const SECRET_TOKEN = process.env.CRON_SECRET;
+  const authorizationHeader = req.headers['authorization'];
 
   // Check if the token matches
   if (authorizationHeader === `Bearer ${SECRET_TOKEN}`) {
     try {
-      // Your cleanup logic here: find and delete empty chats
+     
       const emptyChats = await prisma.chat.findMany({
         where: {
           messages: {
@@ -27,37 +32,21 @@ export async function POST(req: { headers: { get: (arg0: string) => any; }; }) {
       }
 
       // Return a success response
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: 'Cleanup successful',
-          deletedChats: emptyChats.length,
-        }),
-        {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      res.status(200).json({
+        success: true,
+        message: 'Cleanup successful',
+        deletedChats: emptyChats.length,
+      });
     } catch (error) {
       // Handle potential errors
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: 'Cleanup failed',
-          error: error
-        }),
-        {
-          status: 500,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      res.status(500).json({
+        success: false,
+        message: 'Cleanup failed',
+        error: error,
+      });
     }
   } else {
     // Unauthorized or Method Not Allowed
-    return new Response('Unauthorized', { status: 401 });
+    res.status(401).end('Unauthorized');
   }
 }
