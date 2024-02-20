@@ -1,20 +1,17 @@
-// Import the necessary types from Next.js
-import { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../../../utils/db'; 
+// app/api/deleteChat/route.ts
+import { prisma } from '../../../utils/db'; // Adjust the import path as necessary
 
-// Your API route handler
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-
+// Named export for the POST method
+export async function POST(req) {
+  // Extract the SECRET_TOKEN from your environment variables
   const SECRET_TOKEN = process.env.CRON_SECRET;
-  const authorizationHeader = req.headers['authorization'];
+  // Extract the Authorization header from the incoming request
+  const authorizationHeader = req.headers.get('authorization');
 
-  // Check if the token matches
+  // Check if the token in the Authorization header matches your SECRET_TOKEN
   if (authorizationHeader === `Bearer ${SECRET_TOKEN}`) {
     try {
-     
+      // Perform the cleanup task: find and delete empty chats
       const emptyChats = await prisma.chat.findMany({
         where: {
           messages: {
@@ -23,6 +20,7 @@ export default async function handler(
         },
       });
 
+      // Iterate over the found empty chats and delete them
       for (const chat of emptyChats) {
         await prisma.chat.delete({
           where: {
@@ -31,22 +29,38 @@ export default async function handler(
         });
       }
 
-      // Return a success response
-      res.status(200).json({
-        success: true,
-        message: 'Cleanup successful',
-        deletedChats: emptyChats.length,
-      });
+      // Return a success response indicating the cleanup was successful
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: 'Cleanup successful',
+          deletedChats: emptyChats.length,
+        }),
+        {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
     } catch (error) {
-      // Handle potential errors
-      res.status(500).json({
-        success: false,
-        message: 'Cleanup failed',
-        error: error,
-      });
+      // If an error occurs, return a response indicating the cleanup failed
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Cleanup failed',
+          error: error,
+        }),
+        {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
     }
   } else {
-    // Unauthorized or Method Not Allowed
-    res.status(401).end('Unauthorized');
+    // If the Authorization header does not match, return an Unauthorized response
+    return new Response('Unauthorized', { status: 401 });
   }
 }
