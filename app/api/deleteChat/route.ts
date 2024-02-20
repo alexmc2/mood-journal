@@ -2,7 +2,7 @@
 import { prisma } from '../../../utils/db'; // Adjust the import path as necessary
 
 // Named export for the POST method
-export async function POST(req) {
+export async function POST(req: Request) {
   // Extract the SECRET_TOKEN from your environment variables
   const SECRET_TOKEN = process.env.CRON_SECRET;
   // Extract the Authorization header from the incoming request
