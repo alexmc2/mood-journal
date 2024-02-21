@@ -10,7 +10,7 @@ Mood Journal is a web application designed to help users track their emotional w
 
 - **Journal Entries**: Users can create and manage journal entries to track their mood and thoughts. The application integrates TinyMCE as the rich text editor, offering enhanced formatting options for a better journaling experience. Upon save, an AI analysis is invoked, summarising the journal entry and attributing a sentiment score. These can be used to chart sentiment scores over time.
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708449805/Screenshot_from_2024-02-20_17-22-06_lpnicy.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708492303/Screenshot_from_2024-02-21_05-10-29_j34zwt.png)
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009292/Screenshot_from_2024-02-15_15-01-19_pvfykk.png)
 
@@ -19,6 +19,8 @@ Mood Journal is a web application designed to help users track their emotional w
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009038/Screenshot_from_2024-02-15_14-56-52_cul0ix.png)
 
 - **AI Chatbot**: An AI-powered chatbot offers personalised interactions, using users' journals and chat history for context-aware responses.
+
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708492528/Screenshot_from_2024-02-21_05-15-18_otmliv.png)
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009633/Screenshot_from_2024-02-15_15-06-39_k60ji9.png)
 
