@@ -30,6 +30,10 @@ Mood Journal is a web application designed to help users track their emotional w
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708010194/Screenshot_from_2024-02-15_15-16-15_tddiuf.png)
 
+- **Responsive Design**: Fully responsive and mobile-friendly interface designed with Tailwind CSS, ensuring a good user experience across all device sizes.
+
+
+
 - **Authentication**: Utilises Clerk for user authentication.
 
 ## Chatbot Implementation Overview

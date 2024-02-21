@@ -84,11 +84,11 @@ module.exports = {
     },
   },
   plugins: [
-    require('daisyui'),
     nextui(),
     require('@tailwindcss/forms'),
     require('tailwindcss-animate'),
     require('@tailwindcss/typography'),
+    require('daisyui'),
     plugin(({ addVariant, e }) => {
       addVariant('sidebar-expanded', ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {

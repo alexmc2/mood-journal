@@ -5,10 +5,10 @@ import PopoverButton from './Popover';
 import { useDisclosure } from '@nextui-org/react';
 
 import { Button } from '@/components/chat/ui/button';
-import axios, { AxiosError } from 'axios';
+
 import { useToast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+
 import { SetStateAction, useEffect, useState } from 'react';
 
 import {
@@ -18,7 +18,7 @@ import {
   SheetTrigger,
 } from '@/components/chat/ui/sheet';
 import { fetchAllChats } from '@/utils/api';
-import { Tooltip } from '@nextui-org/react';
+
 import DeleteModal from '../DeleteChatModal';
 import { deleteChat } from '@/utils/api';
 import { useParams } from 'next/navigation';
@@ -33,7 +33,6 @@ type Chat = {
   id: string;
   firstMessageSummary: string;
   firstMessageTime: string;
-  // Add other fields as necessary
 };
 
 export default function Menu({ clear }: { clear: () => void }) {
@@ -48,10 +47,6 @@ export default function Menu({ clear }: { clear: () => void }) {
 
   const params = useParams();
   const currentChatId = params.chatId;
-
-  
-
- 
 
   useEffect(() => {
     let localMode = localStorage.getItem('mode');
@@ -131,7 +126,7 @@ export default function Menu({ clear }: { clear: () => void }) {
           className="dark:border-slate-800 z-[9999] overflow-y-auto"
         >
           <SheetHeader>
-            <div className="pt-8 flex flex-col gap-2">
+            <div className="pt-8 flex flex-col gap-2  ">
               {chats.map((chat) => (
                 <div
                   key={chat.id}
@@ -157,7 +152,9 @@ export default function Menu({ clear }: { clear: () => void }) {
           onClose={onClose}
           chatId={selectedChatId || ''}
           onDelete={handleChatDelete}
-          currentChatId={Array.isArray(currentChatId) ? currentChatId[0] : currentChatId}
+          currentChatId={
+            Array.isArray(currentChatId) ? currentChatId[0] : currentChatId
+          }
         />
       </Sheet>
     </>

@@ -87,7 +87,6 @@ export const analyse = async (content: string) => {
 const chatParser = StructuredOutputParser.fromZodSchema(
   z.object({
     summary: z.string().describe('a quick summary of the chat.'),
-    subject: z.string().describe('the main subject of the chat.'),
   })
 );
 
@@ -108,7 +107,6 @@ export const chatSummary = async (chatContent: string) => {
   if (!chatContent || chatContent.trim() === '') {
     return {
       summary: 'No chat content available.',
-      subject: 'N/A',
     };
   }
 
@@ -117,7 +115,7 @@ export const chatSummary = async (chatContent: string) => {
     temperature: 0.4,
     modelName: 'gpt-3.5-turbo-0125',
   });
-  const output = await model.call(input);
+  const output = await model.invoke(input);
 
   try {
     return chatParser.parse(output);

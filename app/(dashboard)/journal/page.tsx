@@ -64,6 +64,16 @@ const JournalPage = () => {
     setCurrentPage(page); 
   };
 
+   if (!entries || entries.length === 0) {
+     return (
+       <div className="flex justify-center items-center h-full">
+         <p className="text-2xl text-gray-500">
+           Your journals will appear here.
+         </p>
+       </div>
+     );
+   }
+
   return (
     <div className="p-10 pt-6 ">
       <h2 className="text-3xl pl-5 sm:pl-7 mt-16 ">JOURNALS</h2>

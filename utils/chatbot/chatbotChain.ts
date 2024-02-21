@@ -172,7 +172,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       // Instruction to the AI on how to approach the conversation
       [
         'system',
-        "Adopt the position of a wise and empathic friend and respond directly to the user's latest message. Offer relevant and practical insights or guidance based on the content and flow of the chat. AI has access to historical chats and relevant journal entries and these can be used to provide background information. Only bring these up if they are relevant to current chat, no matter what! Encourage or compliment the user when it is appropriate.",
+        "Adopt the position of a wise and empathic friend and respond directly to the user's latest message. Offer relevant and practical insights or guidance based on the content and flow of the chat. AI has access to historical chats and relevant journal entries and these can be used to provide background information. Only bring these up if they are relevant to current chat, no matter what! ",
       ],
 
       // Placeholder for dynamically including the conversation history

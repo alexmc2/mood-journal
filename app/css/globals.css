@@ -122,3 +122,10 @@ body {
   display: inline-block;
   width: 1ch;
 }
+
+/* Hide columns on mobile */
+@media (max-width: 640px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}

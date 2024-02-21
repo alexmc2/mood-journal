@@ -179,7 +179,7 @@ export default function ChatComponent({
     <div className="overflow-y-hidden  ">
       <Menu clear={clear} />
 
-      <div className="input w-full flex flex-col justify-between h-screen bg-neutral-100 dark:bg-blue-800 text-neutral-600 dark:text-slate-300   ">
+      <div className="input w-full flex flex-col justify-between h-screen bg-neutral-100 dark:bg-blue-800 text-slate-700 dark:text-slate-300   ">
         {/* Messages display */}
         <ScrollableFeed
           className="no-scrollbar"

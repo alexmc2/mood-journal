@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 interface ChatIdPageProps {
   params: {
     chatId?: string;
-    // include other properties as needed
+  
   };
 }
 

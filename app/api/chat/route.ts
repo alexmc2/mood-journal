@@ -168,7 +168,7 @@ export const GET = async () => {
         const summaryData = await chatSummary(chat.messages[0].text);
         summary = summaryData.summary;
 
-        if (summary.length > 50) {
+        if (summary.length > 40) {
           summary = summary.slice(0, 50) + '...';
         }
 

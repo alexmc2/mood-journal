@@ -11,6 +11,7 @@ import { useDisclosure } from '@nextui-org/react';
 import { useParams } from 'next/navigation';
 import DeleteEntryButton from './DeleteEntryButton';
 import { useAutosave } from 'react-autosave';
+import InfoButton from './dropdown-help';
 
 const createHash = async (content: string | undefined) => {
   const msgBuffer = new TextEncoder().encode(content); // Encode as UTF-8
@@ -235,6 +236,9 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
             Array.isArray(currentEntryId) ? currentEntryId[0] : currentEntryId
           }
         />
+        <div className='pl-2'>
+          <InfoButton />
+        </div>
       </div>
       <div className=" absolute left-10 top-20 p-2 flex  ">
         <button
@@ -310,8 +314,6 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
               </div>
             ))}
           </div>
-          {/* Divider here if needed */}
-          {/* Detailed Analysis Display */}
         </div>
       </div>
     </div>

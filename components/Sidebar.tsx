@@ -93,6 +93,12 @@ export default function Sidebar() {
     router.replace(`/chat/${newChatId}`);
   };
 
+  // Example link handler
+  const handleLinkClick = (href: string) => {
+    router.push(href);
+    setSidebarOpen(false); // Close the sidebar
+  };
+
   return (
     <div className={`min-w-fit  ${sidebarExpanded ? 'sidebar-expanded' : ''} `}>
       {/* Sidebar backdrop (mobile only) */}
@@ -145,7 +151,7 @@ export default function Sidebar() {
         </div>
 
         {/* Links */}
-        <div className="space-y-8">
+        <div className="space-y-8 " onClick={() => setSidebarOpen(false)}>
           <div>
             <ul className="mt-3">
               {links.map((link) => (

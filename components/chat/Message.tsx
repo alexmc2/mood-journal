@@ -104,6 +104,7 @@ export function Skeleton() {
               delay: 95,
               loop: true,
               autoStart: false,
+              cursor: '',
             }}
             onInit={(typewriter) => {
               typewriter.typeString('...').start();
@@ -123,13 +124,14 @@ function TypeOnce({
 }: {
   children: string;
   isNewMessage: boolean;
+  
 }) {
   if (isNewMessage) {
     // Typing effect for new messages
     const lines = children.split('\n');
     return (
       <Typewriter
-        options={{ delay: 5 }}
+        options={{ delay: 5, cursor: '' }}
         onInit={(typewriter) => {
           lines.forEach((line, index) => {
             if (index === lines.length - 1) {

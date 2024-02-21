@@ -1,8 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
+
 'use client';
 
 import {
-  useOrganization,
+
   useSession,
   useUser,
   UserButton,
@@ -12,8 +12,7 @@ import { motivationQuotes } from '../../../utils/motivationQuotes';
 
 import { useEffect, useState } from 'react';
 import { CopyIcon, Dot } from '../../icons';
-import Image from 'next/image';
-import axios from 'axios';
+
 
 declare global {
   interface Window {
@@ -27,18 +26,18 @@ export function UserDetails() {
 
   return (
     <div
-      className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg"
+      className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg xl:min-h-[50vh]"
       style={{
         boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)`,
       }}
     >
-      <div className="flex p-2">
+      <div className="flex p-4">
         {isLoaded && user ? (
-          <div className="py-6 max-h-96">
+          <div className="py-6 ">
             <dl>
               {user.imageUrl && (
-                <div className="px-8 py-2">
-                  <dd className="mt-1 text-md text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2">
+                <div className="px-8 py-2 p-8">
+                  <dd className="mt-1 text-md text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2 ">
                     <div className="user-button-wrapper">
                       <UserButton />
                     </div>
@@ -73,11 +72,6 @@ export function UserDetails() {
                   {user.emailAddresses.map((email) => (
                     <div key={email.id} className="flex gap-2 mb-1">
                       {email.emailAddress}
-                      {/* {user.primaryEmailAddressId === email.id && (
-                        <span className="text-sm bg-success-50 text-primary-700 rounded-2xl px-2 font-medium pt-[2px]">
-                          Primary
-                        </span>
-                      )} */}
                     </div>
                   ))}
                 </dd>
@@ -108,38 +102,6 @@ export function UserDetails() {
   );
 }
 
-// export function Motivation() {
-//   const { isLoaded, session } = useSession();
-//   const [prompt, setPrompt] = useState('');
-//   const [promptIndex, setPromptIndex] = useState(0);
-
-//   const setNextPrompt = () => {
-//     if (promptIndex < motivationQuotes.length - 1) {
-//       setPrompt(motivationQuotes[promptIndex + 1]);
-//       setPromptIndex(promptIndex + 1);
-//     } else {
-//       // Reset to the first prompt if we've reached the end of the array
-//       setPrompt(motivationQuotes[0]);
-//       setPromptIndex(0);
-//     }
-//   };
-
-//   return (
-//     <div
-//       className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg"
-//       style={{
-//         boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)`,
-//       }}
-//     >
-//       <div className="flex p-8">
-//         <h3 className="text-xl leading-6 font-semibold text-gray-600 dark:text-slate-100 my-auto">
-//           Latest Journals
-//         </h3>
-//       </div>
-//     </div>
-//   );
-// }
-
 export function Motivation() {
   const [prompt, setPrompt] = useState('');
 
@@ -155,18 +117,18 @@ export function Motivation() {
     // Use modulo to cycle through prompts without going out of bounds
     const promptIndex = dayOfYear % motivationQuotes.length;
     setPrompt(motivationQuotes[promptIndex]);
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []);
 
   return (
     <div
-      className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg"
+      className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg text-center xl:min-h-[50vh] px-8 py-10 "
       style={{ boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)` }}
     >
-      <div className="p-8">
-        <h3 className="text-xl leading-6 font-semibold text-gray-600 dark:text-slate-100 items-center">
+      <div className="p-8 xl:grid xl:grid-rows-2 ">
+        <h3 className="text-2xl  font-semibold text-gray-600 dark:text-slate-100 items-center  ">
           Daily Motivation
         </h3>
-        <p className="mt-4 text-gray-600 dark:text-slate-100 text-4xl text-left py-20">
+        <p className=" text-gray-600 dark:text-slate-100 text-2xl text-left py-12 xl:py-0">
           "{prompt}"
         </p>
       </div>
@@ -174,24 +136,25 @@ export function Motivation() {
   );
 }
 
-export function ChatLinks() {
+export function Welcome() {
   return (
     <div
-      className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg"
+      className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg p-6"
       style={{
         boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)`,
       }}
     >
       <div className="p-8">
-        <h3 className="text-xl leading-6 font-semibold text-gray-600 dark:text-slate-100">
+        <h3 className="text-2xl leading-6 font-semibold text-gray-600 dark:text-slate-100 text-center py-6">
           Welcome to Mood Journal!
         </h3>
-        <p className="mt-4 text-gray-600 dark:text-slate-100">
+        <p className="mt-4 text-gray-600 dark:text-slate-100 text-lg">
           Mood Journal is your personal space to reflect on your day, track your
           mood, and discover insights about your emotional well-being. Here's
           how you can get started:
         </p>
-        <ul className="list-disc pl-5 mt-4 text-gray-600 dark:text-slate-100">
+        <br />
+        <ul className="list-disc pl-5 mt-4 text-gray-600 dark:text-slate-100 text-lg">
           <li>
             <strong>Journal Entries:</strong> Create daily entries to document
             your thoughts, feelings, and the day's events. Our AI-powered
@@ -211,6 +174,14 @@ export function ChatLinks() {
             understand your emotional cycles better.
           </li>
         </ul>
+        <br />
+        <p className="mt-4 text-gray-600 dark:text-slate-100 ">
+          Visit the{' '}
+          <a href="/userguide" className="text-blue-500">
+            User Guide
+          </a>{' '}
+          for more information on how to use Mood Journal.
+        </p>
       </div>
     </div>
   );
