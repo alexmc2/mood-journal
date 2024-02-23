@@ -71,12 +71,15 @@ export const newEntry = async () => {
   try {
     const response = await fetch(createURL('/api/journal'), {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content: 'Write about your day...' }),
     });
-    if (!response.ok) {
-      throw new Error('Failed to create new journal entry');
+
+    if (response.ok) {
+      return response.json();
     }
-    const data = await response.json();
-    return data.data;
   } catch (error) {
     console.error('Error in newEntry:', error);
     throw error;

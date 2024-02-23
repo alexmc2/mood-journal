@@ -1,3 +1,4 @@
+// api/journal/[id]/route.ts
 import { analyse } from '@/utils/ai';
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
@@ -62,6 +63,7 @@ export const PATCH = async (
   { params }: any
 ) => {
   const { content } = await request.json();
+  const defaultContent = 'Write about your day...';
   const user = await getUserByClerkId();
 
   // Retrieve the current entry
@@ -81,7 +83,11 @@ export const PATCH = async (
   const newContentHash = createHash('sha256').update(content).digest('hex');
 
   // Compare the new content hash with the existing one
-  if (newContentHash !== currentEntry?.contentHash) {
+  if (
+    newContentHash !== currentEntry?.contentHash &&
+    newContentHash &&
+    newContentHash !== defaultContent
+  ) {
     // Content has changed significantly, update entry and re-analyse
     const updatedEntry = await prisma.journalEntry.update({
       where: {
@@ -96,25 +102,30 @@ export const PATCH = async (
       },
     });
 
-    try {
-      const embedding = await generateEmbedding(updatedEntry.content);
-      const metadata = {
-        journalEntryId: params.id,
-        userId: user.id,
-        type: 'journal',
-        updatedAt: new Date(), // ISO string for compatibility
-      };
+    if (content && content.length > 10 && content !== defaultContent) {
+      try {
+        const embedding = await generateEmbedding(updatedEntry.content);
+        const metadata = {
+          journalEntryId: params.id,
+          userId: user.id,
+          type: 'journal',
+          updatedAt: new Date(), 
+        };
 
-      // Update embeddings in Supabase
-      const { error } = await client.from('documents').insert({
-        content: updatedEntry.content,
-        embedding: embedding,
-        metadata,
-      });
+        // Update embeddings in Supabase
+        const { error } = await client.from('documents').insert({
+          content: updatedEntry.content,
+          embedding: embedding,
+          metadata,
+        });
 
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error inserting updated journal entry embedding:', error);
+        if (error) throw error;
+      } catch (error) {
+        console.error(
+          'Error inserting updated journal entry embedding:',
+          error
+        );
+      }
     }
 
     const analysis = await analyse(updatedEntry.content);

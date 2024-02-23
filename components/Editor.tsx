@@ -12,6 +12,7 @@ import { useParams } from 'next/navigation';
 import DeleteEntryButton from './DeleteEntryButton';
 import { useAutosave } from 'react-autosave';
 import InfoButton from './dropdown-help';
+import { debounce } from 'lodash';
 
 const createHash = async (content: string | undefined) => {
   const msgBuffer = new TextEncoder().encode(content); // Encode as UTF-8
@@ -51,15 +52,17 @@ interface Entry {
 }
 
 const Editor = ({ entry }: { entry: Entry | null }) => {
-  const editorContentRef = useRef(entry?.content || '');
+  // const editorContentRef = useRef(entry?.content || '');
+
   const [analysis, setAnalysis] = useState(entry?.analysis || {});
   const [isSaving, setIsSaving] = useState(false);
   const [lastAnalyzedContentHash, setLastAnalyzedContentHash] = useState('');
-
   const [selectedJournalId, setSelectedJournalId] = useState<string | null>(
     null
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [editorContent, setEditorContent] = useState(entry?.content || '');
+  const editorContentRef = useRef(editorContent);
 
   const params = useParams();
   const currentEntryId = params.id;
@@ -132,61 +135,61 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
   }, [entry, entry?.content]);
 
   const handleEditorChange = (content: string) => {
-    editorContentRef.current = content;
+    setEditorContent(content); // For autosave
+    editorContentRef.current = content; // For manual save
   };
+
+  // const handleEditorChange = (content: string) => {
+  //   editorContentRef.current = content;
+  // };
 
   const handleSave = async () => {
+    setIsSaving(true); // Indicate saving process has started
+
     const content = editorContentRef.current; // Use the current ref value
     const contentHash = await createHash(content);
-    if (contentHash !== lastAnalyzedContentHash) {
-      setIsSaving(true); // Show saving spinner
-      try {
-        if (entry) {
-          const data = await updateEntry(entry.id, editorContentRef.current);
-          setAnalysis(data.analysis || {});
-        }
-        setLastAnalyzedContentHash(contentHash); // Update the hash
-      } catch (error) {
-        console.error('Error saving entry:', error);
-      } finally {
-        setIsSaving(false); // Hide saving spinner
-      }
 
-      //   setTimeout(() => {
-      //     const dummyAnalysis = {
-      //       mood: 'Content',
-      //       summary: 'This is a summary of the dummy content.',
-      //       color: '#abc123',
-      //       subject: 'Dummy Subject',
-      //       negative: false,
-      //       sentimentScore: 5,
-      //     };
-
-      //     setAnalysis(dummyAnalysis);
-      //     setLastAnalyzedContentHash(contentHash); // Update the hash
-      //     setIsSaving(false); // Hide saving spinner
-      //   }, 1000);
-      // } else {
-      //   console.log('No significant changes detected, autosave skipped.');
-    }
-  };
-
-  const autosaveContent = async (content: any) => {
     try {
-      // Call your API to update the content without triggering analysis
       if (entry) {
-        await updateEntry(entry.id, content);
+        // Always update the entry to save the latest content on manual save
+        const data = await updateEntry(entry.id, content);
+
+        setAnalysis(data.analysis || {});
+        setLastAnalyzedContentHash(contentHash); // Update the hash to reflect this analysis
       }
-      console.log('Content autosaved');
     } catch (error) {
-      console.error('Error during autosave:', error);
+      console.error('Error saving entry:', error);
+    } finally {
+      setIsSaving(false); // Indicate saving process has ended
     }
   };
 
   useAutosave({
-    data: editorContentRef.current,
-    onSave: autosaveContent,
-    // Optional: adjust the interval or set saveOnUnmount as needed
+    data: editorContent, // Triggered by changes to editorContent
+    onSave: async (currentContent) => {
+      const currentContentHash = await createHash(currentContent);
+
+      // Proceed with autosave only if the content hash differs from the last saved hash
+      if (
+        currentContentHash !== lastAnalyzedContentHash &&
+        currentContent !== entry?.content
+      ) {
+        setIsSaving(true);
+        try {
+          if (entry) {
+            const data = await updateEntry(entry.id, editorContentRef.current);
+          }
+
+          setLastAnalyzedContentHash(currentContentHash); // Update the hash to reflect the latest content
+        } catch (error) {
+          console.error('Error saving entry:', error);
+        } finally {
+          setIsSaving(false);
+        }
+      } else {
+        console.log('No significant changes detected, autosave skipped.');
+      }
+    },
   });
 
   const {
@@ -210,6 +213,9 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
     { name: 'Summary', value: summary },
     { name: 'Subject', value: subject },
   ];
+
+  // Need a workaround for router.events because this isn't available in the app router.
+  // This still needs to be implemented.
 
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8 p-8 mt-16 h-full w-full">
@@ -236,7 +242,7 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
             Array.isArray(currentEntryId) ? currentEntryId[0] : currentEntryId
           }
         />
-        <div className='pl-2'>
+        <div className="pl-2">
           <InfoButton />
         </div>
       </div>
@@ -279,8 +285,8 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
           <div className="">
             <CustomEditor
               onChange={handleEditorChange}
-              initialValue={editorContentRef.current}
-            />
+              value={editorContentRef.current}
+            ></CustomEditor>
           </div>
         </div>
       </div>
@@ -289,7 +295,7 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
           className="card shadow-xl flex w-full h-full flex-col gap-4 p-8"
           style={{ backgroundColor: color, color: textColor }}
         >
-          <h2 className="text-2xl font-bold items-center justify-between self-center pt-4">
+          <h2 className="text-2xl font-bold items-center justify-between self-center pt-2">
             Analysis
           </h2>
           <div className="divider"></div>

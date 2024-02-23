@@ -3,7 +3,15 @@
 import { ResponsiveContainer, LineChart, Line, XAxis, Tooltip } from 'recharts';
 import { useRouter } from 'next/navigation';
 
-const CustomTooltip = ({ payload, label, active }: { payload: any, label: any, active: any }) => {
+const CustomTooltip = ({
+  payload,
+  label,
+  active,
+}: {
+  payload: any;
+  label: any;
+  active: any;
+}) => {
   console.log(payload);
 
   const dateLabel = new Date(label).toLocaleString('en-us', {
@@ -38,7 +46,15 @@ const CustomTooltip = ({ payload, label, active }: { payload: any, label: any, a
   return null;
 };
 
-const CustomDot = ({ cx, cy, payload }: { cx: number, cy: number, payload: any }) => {
+const CustomDot = ({
+  cx,
+  cy,
+  payload,
+}: {
+  cx: number;
+  cy: number;
+  payload: any;
+}) => {
   const router = useRouter(); // Using useRouter hook
 
   return (
@@ -67,14 +83,28 @@ type HistoryChartProps = {
 const HistoryChart = ({ data }: HistoryChartProps) => {
   if (!data || data.length === 0) {
     return (
-      <div className="flex justify-center items-center h-full">
-        <p className="text-lg text-gray-500">
-          Your history sentiment score chart will appear here.
-        </p>
+      <div className=" min-h-screen ">
+        <video
+          className="absolute top-0 left-0 w-full h-full object-cover "
+          autoPlay
+          muted
+          loop
+        >
+          <source
+            src="https://res.cloudinary.com/drbz4rq7y/video/upload/e_accelerate:-50/v1708611224/1476901_objects_miscellaneous_3840x2160_kzwcv4.mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div className="absolute inset-0 bg-white opacity-60"></div>{' '}
+        {/* Video Overlay */}
+        <div className="absolute inset-0 z-20 flex flex-col justify-center items-center p-4 space-y-4">
+          <p className="text-4xl md:text-5xl text-center text-slate-500">
+            Your history sentiment chart will appear here.
+          </p>
+        </div>
       </div>
     );
   }
-
 
   return (
     <ResponsiveContainer height="100%" minWidth={600}>

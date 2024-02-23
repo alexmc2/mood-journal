@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAppProvider } from '@/app/app-provider';
+import { useAppProvider } from '@/app/providers/app-provider';
 import { UserButton } from '@clerk/nextjs';
 
 import ThemeToggle from '@/components/theme-toggle';

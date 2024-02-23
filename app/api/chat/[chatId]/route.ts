@@ -77,6 +77,7 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
       const embedding = await generateEmbedding(doc.pageContent);
       const metadata = {
         messageId: savedMessage.id,
+        chatId: chatId,
         userId: user?.id,
         type: 'message',
         createdAt: new Date(),
@@ -90,6 +91,7 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
           embedding,
           userId: user.id,
           chatId: chatId,
+          createdAt: new Date(),
         },
       ]);
       if (error) throw error;
@@ -126,6 +128,7 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
       const embedding = await generateEmbedding(doc.pageContent);
       const metadata = {
         messageId: savedBotMessage.id,
+        chatId: chatId,
         type: 'bot-response',
         createdAt: new Date(),
       };
@@ -138,6 +141,7 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
           embedding,
           userId: user.id,
           chatId: chatId,
+          createdAt: new Date(),
         },
       ]);
       if (error) throw error;
@@ -170,11 +174,6 @@ export const DELETE = async (
     return NextResponse.json({ error: 'Chat not found or unauthorized' });
   }
 
-  // Delete messages and then the chat
-  // await prisma.message.deleteMany({ where: { chatId: chatId } });
-  // await prisma.chat.delete({ where: { id: chatId } });
-
-  // return NextResponse.json({ message: 'Chat deleted successfully' });
 
   try {
     // Delete messages from Prisma

@@ -59,23 +59,23 @@ const UserGuide = () => {
             <h2>Journaling</h2>
             <ul>
               <li>
-                <strong>Create a New Journal Entry:</strong> Click on "New
-                Entry" from the sidebar. You'll be directed to a page where you
-                can write your thoughts, feelings, and experiences. Use the rich
-                formatting options provided by TinyMCE to personalise your
-                entry.
+                <strong>Create a New Journal Entry:</strong> Click "New Entry"
+                on the sidebar to start writing. The editor supports rich text
+                formatting with TinyMCE.
               </li>
               <br />
               <li>
-                <strong>Save Your Entry:</strong> Once you’re satisfied with
-                your journal entry, press the "Save" button. This action
-                triggers an AI analysis of your entry, providing you with a
-                summary and a sentiment score.{' '}
-                <span style={{ color: '#d32f2f' }}>
-                  Remember, the analysis only occurs upon saving, and
-                  significant changes to your entry may alter the analysis.
-                </span>
+                <strong>Autosave:</strong> The app automatically saves your
+                entries as you type, preventing data loss if you navigate away
+                or close the browser.
               </li>
+              <br />
+              <li>
+                <strong>Save and Analyse:</strong> Press "Save" to manually save
+                your entry and run AI analysis, providing a summary and
+                sentiment score. AI analysis is only performed on manual saves.
+              </li>
+
               <br />
               <li>
                 <strong>View and Manage Entries:</strong> Access your previous
@@ -83,7 +83,6 @@ const UserGuide = () => {
                 read, edit, or delete past entries.
               </li>
             </ul>
-
             <h2>Engaging with AI Chatbot</h2>
             <ul>
               <li>

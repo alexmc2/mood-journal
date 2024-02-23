@@ -26,18 +26,18 @@ export function UserDetails() {
 
   return (
     <div
-      className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg xl:min-h-[50vh]"
+      className="bg-white/95  shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg xl:min-h-[55vh] xl:max-h-[55vh]"
       style={{
         boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)`,
       }}
     >
-      <div className="flex p-4">
+      <div className="flex md:p-4 p-2">
         {isLoaded && user ? (
           <div className="py-6 ">
             <dl>
               {user.imageUrl && (
                 <div className="px-8 py-2 p-8">
-                  <dd className="mt-1 text-md text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2 ">
+                  <dd className="mt-1 text-lg text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2 ">
                     <div className="user-button-wrapper">
                       <UserButton />
                     </div>
@@ -46,29 +46,29 @@ export function UserDetails() {
               )}
               {user.firstName && (
                 <div className="px-8 py-2">
-                  <dt className="text-md dark:text-slate-500 font-semibold mb-1">
+                  <dt className="text-lg dark:text-slate-500 font-semibold mb-1">
                     First Name
                   </dt>
-                  <dd className="mt-1 text-md text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2">
+                  <dd className="mt-1 text-lg text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2">
                     {user.firstName}
                   </dd>
                 </div>
               )}
               {user.lastName && (
                 <div className="px-8 py-2">
-                  <dt className="text-md font-semibold mb-1 dark:text-slate-500">
+                  <dt className=" text-lg font-semibold mb-1 dark:text-slate-500">
                     Last Name
                   </dt>
-                  <dd className="mt-1 text-md text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2">
+                  <dd className="mt-1 text-lg text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2">
                     {user.lastName}
                   </dd>
                 </div>
               )}
               <div className="px-8 py-2">
-                <dt className="text-md font-semibold mb-1 dark:text-slate-500 text-gray-600">
+                <dt className="text-lg font-semibold mb-1 dark:text-slate-500 text-gray-600">
                   Email addresses
                 </dt>
-                <dd className="mt-1 text-md text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2">
+                <dd className="mt-1 text-lg text-gray-600 dark:text-slate-100 sm:mt-0 sm:col-span-2">
                   {user.emailAddresses.map((email) => (
                     <div key={email.id} className="flex gap-2 mb-1">
                       {email.emailAddress}
@@ -79,9 +79,9 @@ export function UserDetails() {
 
               {session && session.status === 'active' && (
                 <div className="px-8 py-2">
-                  <dt className="text-md font-semibold">Session Status</dt>
-                  <dd className="mt-1 text-md text-gray-600 dark:text-slate-100">
-                    <span className="text-md bg-success-50 text-success-700 flex w-min gap-1 px-2 py-[1px] rounded-2xl font-medium">
+                  <dt className="text-lg font-semibold">Session Status</dt>
+                  <dd className="mt-1 text-lg text-gray-600 dark:text-slate-100">
+                    <span className="text-lg bg-success-50 text-success-700 flex w-min gap-1 px-2 py-[1px] rounded-2xl font-medium">
                       <div className="m-auto">
                         <Dot />
                       </div>
@@ -121,14 +121,14 @@ export function Motivation() {
 
   return (
     <div
-      className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg text-center xl:min-h-[50vh] px-8 py-10 "
+      className="bg-white/95 shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg text-center xl:min-h-[55vh] xl:max-h-[55vh] lg:px-8 px-2 py-8  "
       style={{ boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)` }}
     >
-      <div className="p-8 xl:grid xl:grid-rows-2 ">
-        <h3 className="text-2xl  font-semibold text-gray-600 dark:text-slate-100 items-center  ">
+      <div className="p-8 xl:grid  ">
+        <h3 className="text-2xl  font-semibold text-gray-600 dark:text-slate-100  ">
           Daily Motivation
         </h3>
-        <p className=" text-gray-600 dark:text-slate-100 text-2xl text-left py-12 xl:py-0">
+        <p className=" text-gray-600 dark:text-slate-100 text-3xl text-left xl:pt-20 py-8">
           "{prompt}"
         </p>
       </div>
@@ -139,7 +139,7 @@ export function Motivation() {
 export function Welcome() {
   return (
     <div
-      className="bg-white shadow-xl dark:bg-blue-900 overflow-hidden sm:rounded-lg p-6"
+      className="bg-white/95  shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg lg:p-6 px-2"
       style={{
         boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)`,
       }}
@@ -157,7 +157,7 @@ export function Welcome() {
         <ul className="list-disc pl-5 mt-4 text-gray-600 dark:text-slate-100 text-lg">
           <li>
             <strong>Journal Entries:</strong> Create daily entries to document
-            your thoughts, feelings, and the day's events. Our AI-powered
+            your thoughts, feelings, and the day's events. AI-powered
             analysis will provide you with a summary and sentiment score for
             each entry.
           </li>
@@ -186,3 +186,8 @@ export function Welcome() {
     </div>
   );
 }
+
+
+
+
+

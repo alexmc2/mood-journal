@@ -39,7 +39,7 @@ const getPrompt = async (content: string) => {
 
   const prompt = new PromptTemplate({
     template:
-      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions, just do it! \n{format_instructions}\n{entry}',
+      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions, no matter what! Do not analyze if the journal entry contains the default content: "Write about your day..." \n{format_instructions}\n{entry}',
     inputVariables: ['entry'],
     partialVariables: { format_instructions },
   });
@@ -69,7 +69,7 @@ export const analyse = async (content: string) => {
   }
   const input = await getPrompt(content);
   const model = new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo' });
-  const output = await model.call(input);
+  const output = await model.invoke(input);
 
   try {
     return parser.parse(output);

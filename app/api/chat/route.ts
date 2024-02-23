@@ -62,6 +62,7 @@ export const POST = async (
       const metadata = {
         messageId: savedMessage.id,
         userId: user?.id,
+        chatId: currentChatId,
         type: 'message',
         createdAt: new Date(),
       };
@@ -74,6 +75,7 @@ export const POST = async (
           embedding,
           userId: user.id,
           chatId: currentChatId,
+          createdAt: new Date(),
         },
       ]);
       if (error) throw error;
@@ -109,6 +111,7 @@ export const POST = async (
       const embedding = await generateEmbedding(doc.pageContent);
       const metadata = {
         messageId: savedBotMessage.id,
+        chatId: currentChatId,
         type: 'bot-response',
         createdAt: new Date(),
       };
@@ -121,6 +124,7 @@ export const POST = async (
           embedding,
           userId: user.id,
           chatId: currentChatId,
+          createdAt: new Date(),
         },
       ]);
       if (error) throw error;

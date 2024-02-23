@@ -1,3 +1,4 @@
+// api/journal/[id]/route.ts
 import { getUserByClerkId } from '@/utils/auth';
 import { prisma } from '@/utils/db';
 import { revalidatePath } from 'next/cache';
@@ -8,23 +9,29 @@ import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
-export const POST = async () => {
+export const POST = async (request: Request) => {
+  const data = await request.json();
   const user = await getUserByClerkId();
   const defaultContent = 'Write about your day...';
+
   const entry = await prisma.journalEntry.create({
     data: {
-      userId: user.id,
-      content: 'Write about your day...',
+      content: data.content || defaultContent,
+      user: {
+        connect: {
+          id: user.id,
+        },
+      },
     },
   });
   if (
     entry.content &&
-    entry.content.length > 40 &&
+    entry.content.length > 10 &&
     entry.content !== defaultContent
   ) {
     const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000, // Adjust chunk size as needed
-      chunkOverlap: 200, // Adjust overlap as needed
+      chunkSize: 1000,
+      chunkOverlap: 200,
     });
     const splitDocs = await splitter.splitDocuments([
       new Document({ pageContent: entry.content }),
@@ -57,16 +64,16 @@ export const POST = async () => {
         console.error('Error inserting journal entry embedding:', error);
       }
     }
-  }
 
-  const analysis = await analyse(entry.content);
-  await prisma.analysis.create({
-    data: {
-      userId: user.id,
-      entryId: entry.id,
-      ...analysis,
-    },
-  });
+    const analysis = await analyse(entry.content);
+    await prisma.analysis.create({
+      data: {
+        userId: user.id,
+        entryId: entry.id,
+        ...analysis,
+      },
+    });
+  }
 
   revalidatePath('/journal');
 

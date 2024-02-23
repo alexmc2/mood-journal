@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useAppProvider } from '@/app/app-provider';
+import { useEffect, useRef, useState, useContext, SetStateAction } from 'react';
+import { useAppProvider } from '@/app/providers/app-provider';
 import { useSelectedLayoutSegments } from 'next/navigation';
 import { Transition } from '@headlessui/react';
 import { getBreakpoint } from '../utils/utils';
@@ -18,6 +18,7 @@ import newEntryIcon from './icons/newEntry';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
+
 export default function Sidebar() {
   const sidebar = useRef<HTMLDivElement>(null);
   const { sidebarOpen, setSidebarOpen } = useAppProvider();
@@ -29,6 +30,9 @@ export default function Sidebar() {
   const expandOnly =
     !sidebarExpanded && (breakpoint === 'lg' || breakpoint === 'xl');
   const router = useRouter();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+
 
   const links = [
     { name: 'Home', href: '/home', icon: HomeIcon },
@@ -38,7 +42,7 @@ export default function Sidebar() {
     { name: 'New Chat', href: '/chat', icon: ChatIcon },
   ];
 
-  // close on click outside
+  // close on click outside sidebar (mobile only and medium screens)
   useEffect(() => {
     const clickHandler = ({ target }: { target: EventTarget | null }): void => {
       if (!sidebar.current) return;
@@ -70,33 +74,42 @@ export default function Sidebar() {
     };
   }, [breakpoint]);
 
+
+  // New journal entry link
+
   const handleOnClick = async () => {
-    const data = await newEntry();
-    router.push(`/journal/${data.id}`);
+    if (!isButtonDisabled) {
+      setIsButtonDisabled(true); // Disable the button
+      const { data } = await newEntry();
+      router.push(`/journal/${data.id}`);
+      setTimeout(() => setIsButtonDisabled(false), 4000);
+    }
   };
 
   const generateNewChatId = async () => {
-    try {
-      // Sending a POST request with an empty message or placeholder
-      const response = await axios.post('/api/chat', {
-        newMessage: '',
-      });
-      return response.data.chatId;
-    } catch (error) {
-      console.error('Error in generateNewChatId:', error);
-      throw error;
+    if (!isButtonDisabled) {
+      setIsButtonDisabled(true); // Disable the button
+      try {
+        // Sending a POST request with an empty message or placeholder
+        const response = await axios.post('/api/chat', {
+          newMessage: '',
+        });
+
+        return response.data.chatId;
+      } catch (error) {
+        console.error('Error in generateNewChatId:', error);
+        throw error;
+      }
     }
   };
 
   const handleChatClick = async () => {
-    let newChatId = await generateNewChatId();
-    router.replace(`/chat/${newChatId}`);
-  };
-
-  // Example link handler
-  const handleLinkClick = (href: string) => {
-    router.push(href);
-    setSidebarOpen(false); // Close the sidebar
+    if (!isButtonDisabled) {
+      setIsButtonDisabled(true); // Disable the button
+      let newChatId = await generateNewChatId();
+      router.replace(`/chat/${newChatId}`);
+      setTimeout(() => setIsButtonDisabled(false), 4000);
+    }
   };
 
   return (
@@ -147,7 +160,7 @@ export default function Sidebar() {
             </svg>
           </button>
 
-          {/* Logo */}
+        
         </div>
 
         {/* Links */}

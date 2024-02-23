@@ -6,8 +6,8 @@ interface DeleteEntryModalProps {
   isOpen: boolean;
   onClose: () => void;
   id: string;
-  onDelete: (id: string) => void; 
-  currentEntryId: string; 
+  onDelete: (id: string) => void;
+  currentEntryId: string;
 }
 
 export default function DeleteEntryModal({
@@ -35,7 +35,7 @@ export default function DeleteEntryModal({
     }
   };
 
-  const handleClose = (event: { target: any; currentTarget: any; }) => {
+  const handleClose = (event: { target: any; currentTarget: any }) => {
     // Close the modal when the backdrop is clicked
     if (event.target === event.currentTarget) {
       onClose();
@@ -44,7 +44,15 @@ export default function DeleteEntryModal({
 
   return (
     <dialog
-      className="modal modal-bottom sm:modal-middle"
+      className={`modal ${
+        isOpen
+          ? 'fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 '
+          : 'hidden'
+      }`}
+      style={{
+        transition: 'transform 0.3s ease',
+        transform: isOpen ? 'scale(1)' : 'scale(0.95)',
+      }}
       open={isOpen}
       onClick={handleClose}
     >
@@ -53,7 +61,7 @@ export default function DeleteEntryModal({
           Are you sure you want to delete this journal entry?
         </h3>
         <div className="modal-action">
-          <button className="btn bg-red-400" onClick={handleDelete}>
+          <button className="btn bg-red-400 " onClick={handleDelete}>
             Delete
           </button>
           <button className="btn bg-green-400" onClick={onClose}>

@@ -19,7 +19,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
   onPageChange, 
 }) => {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 ">
       <button
         className="bg-blue-500 text-white p-1"
         disabled={!hasPrevPage}
@@ -33,7 +33,7 @@ const PaginationControls: FC<PaginationControlsProps> = ({
       </div>
 
       <button
-        className="bg-blue-500 text-white p-1"
+        className="bg-blue-500 text-white p-1 "
         disabled={!hasNextPage}
         onClick={() => onPageChange(currentPage + 1)} 
       >

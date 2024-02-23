@@ -3,12 +3,13 @@ import './css/utility-patterns.css';
 import './css/styles.css';
 
 import { Inter } from 'next/font/google';
-import Theme from './theme-provider';
-import AppProvider from './app-provider';
+import Theme from './providers/theme-provider';
+import AppProvider from './providers/app-provider';
 import { ClerkProvider } from '@clerk/nextjs';
-import { Providers } from './providers';
+import { Providers } from './providers/providers';
 import { Analytics } from '@vercel/analytics/react';
 import { Roboto } from 'next/font/google';
+import UnsavedChangesProvider from '@/app/providers/unsavedChangesProvider';
 
 const inter = Inter({
   subsets: ['latin'],

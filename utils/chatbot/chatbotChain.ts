@@ -1,3 +1,4 @@
+import { metadata } from './../../app/layout';
 // Chatbot version that uses a chain of runnables to process the question and return an answer.
 
 import { StringOutputParser } from '@langchain/core/output_parsers';
@@ -12,9 +13,8 @@ import {
   ChatPromptTemplate,
   MessagesPlaceholder,
 } from '@langchain/core/prompts';
-import {
-  BufferMemory,
-} from 'langchain/memory';
+import { BufferMemory } from 'langchain/memory';
+import { SupabaseHybridSearch } from '@langchain/community/retrievers/supabase';
 
 const privateKey = process.env.SUPABASE_PRIVATE_KEY;
 if (!privateKey) throw new Error(`Expected env var SUPABASE_PRIVATE_KEY`);
@@ -57,8 +57,6 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       }
     );
 
-    const retriever = vectorStore.asRetriever();
-
     // Fetch journals relevant to conversation
 
     const relevantDocs = await vectorStore.similaritySearch(
@@ -79,32 +77,51 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     console.log('formattedRelevantDocs', formattedRelevantDocs);
 
-    // Long term chat memory
+    // Long term chat memory. This is a hybrid search that uses both embeddings and metadata filters to retrieve previous messages that may be relevant to the current conversation.
 
-    const metadataFilter2 = {
+    const metadataFilter2 = JSON.stringify({
       userId: userId,
       type: 'message',
-    };
+    });
 
-    const metadataFilter3 = {
+    const metadataFilter3 = JSON.stringify({
       userId: userId,
-      type: 'bot',
-    };
+      type: 'bot-response',
+    });
 
-    const relevantPastChats = await vectorStore.similaritySearch(
+    const retriever = new SupabaseHybridSearch(embeddings, {
+      client,
+      //  Below are the defaults, expecting that you set up your supabase table and functions according to the guide above. Please change if necessary.
+      similarityK: 3,
+      keywordK: 3,
+      tableName: 'documents',
+
+      similarityQueryName: 'match_documents',
+      keywordQueryName: 'kw_match_documents',
+    });
+
+    const relevantPastChats = await retriever.getRelevantDocuments(
       sanitizedMessage,
-      3,
-      metadataFilter2 || metadataFilter3
+      JSON.parse(metadataFilter2) || JSON.parse(metadataFilter3)
     );
 
-    const formattedrelevantPastChats = relevantPastChats
+    // filter out the current chat ID from the relevant past chats
+
+    const filteredRelevantPastChats = relevantPastChats.filter(
+      (doc) => doc.metadata.chatId !== chatId // Use the chatId from metadata for comparison
+    );
+
+    // Format the filtered relevant past chats for presentation
+    const formattedRelevantPastChats = filteredRelevantPastChats
       .map(
         (doc) =>
           `Similarity Match (${doc.metadata.createdAt}): ${doc.pageContent}`
       )
       .join('\n');
 
-    // Recent chat history from supbase
+    console.log('formattedRelevantPastChats', formattedRelevantPastChats);
+
+    // Recent chat history from supbase. Chat history for the current chat is retrieved from the 'documents' table in Supabase.
 
     const fetchChatHistory = async (userId: string, chatId: any) => {
       let { data: chatHistory, error } = await client
@@ -112,6 +129,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         .select('*')
         .eq('userId', userId)
         .eq('chatId', chatId)
+        .order('createdAt', { ascending: false }) // Order by createdAt in descending order
         .limit(10);
 
       if (error) {
@@ -119,13 +137,9 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         return [];
       }
 
-      chatHistory?.sort((a, b) => {
-        const aCreatedAt = new Date(a.metadata.createdAt).getTime();
-        const bCreatedAt = new Date(b.metadata.createdAt).getTime();
-        return aCreatedAt - bCreatedAt;
-      });
+      const reversedChatHistory = chatHistory?.reverse();
 
-      const messageInstances = chatHistory?.map((doc) => {
+      const messageInstances = reversedChatHistory?.map((doc) => {
         if (doc.metadata.type === 'message') {
           return new HumanMessage(doc.content);
         } else {
@@ -137,20 +151,19 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     };
 
     const chatHistory = await fetchChatHistory(userId, chatId);
-    console.log('chatHistory', chatHistory);
 
     const chatHistoryString = (chatHistory ?? [])
-      .map((message) => {
-     
+      .map((message, index) => {
         const label =
           message.constructor.name === 'HumanMessage' ? 'Human' : 'AI';
-        return `${label}: ${message.content}`;
+        // Example of adding a simple structure enhancement
+        return `${index + 1}. [${label}] ${message.content}`;
       })
-      .join('\n');
+      .join('\n\n'); // Increase separation for better readability
 
     const chatModel = new ChatOpenAI({
       modelName: 'gpt-3.5-turbo-0125',
-      temperature: 0.6,
+      temperature: 0.9,
       verbose: true,
       streaming: true,
     });
@@ -169,29 +182,19 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     });
 
     const historyAwarePrompt = ChatPromptTemplate.fromMessages([
-      // Instruction to the AI on how to approach the conversation
       [
         'system',
-        "Adopt the position of a wise and empathic friend and respond directly to the user's latest message. Offer relevant and practical insights or guidance based on the content and flow of the chat. AI has access to historical chats and relevant journal entries and these can be used to provide background information. Only bring these up if they are relevant to current chat, no matter what! ",
+        `Adopt the position of a wise and empathic friend and respond directly to the user's last message: \n\n HUMAN: ${sanitizedMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat. AI has access to historical chats and relevant journal entries and these can be used to provide background information.`,
       ],
-
-      // Placeholder for dynamically including the conversation history
-      new MessagesPlaceholder('chatHistory'),
-
-      // The user's latest message
-      ['user', '{sanitizedMessage}'],
       ['system', chatHistoryString],
-
-      // Providing additional context from similar documents and past chats
       [
         'system',
-        `Additional context:\n\nUser journal entries: ${formattedRelevantDocs}\n\nSimilar past chats: ${formattedrelevantPastChats}`,
+        `Additional context:\n\nUser journal entries: \n\n${formattedRelevantDocs}\n\nSimilar past chats: \n\n${formattedRelevantPastChats}`,
       ],
-
       // Final instruction to the AI for generating a response based on all provided context
       [
         'system',
-        'Considering the above conversation and additional context, offer support, guidance, or advice that could help the user.',
+        'Consider the above conversation and additional context in your response if it is relevant. Offer support, guidance, or advice that could help the user. Ask questions to encourage reflection, and show interest in what the user has to say.',
       ],
     ]);
 
