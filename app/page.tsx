@@ -6,7 +6,7 @@ export default async function Home() {
   let href = userId ? '/home' : '/new-user';
 
   return (
-    <div className="h-full overflow-x-hidden overflow-y-hidden flex flex-col justify-between items-center">
+    <div className="h-full overflow-x-hidden overflow-y-hidden flex flex-col justify-between items-center no-scrollbar">
       <div className="relative w-full h-screen flex flex-col justify-center items-center">
         <video
           className="absolute top-0 left-0 max-w-full min-w-full min-h-full z-negative object-cover"
