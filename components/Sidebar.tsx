@@ -22,7 +22,7 @@ import axios from 'axios';
 export default function Sidebar() {
   const sidebar = useRef<HTMLDivElement>(null);
   const { sidebarOpen, setSidebarOpen } = useAppProvider();
-  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
+  const [sidebarExpanded, setSidebarExpanded] = useState<boolean>(false);
   const segments = useSelectedLayoutSegments();
   const [breakpoint, setBreakpoint] = useState<string | undefined>(
     getBreakpoint()
