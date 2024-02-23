@@ -1,6 +1,6 @@
 # Mood Journal
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/video/upload/v1708622742/1871533_yellow_background_silhouette_person_3840x2160_qu2vho.mp4)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708660386/Screenshot_from_2024-02-23_03-52-53_vsx82z.png)
 
 ## Overview
 
