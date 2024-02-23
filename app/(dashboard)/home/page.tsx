@@ -58,7 +58,7 @@ export default async function DashboardPage() {
       </video>
       {/* <div className="absolute inset-0 bg-white opacity-10"></div>{' '} */}
       {/* This div wraps content and ensures it's above the video */}
-      <div className="z-10 relative px-8 py-12 sm:py-16 md:px-20">
+      <div className="z-10 relative px-4 py-12 sm:py-16 md:px-20">
         {user && (
           <>
             <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-800">

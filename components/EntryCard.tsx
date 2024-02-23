@@ -1,5 +1,6 @@
 'use client';
 import { Divider } from '@nextui-org/react';
+import { useState } from 'react';
 
 const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
@@ -22,6 +23,32 @@ const getContrastYIQ = (hexcolor: string) => {
   return yiq >= 128 ? 'black' : 'white';
 };
 
+// function to calculate a darker color for hover effect
+
+const darkenColor = (color: any, amount = 20) => {
+  let usePound = false;
+  if (color[0] === '#') {
+    color = color.slice(1);
+    usePound = true;
+  }
+  let num = parseInt(color, 16);
+  let r = (num >> 16) - amount;
+  let g = ((num >> 8) & 0x00ff) - amount;
+  let b = (num & 0x00ff) - amount;
+
+  r = Math.max(Math.min(255, r), 0);
+  g = Math.max(Math.min(255, g), 0);
+  b = Math.max(Math.min(255, b), 0);
+
+  const result =
+    (usePound ? '#' : '') +
+    ('0' + r.toString(16)).slice(-2) +
+    ('0' + g.toString(16)).slice(-2) +
+    ('0' + b.toString(16)).slice(-2);
+
+  return result;
+};
+
 const EntryCard = ({ entry }: { entry: any }) => {
   const date = new Date(entry.createdAt).toDateString();
   const maxLength = 40; // Define the maximum length of the summary text
@@ -35,18 +62,22 @@ const EntryCard = ({ entry }: { entry: any }) => {
       ? entry.analysis.color
       : null;
 
-  const cardStyle = analysisColor
-    ? { backgroundColor: analysisColor }
-    : {};
+  const cardStyle = analysisColor ? { backgroundColor: analysisColor } : {};
 
   const textColor = getContrastYIQ(analysisColor || '#FFFFFF');
 
+  const [isHovered, setIsHovered] = useState(false);
+  const hoverStyle =
+    isHovered && analysisColor
+      ? { backgroundColor: darkenColor(analysisColor) }
+      : {};
+
   return (
     <div
-      className={`cursor-pointer overflow-hidden px-4 py-3 sm:px-6 shadow-sm card hover:scale-105 transition-transform duration-300 border border-slate-700 ${
-        analysisColor ? '' : 'bg-base-100 dark:bg-blue-900'
-      }`}
-      style={{ ...cardStyle, color: textColor }}
+      className={`cursor-pointer overflow-hidden px-4 py-3 sm:px-6 shadow-sm card transition-transform duration-400  `}
+      style={{ ...cardStyle, ...hoverStyle, color: textColor }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="py-3">{date}</div>
       <Divider />

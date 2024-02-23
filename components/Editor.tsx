@@ -280,7 +280,7 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
           </svg>
         </button>
       </div>
-      <div className="order-1 lg:order-1 flex flex-col lg:col-span-2 mb-4 lg:mb-0">
+      <div className="order-1 lg:order-1 flex flex-col lg:col-span-2  lg:mb-0">
         <div className="card lg:min-h-[60vh]">
           <div className="">
             <CustomEditor
@@ -299,27 +299,41 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
             Analysis
           </h2>
           <div className="divider"></div>
-          <div className="flex flex-col space-y-4">
-            {detailedAnalysis.map((item) => (
-              <div key={item.name} className="flex flex-col">
-                <span className="font-bold pb-2">{item.name}:</span>
-                <span>{item.value}</span>
+          {color === '#ffffff' ? (
+            <div className="flex flex-col space-y-4 p-4">
+              <p>
+                Press the save button to run the AI analysis on your journal
+                entry.
+                <br />
+                <br />
+                Your journal entries will be saved automatically.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col space-y-4">
+                {detailedAnalysis.map((item) => (
+                  <div key={item.name} className="flex flex-col">
+                    <span className="font-bold pb-2">{item.name}:</span>
+                    <span>{item.value}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className="divider"></div>
+              <div className="divider"></div>
 
-          <div className="flex flex-col space-y-3">
-            {compactAnalysis.map((item) => (
-              <div
-                key={item.name}
-                className="flex justify-between items-center"
-              >
-                <span className="font-semibold">{item.name}:</span>
-                <span>{item.value}</span>
+              <div className="flex flex-col space-y-3">
+                {compactAnalysis.map((item) => (
+                  <div
+                    key={item.name}
+                    className="flex justify-between items-center"
+                  >
+                    <span className="font-semibold">{item.name}:</span>
+                    <span>{item.value}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       </div>
     </div>

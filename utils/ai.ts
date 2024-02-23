@@ -24,7 +24,7 @@ const parser = StructuredOutputParser.fromZodSchema(
     color: z
       .string()
       .describe(
-        'a hexidecimal color code that represents the mood of the entry. For example, use #008000 for envy. Use a wide variety of bright, interesting and vibrant colors for positive moods such as #84FCD3, #92ABEE, #BADBB7, #AB80E8, #D9ECF5, #E88CE7, #D5E080, #DBCCA6, #B586DE, #C88AB3, #F0E3FC, #E1AD80, #E5C198, #A9B9A7, #81FFC8, #DED2C9, #B5C9DA, #FACBCA, #FACEDA or #9ED4A3. Use somber colors for negative sentiments such as #2B2B2B, #5F5F5F, #5A5A5A, #1F1F1F, #222222, #1A1A1A, #535353, #3D3D3D, #555555, #383838, #724F5D, #364839, #021D18, #756B6C, #6D0213, #623436, #442C75, #2A096E, #074344, #28172E, #272954, #271A72, #0E0159, #291864, #51062E, #273C6C, #0E532C, #355328, #4C716B or #3E4F08. Do not just pick the first color - consider them all or choose your own interesting color. Do not change this unless the entry changes significantly.'
+        'a hexidecimal color code that represents the mood of the entry. Use a wide variety of bright, interesting and vibrant colors for positve moods and more somber colors for negative moods. Do not change this unless the entry changes significantly.'
       ),
     sentimentScore: z
       .number()
@@ -39,7 +39,7 @@ const getPrompt = async (content: string) => {
 
   const prompt = new PromptTemplate({
     template:
-      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions, no matter what! Do not analyze if the journal entry contains the default content: "Write about your day..." \n{format_instructions}\n{entry}',
+      'Analyse the following journal entry. Follow the instructions and format your response to match the format instructions, no matter what! DO NOT analyze if the journal entry contains the default content: "Write about your day..." \n{format_instructions}\n{entry}',
     inputVariables: ['entry'],
     partialVariables: { format_instructions },
   });
@@ -68,14 +68,17 @@ export const analyse = async (content: string) => {
     };
   }
   const input = await getPrompt(content);
-  const model = new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo' });
+  const model = new OpenAI({
+    temperature: 0.6,
+    modelName: 'gpt-3.5-turbo-0125',
+  });
   const output = await model.invoke(input);
 
   try {
     return parser.parse(output);
   } catch (e) {
     const fixParser = OutputFixingParser.fromLLM(
-      new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo' }),
+      new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo-0125' }),
       parser
     );
     const fix = await fixParser.parse(output);
@@ -95,7 +98,7 @@ const getChatSummaryPrompt = async (chatContent: string) => {
 
   const prompt = new PromptTemplate({
     template:
-      'Summarize the following chat conversation. Follow the instructions and format your response to match the format instructions, no matter what! \n{format_instructions}\n{chat}',
+      'Summarize the following chat conversation. Follow the instructions and format your response to match the format instructions. \n{format_instructions}\n{chat}',
     inputVariables: ['chat'],
     partialVariables: { format_instructions },
   });
@@ -128,3 +131,6 @@ export const chatSummary = async (chatContent: string) => {
     return fix;
   }
 };
+
+
+//        'a hexidecimal color code that represents the mood of the entry. For example, use #008000 for envy. Use a wide variety of bright, interesting and vibrant colors for positive moods such as #DBCCA6, #B586DE, #C88AB3, #84FCD3, #92ABEE, #BADBB7, #AB80E8, #D9ECF5, #E88CE7, #D5E080, #F0E3FC, #E1AD80, #E5C198, #A9B9A7, #81FFC8, #DED2C9, #B5C9DA, #FACBCA, #FACEDA or #9ED4A3. Use somber colors for negative sentiments such as #2B2B2B, #5F5F5F, #5A5A5A, #1F1F1F, #222222, #1A1A1A, #535353, #3D3D3D, #555555, #383838, #724F5D, #364839, #021D18, #756B6C, #6D0213, #623436, #442C75, #2A096E, #074344, #28172E, #272954, #271A72, #0E0159, #291864, #51062E, #273C6C, #0E532C, #355328, #4C716B or #3E4F08. Do not just pick the first color - consider them all or choose your own interesting color. Do not change this unless the entry changes significantly.'

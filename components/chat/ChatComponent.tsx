@@ -176,7 +176,7 @@ export default function ChatComponent({
   // Component JSX
 
   return (
-    <div className="h-full ">
+    <div className="h-screen">
       <Menu clear={clear} />
 
       <div className="input w-full flex flex-col justify-between h-screen bg-neutral-100 dark:bg-blue-800 text-slate-700 dark:text-slate-300   ">
@@ -227,7 +227,7 @@ export default function ChatComponent({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Send a message"
-              className="text-lg mb-3"
+              className="text-lg "
               isBotTyping={isBotTyping}
               isBotProcessing={isBotProcessing}
             />
