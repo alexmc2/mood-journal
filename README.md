@@ -1,6 +1,6 @@
 # Mood Journal
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708449926/Screenshot_from_2024-02-20_17-25-12_zovwjv.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/video/upload/v1708622742/1871533_yellow_background_silhouette_person_3840x2160_qu2vho.mp4)
 
 ## Overview
 
@@ -10,11 +10,13 @@ Mood Journal is a web application designed to help users track their emotional w
 
 - **Journal Entries**: Users can create and manage journal entries to track their mood and thoughts. The application integrates TinyMCE as the rich text editor, offering enhanced formatting options for a better journaling experience. Upon save, an AI analysis is invoked, summarising the journal entry and attributing a sentiment score. These can be used to chart sentiment scores over time.
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708492303/Screenshot_from_2024-02-21_05-10-29_j34zwt.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708659945/Screenshot_from_2024-02-23_03-44-11_bbcqml.png)
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009292/Screenshot_from_2024-02-15_15-01-19_pvfykk.png)
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707957964/Screenshot_from_2024-02-15_00-45-32_tdruzl.png)
+
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708660127/Screenshot_from_2024-02-23_03-47-28_yn9xyw.png)
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009038/Screenshot_from_2024-02-15_14-56-52_cul0ix.png)
 
@@ -44,15 +46,15 @@ The Mood Journal app includes an AI chatbot that interacts with users by providi
 
 The initial chatbot version faced issues with memory and token limits, causing crashes. Gaining access to LangSmith was a turning point, providing the tools needed to overcome LangChain's complexities. After testing various configurations, a relatively simple runnable chain using LangChain Expression Language (LCEL) was chosen. This approach balances the need for rich context against the limitations of token limits and API response times.
 
-**Rich Text Editor Integration**: The decision to integrate a rich text editor was made to enhance the user experience, moving beyond basic text input to a more interactive and engaging interface. This upgrade, however, introduced several technical challenges that required innovative solutions. I experimented with various options, including Lexical editor, before deciding on TinyMCE for its ease of use, generous free tier, and relative ease of integration. 
+**Rich Text Editor Integration**: To enhance the user experience, the decision to integrate a rich text editor was made, moving beyond basic text input to a more interactive and engaging interface. This upgrade, however, introduced several technical challenges. I experimented with various rich text editors, including Lexical editor, before deciding on TinyMCE for its ease of use, generous free tier, and relative ease of integration.
 
 Saving and retrieving journal entries from the database, along with running AI analysis on these entries, proved significantly more complex with a rich text editor than with the original basic text input. The original app configuration, centered around a straightforward text area, allowed for a more direct and less complicated data handling and storage process. In contrast, the rich text editor required a more nuanced approach to manage the content's rich formatting and the subsequent AI analysis effectively.
 
-Preventing data loss when the user navigated away from the editor page also proved to be a challenge. A manual save button was initially implemented because the original autosave function triggered too many unnecessary API calls for the corresponding AI analysis. However, the issue of potential data loss when users navigated away from the page still needed to be addressed. Two main solutions were explored: a modal pop-up warning users of unsaved changes or an additional autosave feature for the journal content only. Each solution had its own set of challenges, especially in the context of Next.js 14's app router, which lacks the router.events available in the pages router. This complicated the implementation of a navigation interruption mechanisms and required integrating a custom unsaved changes context and link component to invoke the modal pop-up. 
+Preventing data loss when the user navigated away from the editor page also proved to be a challenge. A manual save button was initially implemented because the original autosave function triggered too many unnecessary API calls for the corresponding AI analysis. However, the issue of potential data loss when users navigated away from the page still needed to be addressed. Two main solutions were explored: a modal pop-up warning users of unsaved changes or an additional autosave feature for the journal content only. Each solution had its own set of challenges, especially in the context of Next.js 14's app router, which lacks the router.events available in the pages router. This complicated the implementation of a navigation interruption mechanisms and required integrating a custom unsaved changes context and link component to invoke the modal pop-up.
 
 The modal pop-up solution, while initially promising, was found to be overly aggressive in interrupting user navigation, often at the cost of user experience. It was challenging to finely tune this approach to differentiate between significant unsaved changes and minor, inconsequential alterations.
 
-The autosave feature, ultimately selected as the preferred solution, also presented its own challenges, particularly in terms of integration with TinyMCE. Integrating TinyMCE as a controlled component required careful management of its internal state and the app's state to ensure that the autosave feature functioned effectively, minimising unnecessary disruptions to the user experience while safeguarding against data loss. 
+The autosave feature, ultimately selected as the preferred solution, also presented its own challenges, particularly in terms of integration with TinyMCE. Integrating TinyMCE as a controlled component required careful management of its internal state and the app's state to ensure that the autosave feature functioned effectively, minimising unnecessary disruptions to the user experience while safeguarding against data loss.
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708043195/Screenshot_from_2024-02-16_00-26-16_vgjwfu.png)
 
