@@ -87,7 +87,7 @@ const JournalPage = () => {
 
   if (!entries || entries.length === 0) {
     return (
-      <div className="relative min-h-screen ">
+      <div className="relative h-full">
         <video
           className="absolute top-0 left-0 w-full h-full object-cover "
           autoPlay
@@ -133,7 +133,7 @@ const JournalPage = () => {
   }
 
   return (
-    <div className="flex flex-col justify-between min-h-screen p-10 pt-6">
+    <div className="flex flex-col justify-between h-full p-10 pt-6">
       <div>
         <h2 className="text-3xl pl-5 sm:pl-7 mt-16">JOURNALS</h2>
         <div className="grid 2xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-y-5 mt-4 md:gap-4 md:p-8">
