@@ -79,30 +79,20 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     // Long term chat memory. This is a hybrid search that uses both embeddings and metadata filters to retrieve previous messages that may be relevant to the current conversation.
 
-    const metadataFilter2 = JSON.stringify({
+    const metadataFilter2 = {
       userId: userId,
       type: 'message',
-    });
+    };
 
-    const metadataFilter3 = JSON.stringify({
+    const metadataFilter3 = {
       userId: userId,
-      type: 'bot-response',
-    });
+      type: 'bot',
+    };
 
-    const retriever = new SupabaseHybridSearch(embeddings, {
-      client,
-      //  Below are the defaults, expecting that you set up your supabase table and functions according to the guide above. Please change if necessary.
-      similarityK: 3,
-      keywordK: 3,
-      tableName: 'documents',
-
-      similarityQueryName: 'match_documents',
-      keywordQueryName: 'kw_match_documents',
-    });
-
-    const relevantPastChats = await retriever.getRelevantDocuments(
+    const relevantPastChats = await vectorStore.similaritySearch(
       sanitizedMessage,
-      JSON.parse(metadataFilter2) || JSON.parse(metadataFilter3)
+      3,
+      metadataFilter2 || metadataFilter3
     );
 
     // filter out the current chat ID from the relevant past chats
