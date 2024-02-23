@@ -44,7 +44,7 @@ export default async function DashboardPage() {
   // }
 
   return (
-    <div className="relative h-full">
+    <div className="relative min-h-screen">
       <video
         className="absolute top-0 left-0 w-full h-full  object-cover"
         autoPlay
