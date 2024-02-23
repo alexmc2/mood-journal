@@ -18,7 +18,7 @@ Mood Journal is a web application designed to help users track their emotional w
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708660127/Screenshot_from_2024-02-23_03-47-28_yn9xyw.png)
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009038/Screenshot_from_2024-02-15_14-56-52_cul0ix.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708725010/Screenshot_from_2024-02-23_21-49-34_v6feuo.png)
 
 - **AI Chatbot**: An AI-powered chatbot offers personalised interactions, using users' journals and chat history for context-aware responses.
 
@@ -46,6 +46,8 @@ The Mood Journal app includes an AI chatbot that interacts with users by providi
 
 The initial chatbot version faced issues with memory and token limits, causing crashes. Gaining access to LangSmith was a turning point, providing the tools needed to overcome LangChain's complexities. After testing various configurations, a relatively simple runnable chain using LangChain Expression Language (LCEL) was chosen. This approach balances the need for rich context against the limitations of token limits and API response times.
 
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708043195/Screenshot_from_2024-02-16_00-26-16_vgjwfu.png)
+
 **Rich Text Editor Integration**: To enhance the user experience, the decision to integrate a rich text editor was made, moving beyond basic text input to a more interactive and engaging interface. This upgrade, however, introduced several technical challenges. I experimented with various rich text editors, including Lexical Editor, before deciding on TinyMCE for its ease of use, generous free tier, and relative ease of integration.
 
 Saving and retrieving journal entries from the database, along with running AI analysis on these entries, proved significantly more complex with a rich text editor than with the original basic text input. The original app configuration, centered around a straightforward text area, allowed for a more direct and less complicated data handling and storage process. In contrast, the rich text editor required a more nuanced approach to manage the content's rich formatting and the subsequent AI analysis effectively.
@@ -56,9 +58,7 @@ The modal pop-up solution, while initially promising, was found to be overly agg
 
 The autosave feature, while ultimately selected as the preferred solution, also presented its own challenges, particularly in terms of integration with TinyMCE. Integrating TinyMCE as a React controlled component required careful management of its internal state and the app's state to ensure that the autosave feature functioned effectively, minimising unnecessary disruptions to the user experience while safeguarding against data loss.
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708043195/Screenshot_from_2024-02-16_00-26-16_vgjwfu.png)
-
-**Database** The app uses Supabase with the Pgvector extension for data storage. It stores vector representations of chat messages and journal entries using OpenAI embeddings. This setup ensures the chatbot can access relevant historical data for meaningful interactions. Recent chat history is retrieved as text from the database and used by LangChain's buffer memory to maintain continuity in ongoing chats.
+**Database** The app uses Supabase with the Pgvector extension for data storage. It stores vector representations of chat messages and journal entries using OpenAI embeddings. This setup ensures the chatbot can access relevant historical data for meaningful interactions. Recent chat history is retrieved as text from the database and used to maintain continuity in ongoing chats.
 
 ## Tech Stack
 

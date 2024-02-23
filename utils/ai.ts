@@ -24,7 +24,7 @@ const parser = StructuredOutputParser.fromZodSchema(
     color: z
       .string()
       .describe(
-        'a hexidecimal color code that represents the mood of the entry. Use a wide variety of bright, interesting and vibrant colors for positve moods and more somber colors for negative moods. Do not change this unless the entry changes significantly.'
+        'a hexidecimal color code that represents the mood of the entry. For example, Contentment (#DBCCA6), Playfulness (#B586DE), Affection (#C88AB3), Refreshed (#84FCD3), Calm (#92ABEE), Relaxed (#BADBB7), Inspired (#AB80E8), Peaceful (#D9ECF5), Joyful (#E88CE7), Optimistic (#D5E080), Serene (#F0E3FC), Warmth (#E1AD80), Comfort (#E5C198), Harmony (#A9B9A7), Invigorated (#81FFC8), Soothed (#DED2C9), Tranquil (#B5C9DA), Loved (#FACBCA), Delighted (#FACEDA), Hopeful (#9ED4A3), Despair (#2B2B2B), Melancholy (#5F5F5F), Sorrow (#5A5A5A), Grief (#1F1F1F), Loneliness (#222222), Isolation (#1A1A1A), Anxiety (#535353), Tension (#3D3D3D), Stress (#555555), Overwhelm (#383838), Regret (#724F5D), Envy (#364839), Guilt (#021D18), Shame (#756B6C), Anger (#6D0213), Resentment (#623436), Confusion (#442C75), Fear (#2A096E), Dread (#074344), Panic (#28172E), Nostalgia (#272954), Sadness (#271A72), Loss (#0E0159), Emptiness (#291864), Bitterness (#51062E), Disappointment (#273C6C), Jealousy (#0E532C), Pessimism (#355328), Fatigue (#4C716B), Worry (#3E4F08). Do not change this unless the entry changes significantly.'
       ),
     sentimentScore: z
       .number()

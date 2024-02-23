@@ -44,7 +44,7 @@ export default function DeleteModal({
 
   return (
     <dialog
-      className="modal modal-bottom sm:modal-middle"
+      className="modal modal-middle z-[10001]"
       open={isOpen}
       onClick={handleClose}
     >

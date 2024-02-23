@@ -39,7 +39,7 @@ export default function Message({
           : 'dark:bg-blue-800 bg-neutral-100'
       }`}
     >
-      <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[88%]  mx-auto items-start ">
+      <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[100%]  mx-auto items-start ">
         {isUser ? (
           <>
             <UserButton />

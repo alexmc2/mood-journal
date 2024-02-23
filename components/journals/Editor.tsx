@@ -2,7 +2,7 @@
 
 import { updateEntry, deleteEntry, fetchEntry } from '@/utils/api';
 import React, { useRef, useEffect, useState } from 'react';
-import Spinner from './Spinner';
+import Spinner from '../Spinner';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import CustomEditor from './CustomEditor';

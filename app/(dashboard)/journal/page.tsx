@@ -8,7 +8,7 @@ import { newEntry } from '@/utils/api';
 import { useRouter } from 'next/navigation';
 import newEntryIcon from '@/components/icons/newEntry';
 
-import EntryCard from '@/components/EntryCard';
+import EntryCard from '@/components/journals/EntryCard';
 import Link from 'next/link';
 
 const getEntries = async (page = 1) => {

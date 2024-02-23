@@ -33,12 +33,13 @@
     "utils/nodes/EmojiNode.js",
     "next.config.js",
     "postcss.config.js",
-    "components/CustomEditor.tsx",
+    "components/journals/CustomEditor.tsx",
     "utils/chatbot/embeddings.ts",
     "embeddings.js",
     "app/api/auth/requestMagicLink/route.js",
     "app/api/auth/verification/route.js",
-    "utils/database.js"
-, "utils/chatbot/deleteChats.js"  ],
+    "utils/database.js",
+    "utils/chatbot/deleteChats.js"
+  ],
   "exclude": ["node_modules"]
 }

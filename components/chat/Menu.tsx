@@ -1,7 +1,7 @@
 'use client';
 
 import { Menu as MenuIcon } from 'lucide-react';
-import PopoverButton from './Popover';
+import DeleteChatButton from './DeleteChatButton';
 import { useDisclosure } from '@nextui-org/react';
 
 import { Button } from '@/components/chat/ui/button';
@@ -19,7 +19,7 @@ import {
 } from '@/components/chat/ui/sheet';
 import { fetchAllChats } from '@/utils/api';
 
-import DeleteModal from '../DeleteChatModal';
+import DeleteModal from './DeleteChatModal';
 import { deleteChat } from '@/utils/api';
 import { useParams } from 'next/navigation';
 
@@ -114,7 +114,7 @@ export default function Menu({ clear }: { clear: () => void }) {
       <Sheet>
         <SheetTrigger asChild>
           <Button
-            className="absolute top-20 left-5 max-[500px]:left-2 "
+            className="absolute top-20 left-5 max-[500px]:left-2 z-50 "
             variant="default"
           >
             <MenuIcon className="w-5 h-5" />{' '}
@@ -137,7 +137,7 @@ export default function Menu({ clear }: { clear: () => void }) {
                   }}
                 >
                   <span>{chat.firstMessageSummary}</span>
-                  <PopoverButton
+                  <DeleteChatButton
                     chatId={chat.id}
                     onOpenDeleteModal={openDeleteModal}
                   />
