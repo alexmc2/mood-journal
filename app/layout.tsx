@@ -18,10 +18,7 @@ const inter = Inter({
   adjustFontFallback: false,
 });
 
-const roboto = Roboto({
-  weight: '400',
-  subsets: ['latin'],
-});
+
 
 export const metadata = {
   title: 'Mood Journal',
@@ -44,7 +41,7 @@ export default function RootLayout({
         <meta property="og:description" content={metadata.description} />
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/drbz4rq7y/image/upload/v1708744513/Screenshot_from_2024-02-24_03-14-08_djqjzy.png"
+          content="https://res.cloudinary.com/drbz4rq7y/image/upload/v1708799841/Screenshot_from_2024-02-24_18-33-22_vuuw8j.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metadata.title} />
