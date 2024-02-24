@@ -24,6 +24,7 @@ const createHash = async (content: string | undefined) => {
   return hashHex;
 };
 
+// This analysis background colour is dynamic so this function is used to determine the text colour based on the background colour
 const getContrastYIQ = (hexcolor: string) => {
   if (!hexcolor) {
     console.error('Hex color is undefined');
@@ -87,7 +88,7 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
         onClose(); // Close the modal
       } catch (error) {
         console.error('Error deleting journal:', error);
-        // Handle error (e.g., show a toast notification)
+       
       }
     }
   };
