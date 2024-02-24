@@ -157,12 +157,12 @@ export function Welcome() {
           <li>
             <strong>Chat with Your Personal Chatbot:</strong> Engage with your
             OpenAI-powered chatbot for personalised insights and support based
-            on your journal entries and mood trends.
+            on your journal entries and chat history.
           </li>
           <br />
           <li>
             <strong>Visualise Your Mood:</strong> Explore your mood patterns
-            over time with our interactive charts and summaries, helping you
+            over time with your history sentiment chart, helping you
             understand your emotional cycles better.
           </li>
         </ul>

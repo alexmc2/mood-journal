@@ -39,7 +39,7 @@ const UserGuide = () => {
 
             <p>
               Welcome to Mood Journal, your personal digital space for emotional
-              well-being and self-reflection. Our app combines the simplicity of
+              well-being and self-reflection. The app combines the simplicity of
               journaling with the power of AI to offer insights into your mood
               patterns and emotional health. Here’s how to make the most out of
               Mood Journal:
@@ -105,7 +105,7 @@ const UserGuide = () => {
             <ul>
               <li>
                 <strong>Track Your Mood:</strong> Visit the "History" section to
-                view visual charts and summaries of your mood over time. This
+                view visual charts of your mood over time. This
                 feature allows you to identify patterns, triggers, and
                 improvements in your emotional well-being. You can also access
                 your journal entries directly from the chart.
