@@ -34,13 +34,19 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <Head>
-        <meta property="og:url" content={metadata.url} />
+        <meta property="og:url" content="http://mood-chat.com" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content={metadata.title} />
-        <meta property="og:description" content={metadata.description} />
-        <meta property="og:image" content={metadata.imageUrl} />
+        <meta property="og:title" content="Mood Journal" />
+        <meta
+          property="og:description"
+          content="AI-Powered Mood Tracking Journal"
+        />
+        <meta
+          property="og:image"
+          content="https://res.cloudinary.com/drbz4rq7y/image/upload/v1708799841/Screenshot_from_2024-02-24_18-33-22_vuuw8j.png"
+        />
         <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
+        <meta name="description" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metadata.title} />
