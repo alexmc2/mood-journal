@@ -202,7 +202,7 @@ export default function ChatComponent({
             <div ref={bottomRef} />
           </div>
         </ScrollableFeed>
-        <div className="chat-input-container relative xl:w-[50%] w-[85%]  sm:max-w-[900px] max-w-[1200px] mx-auto mt-auto md:pb-8 pb-10">
+        <div className="chat-input-container relative xl:w-[50%] w-[100%]  sm:max-w-[900px] max-w-[1200px] mx-auto mt-auto md:pb-6 pb-4">
           {/* Textarea and button wrapper */}
           <div className="textarea-button-wrapper relative">
             <Input
