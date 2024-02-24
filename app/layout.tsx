@@ -18,11 +18,9 @@ const inter = Inter({
   adjustFontFallback: false,
 });
 
-
-
 export const metadata = {
   title: 'Mood Journal',
-  description: 'Track your emotional well-being with the help of AI',
+  description: 'AI-Powered Mood Tracking Journal',
 };
 
 export default function RootLayout({
@@ -36,16 +34,19 @@ export default function RootLayout({
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
         <link rel="icon" href="/favicon.ico" />
-        {/* Additional meta tags for social media sharing */}
-        <meta property="og:title" content={metadata.title} />
-        <meta property="og:description" content={metadata.description} />
+        <meta property="og:url" content="http://mood-chat.com" />
+        <meta property="og:type" content="website" />
         <meta
           property="og:image"
           content="https://res.cloudinary.com/drbz4rq7y/image/upload/v1708799841/Screenshot_from_2024-02-24_18-33-22_vuuw8j.png"
         />
-        <meta name="twitter:card" content="summary_large_image" />
+
+        <meta name="twitter:card" content="AI-Powered Mood Tracking Journal" />
         <meta name="twitter:title" content={metadata.title} />
-        <meta name="twitter:description" content={metadata.description} />
+        <meta
+          name="twitter:description"
+          content="AI-Powered Mood Tracking Journal"
+        />
         <meta
           name="twitter:image"
           content="https://res.cloudinary.com/drbz4rq7y/image/upload/v1708733721/Screenshot_from_2024-02-24_00-15-03_pcvkci.png"
