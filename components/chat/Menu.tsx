@@ -114,7 +114,7 @@ export default function Menu({ clear }: { clear: () => void }) {
       <Sheet>
         <SheetTrigger asChild>
           <Button
-            className="absolute top-20 left-5 max-[500px]:left-2 z-50 "
+            className="absolute top-20 left-5 max-[500px]:left-2 z-30 "
             variant="default"
           >
             <MenuIcon className="w-5 h-5" />{' '}

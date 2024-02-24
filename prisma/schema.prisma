@@ -27,7 +27,7 @@ model User {
   chatSessions ChatSession[]
   messages Message[]
   documents documents[]
-   magicTokens MagicToken[]
+  magicTokens MagicToken[]
 }
 
 model JournalEntry {

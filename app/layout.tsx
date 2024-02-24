@@ -10,6 +10,7 @@ import { Providers } from './providers/providers';
 import { Analytics } from '@vercel/analytics/react';
 import { Roboto } from 'next/font/google';
 import UnsavedChangesProvider from '@/app/providers/unsavedChangesProvider';
+import Head from 'next/head';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -34,8 +35,26 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
+      <Head>
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+        <link rel="icon" href="/favicon.ico" />
+        {/* Additional meta tags for social media sharing */}
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta
+          property="og:image"
+          content="https://res.cloudinary.com/drbz4rq7y/image/upload/v1708733721/Screenshot_from_2024-02-24_00-15-03_pcvkci.png"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={metadata.title} />
+        <meta name="twitter:description" content={metadata.description} />
+        <meta
+          name="twitter:image"
+          content="https://res.cloudinary.com/drbz4rq7y/image/upload/v1708733721/Screenshot_from_2024-02-24_00-15-03_pcvkci.png"
+        />
+      </Head>
       <html lang="en">
-        {/* suppressHydrationWarning: https://github.com/vercel/next.js/issues/44343 */}
         <body
           className={`${inter.className} font-inter antialiased bg-neutral-100 dark:bg-blue-800 text-slate-600 dark:text-slate-300 no-scrollbar`}
         >
