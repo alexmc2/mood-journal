@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <>
       <Head>
         <meta property="og:url" content="http://mood-chat.com" />
         <meta property="og:type" content="website" />
@@ -58,15 +58,17 @@ export default function RootLayout({
         <body
           className={`${inter.className} font-inter antialiased bg-neutral-100 dark:bg-blue-800 text-slate-600 dark:text-slate-300 no-scrollbar`}
         >
-          <Theme>
-            <AppProvider>
-              <Providers>
-                {children} <Analytics />
-              </Providers>
-            </AppProvider>
-          </Theme>
+          <ClerkProvider>
+            <Theme>
+              <AppProvider>
+                <Providers>
+                  {children} <Analytics />
+                </Providers>
+              </AppProvider>
+            </Theme>
+          </ClerkProvider>
         </body>
       </html>
-    </ClerkProvider>
+    </>
   );
 }
