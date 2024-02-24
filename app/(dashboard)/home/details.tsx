@@ -1,18 +1,11 @@
-
 'use client';
 
-import {
-
-  useSession,
-  useUser,
-  UserButton,
-} from '@clerk/nextjs';
+import { useSession, useUser, UserButton } from '@clerk/nextjs';
 
 import { motivationQuotes } from '../../../utils/motivationQuotes';
 
 import { useEffect, useState } from 'react';
 import { CopyIcon, Dot } from '../../icons';
-
 
 declare global {
   interface Window {
@@ -121,16 +114,16 @@ export function Motivation() {
 
   return (
     <div
-      className="bg-white/95 shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg text-center xl:min-h-[55vh] xl:max-h-[55vh] lg:px-8 px-2 py-8  "
+      className="bg-white/95 shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg text-center xl:min-h-[55vh] xl:max-h-[55vh] lg:px-8 px-0 py-8"
       style={{ boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)` }}
     >
-      <div className="p-8 xl:grid  ">
-        <h3 className="text-2xl  font-semibold text-gray-600 dark:text-slate-100  ">
+      <div className="p-8 xl:grid place-items-center">
+        <h3 className="text-2xl font-semibold text-gray-600 dark:text-slate-100">
           Daily Motivation
         </h3>
-        <p className=" text-gray-600 dark:text-slate-100 text-3xl text-left xl:pt-20 py-8">
+        <div className="text-gray-600 dark:text-slate-100 text-3xl text-left xl:pt-20 py-8 px-8 w-full max-w-[95%] md:max-w-xl mx-auto">
           "{prompt}"
-        </p>
+        </div>
       </div>
     </div>
   );
@@ -157,9 +150,8 @@ export function Welcome() {
         <ul className="list-disc pl-5 mt-4 text-gray-600 dark:text-slate-100 text-lg">
           <li>
             <strong>Journal Entries:</strong> Create daily entries to document
-            your thoughts, feelings, and the day's events. AI-powered
-            analysis will provide you with a summary and sentiment score for
-            each entry.
+            your thoughts, feelings, and the day's events. AI-powered analysis
+            will provide you with a summary and sentiment score for each entry.
           </li>
           <br />
           <li>
@@ -186,8 +178,3 @@ export function Welcome() {
     </div>
   );
 }
-
-
-
-
-
