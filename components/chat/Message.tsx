@@ -39,7 +39,7 @@ export default function Message({
           : 'dark:bg-blue-800 bg-neutral-100'
       }`}
     >
-      <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[100%]  mx-auto items-start ">
+      <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[98%]  mx-auto items-start ">
         {isUser ? (
           <>
             <UserButton />
@@ -96,7 +96,7 @@ export default function Message({
 export function Skeleton() {
   return (
     <div className={`py-7 h-fit `}>
-      <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[100%]  mx-auto items-start ">
+      <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[98%]  mx-auto items-start ">
         <span className="">{Logo}</span>
         <span className="leading-8">
           <Typewriter
