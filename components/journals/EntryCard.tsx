@@ -3,10 +3,19 @@ import { Divider } from '@nextui-org/react';
 import { useState } from 'react';
 
 const truncateText = (text: string, maxLength: number) => {
-  if (text.length > maxLength) {
-    return text.substring(0, maxLength) + '...';
-  }
-  return text;
+  if (text.length <= maxLength) return text;
+
+  // Find the last space within the maxLength
+  let trimmedText = text.substring(0, maxLength);
+  let lastSpaceIndex = trimmedText.lastIndexOf(' ');
+
+  if (lastSpaceIndex === -1 || lastSpaceIndex < maxLength * 0.8)
+    lastSpaceIndex = maxLength;
+
+  // Trim the text at the last space index to avoid cutting in the middle of a word
+  trimmedText = text.substring(0, lastSpaceIndex);
+
+  return trimmedText + '...';
 };
 
 const getContrastYIQ = (hexcolor: string) => {

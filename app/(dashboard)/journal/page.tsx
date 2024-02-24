@@ -133,13 +133,14 @@ const JournalPage = () => {
   }
 
   return (
-    <div className="flex flex-col justify-between h-full p-10 pt-10">
+    <div className="flex flex-col justify-between h-full p-6 md:p-10">
       <div>
-        <h2 className="text-3xl text-center md:text-left md:pl-8 md:pb-0 pb-6">
+        {/* Adjust the vertical padding/margin dynamically for "JOURNALS" */}
+        <h2 className="text-3xl text-center md:text-left md:pl-8 my-3 md:my-2">
           JOURNALS
         </h2>
 
-        <div className="grid 2xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-y-5 mt-4 md:gap-4 md:p-8 md:pb-0 pb-4">
+        <div className="grid 2xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-y-5 md:mt-3 mt-7 md:gap-4 md:p-4">
           {entries.map((entry) => (
             <Link href={`/journal/${entry.id}`} key={entry.id}>
               <div>
@@ -150,7 +151,7 @@ const JournalPage = () => {
         </div>
       </div>
 
-      <div className="flex justify-center items-end pb-2 ">
+      <div className="flex justify-center items-end md:py-0 py-4 ">
         <Pagination
           total={totalPages}
           initialPage={1}

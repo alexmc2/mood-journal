@@ -44,7 +44,7 @@ export default function RootLayout({
         <meta property="og:description" content={metadata.description} />
         <meta
           property="og:image"
-          content="https://res.cloudinary.com/drbz4rq7y/image/upload/v1708733721/Screenshot_from_2024-02-24_00-15-03_pcvkci.png"
+          content="https://res.cloudinary.com/drbz4rq7y/image/upload/v1708744513/Screenshot_from_2024-02-24_03-14-08_djqjzy.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metadata.title} />
