@@ -58,7 +58,6 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     );
 
     // Fetch journals relevant to conversation
-
     const relevantDocs = await vectorStore.similaritySearch(
       sanitizedMessage,
       3,
@@ -67,7 +66,6 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     console.log('Relevant docs:', relevantDocs);
 
     // Format the context and relevant documents
-
     const formattedRelevantDocs = relevantDocs
       .map(
         (doc) =>
@@ -77,7 +75,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     console.log('formattedRelevantDocs', formattedRelevantDocs);
 
-    // Long term chat memory. This is a hybrid search that uses both embeddings and metadata filters to retrieve previous messages that may be relevant to the current conversation.
+    // Long term chat memory. 
 
     const metadataFilter2 = {
       userId: userId,
@@ -91,12 +89,11 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     const relevantPastChats = await vectorStore.similaritySearch(
       sanitizedMessage,
-      4,
+      3,
       metadataFilter2 || metadataFilter3
     );
 
     // filter out the current chat ID from the relevant past chats
-
     const filteredRelevantPastChats = relevantPastChats.filter(
       (doc) => doc.metadata.chatId !== chatId // Use the chatId from metadata for comparison
     );
@@ -111,7 +108,6 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     console.log('formattedRelevantPastChats', formattedRelevantPastChats);
 
-    // Recent chat history from supbase. Chat history for the current chat is retrieved from the 'documents' table in Supabase.
 
     const fetchChatHistory = async (userId: string, chatId: any) => {
       let { data: chatHistory, error } = await client
@@ -120,7 +116,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         .eq('userId', userId)
         .eq('chatId', chatId)
         .order('createdAt', { ascending: false }) // Order by createdAt in descending order
-        .limit(10);
+        .limit(8);
 
       if (error) {
         console.error('Error fetching chat history:', error);
@@ -151,10 +147,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         // Example of adding a simple structure enhancement
         return `${index + 1}. [${label}] ${message.content}`;
       })
-      .join('\n\n'); // Increase separation for better readability
-
-
-      // recent sentiment scores for prompt
+      .join('\n\n'); 
 
 
 
@@ -181,7 +174,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     const historyAwarePrompt = ChatPromptTemplate.fromMessages([
       [
         'system',
-        `Adopt the position of a wise and empathic friend and respond directly to the user's last message: \n\n HUMAN: ${sanitizedMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat. AI has access to historical chats and relevant journal entries and these can be used to provide background information.`,
+        `Adopt the position of a wise and empathic friend and respond directly to the user's last message: \n\n HUMAN: ${sanitizedMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat. AI has access to historical chats and relevant journal entries to provide additional context.`,
       ],
       ['system', chatHistoryString],
       [
@@ -191,7 +184,8 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       // Final instruction to the AI for generating a response based on all provided context
       [
         'system',
-        'Consider the above conversation and additional context in your response if it is relevant. Offer guidance or advice that could help the user. Match the user\'s... Ask questions to encourage reflection, and show interest in what the user has to say. Do not be repetitive in your responses.',
+        "Consider the above conversation and additional context in your response if it is relevant. Consider the user's current mood as inferred from their recent journal entries or chat messages and respond in a way that matches this mood, for example, contemplative, playful, serious, or reflective. Offer guidance or advice that could help the user. Ask questions to encourage reflection, and show genuine interest in the user. Avoid excessive repetition, no matter what!",
+        // "Consider the user's current mood as inferred from their recent journal entries or chat history and respond in a way that matches this mood, whether it be uplifting, contemplative, or supportive. Offer guidance or advice that is relevant and thoughtful, encouraging reflection where appropriate. Show genuine interest and avoid repetition.",
       ],
     ]);
 

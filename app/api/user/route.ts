@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
   try {
     console.log('Fetching user details from Clerk');
     const userDetails = await clerkClient.users.getUser(userId);
+    const firstName = userDetails.firstName || 'there';
     console.log('User details fetched:', userDetails);
 
     console.log('Checking if user exists in database');
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
       console.log('User already exists in database');
     }
 
-    return new Response(JSON.stringify({ success: true, user }), {
+    return new Response(JSON.stringify({ success: true, user, firstName }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

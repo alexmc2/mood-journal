@@ -141,4 +141,3 @@ export const chatSummary = async (chatContent: string) => {
   }
 };
 
-//'a hexidecimal color code that represents the mood of the entry. For example, Love (#FF0000), Envy (#008000), (Contentment (#DBCCA6), Playfulness (#B586DE), Affection (#C88AB3), Refreshed (#84FCD3), Calm (#92ABEE), Relaxed (#BADBB7), Inspired (#AB80E8), Peaceful (#D9ECF5), Optimistic (#D5E080), Serene (#F0E3FC), Warmth (#E1AD80), Comfort (#E5C198), Harmony (#A9B9A7), Invigorated (#81FFC8), Soothed (#DED2C9), Tranquil (#B5C9DA), Loved (#FACBCA), Delighted (#FACEDA), Hopeful (#9ED4A3), Anger (#B22222), Sadness (#4169E1), Anxiety (#DAA520), Jealousy (#556B2F), Fear (#483D8B), Guilt (#CD853F), Despair (#274A78), Regret (#008080), Resentment (#6A5ACD), Stress (#FF7F50) Do not change this unless the entry changes significantly.';

@@ -173,7 +173,6 @@ export const DELETE = async (
     return NextResponse.json({ error: 'Chat not found or unauthorized' });
   }
 
-
   try {
     // Delete messages from Prisma
     await prisma.message.deleteMany({ where: { chatId: chatId } });
