@@ -1,52 +1,26 @@
-import { auth, clerkClient } from '@clerk/nextjs';
-import { redirect } from 'next/navigation';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useUser } from '@clerk/nextjs';
 import { Motivation, Welcome, UserDetails } from './details';
 
-export default async function DashboardPage() {
-  const { userId } = auth();
+export default function DashboardPage() {
+  const { isSignedIn, user } = useUser();
+  const [firstName, setFirstName] = useState('');
 
-  if (!userId) {
-    redirect('/');
-  }
+  useEffect(() => {
+    if (user) {
+      // Assuming `firstName` is a direct property of the user object.
+      setFirstName(user.firstName || '');
+    }
+  }, [user]);
 
-  const user = await clerkClient.users.getUser(userId);
-
-  const isStranger = !user?.firstName;
-
-  //   return (
-  //     <div className="px-8 py-12 sm:py-16 md:px-20">
-  //       {user && (
-  //         <>
-  //           <h1 className="text-3xl font-semibold text-slate-600 dark:text-slate-300">
-  //             👋 Hi, {user.firstName || `Stranger`}
-  //             {isStranger && (
-  //               <span className="ml-2 text-sm text-slate-500">
-  //                 (Click on profile image to update your details)
-  //               </span>
-  //             )}
-  //           </h1>
-  //           <div className="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4">
-  //             <div>
-  //               <UserDetails />
-  //             </div>
-  //             <div className="">
-  //               <Motivation />
-  //             </div>
-
-  //             <div className="xl:col-span-2">
-  //               <Welcome />
-  //             </div>
-  //           </div>
-  //         </>
-  //       )}
-  //     </div>
-  //   );
-  // }
+  const isStranger = !firstName;
 
   return (
     <div className="relative min-h-screen">
       <video
-        className="absolute top-0 left-0 w-full h-full  object-cover"
+        className="absolute top-0 left-0 w-full h-full object-cover"
         autoPlay
         muted
         loop
@@ -56,33 +30,41 @@ export default async function DashboardPage() {
           type="video/mp4"
         />
       </video>
-      {/* <div className="absolute inset-0 bg-white opacity-10"></div>{' '} */}
-      {/* This div wraps content and ensures it's above the video */}
       <div className="z-10 relative px-4 py-12 sm:py-16 md:px-20">
-        {user && (
-          <>
-            <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-800">
-              👋 Hi, {user.firstName || `Stranger`}
-              {isStranger && (
-                <span className="ml-2 text-lg text-slate-700 ">
-                  (Click on profile image to update your details)
-                </span>
-              )}
-            </h1>
+        <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-800">
+          👋 Hi, {isSignedIn && user ? user.firstName || `Stranger` : 'Visitor'}
+          {isStranger && isSignedIn && (
+            <span className="ml-2 text-lg text-slate-700 ">
+              (Click on profile image to update your details)
+            </span>
+          )}
+        </h1>
 
-            <div className="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-5">
-              <div>
-                <UserDetails />
+        <div className="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-5">
+          {/* Always render the UserDetails container but conditionally display content based on sign-in status */}
+          <div>
+            {isSignedIn && user ? (
+              <UserDetails />
+            ) : (
+              <div
+                className="bg-white/95  shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg xl:min-h-[55vh] xl:max-h-[55vh] flex items-center justify-center h-full"
+                style={{
+                  boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)`,
+                }}
+              >
+                <div className="text-gray-600 dark:text-slate-100 text-3xl text-center py-8 px-8 w-full max-w-[95%] md:max-w-xl mx-auto">
+                  <p>Please sign in to access your profile details.</p>
+                </div>
               </div>
-              <div>
-                <Motivation />
-              </div>
-              <div className="xl:col-span-2">
-                <Welcome />
-              </div>
-            </div>
-          </>
-        )}
+            )}
+          </div>
+          <div>
+            <Motivation />
+          </div>
+          <div className="xl:col-span-2">
+            <Welcome />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-     "start": "next start -p 8080",
+    "start": "next start -p 8080",
     "postinstall": "prisma generate",
     "lint": "next lint"
   },
@@ -67,6 +67,7 @@
     "nodemailer": "^6.9.9",
     "openai": "^4.24.7",
     "postcss": "^8.4.32",
+    "prisma-field-encryption": "^1.5.2",
     "punycode": "^2.3.1",
     "react": "^18.2.0",
     "react-autosave": "^0.4.4",

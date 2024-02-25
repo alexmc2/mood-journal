@@ -133,7 +133,6 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
         createdAt: new Date(),
       };
 
-      // Insert the bot's response embedding into the 'documents' table. This will insert the embedding directly into Supabase.
       const { error } = await client.from('documents').insert([
         {
           content: doc.pageContent,

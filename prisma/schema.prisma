@@ -38,7 +38,7 @@ model JournalEntry {
   userId String
   user   User              @relation(fields: [userId], references: [id])
 
-  content String           @db.Text
+  content String           @db.Text /// @encrypted
   contentHash String?      // New field for storing the content hash
 
   analysis Analysis?
@@ -98,7 +98,7 @@ model Message {
   user   User?    @relation(fields: [userId], references: [id])
   isUser Boolean  // Indicates if the message is from a user
 
-  text String     @db.Text
+  text String     @db.Text /// @encrypted
   embedding Unsupported("vector(1536)")?
 
 
@@ -121,17 +121,15 @@ model ChatSession {
 
 
 model documents {
-  id            BigInt    @id @default(autoincrement())
-  
-  content       String
-  metadata      Json
+  id              BigInt    @id @default(autoincrement())
+  content         String    @db.Text /// @encrypted
+  metadata        Json
   embedding     Unsupported("vector(1536)")
-
-  userId        String?    // User ID
-  journalEntryId String?   // Nullable Journal Entry ID
-  chatId        String?   // Nullable Chat ID
-  updatedAt DateTime?  @updatedAt
-  createdAt DateTime?  @default(now())
+  userId          String?    // User ID
+  journalEntryId  String?   // Nullable Journal Entry ID
+  chatId          String?   // Nullable Chat ID
+  updatedAt       DateTime?     @updatedAt
+  createdAt       DateTime?     @default(now())
 
   // Relations
   user          User?     @relation(fields: [userId], references: [id])

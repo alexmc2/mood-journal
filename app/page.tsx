@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default async function Home() {
   const { userId } = await auth();
-  let href = userId ? '/home' : '/new-user';
+  let href = userId ? '/home' : '/home';
 
   return (
     <div className="h-full overflow-x-hidden overflow-y-hidden flex flex-col justify-between items-center no-scrollbar">

@@ -24,7 +24,7 @@ const parser = StructuredOutputParser.fromZodSchema(
     color: z
       .string()
       .describe(
-        'a hexidecimal color code that represents the mood of the entry. For example, Love (#FF0000), Envy (#008000), (Contentment (#A1E7E4), Guilt (#CD853F), Despair (#274A78), Regret (#008080), Resentment (#6A5ACD), Stress (#FF7F50) Do not change this unless the entry changes significantly.'
+        'a hexidecimal color code that represents the mood of the entry. For example,  Envy (#008000), Playfulness (#B586DE), Contentment (#A1E7E4), Guilt (#CD853F), Despair (#274A78), Regret (#008080), Love (#FF0000), Resentment (#6A5ACD), Stress (#FF7F50) Do not change this unless the entry changes significantly.'
       ),
     sentimentScore: z
       .number()
@@ -96,8 +96,8 @@ const chatParser = StructuredOutputParser.fromZodSchema(
 const getChatSummaryPrompt = async (chatContent: string) => {
   const format_instructions = chatParser.getFormatInstructions();
 
-const prompt = new PromptTemplate({
-  template: `
+  const prompt = new PromptTemplate({
+    template: `
 Summarize the following chat conversation concisely, focusing on the main topics discussed. Ensure the summary is clear, concise, and directly addresses the chat content without including unnecessary details.
 
 Example Summaries: Challenges faced over the day, Difficult discussion with a friend, Planning for the weekend. 
@@ -108,10 +108,9 @@ Format Instructions:
 Chat Content:
 {chat}
 `,
-  inputVariables: ['chat'],
-  partialVariables: { format_instructions },
-});
-
+    inputVariables: ['chat'],
+    partialVariables: { format_instructions },
+  });
 
   return await prompt.format({ chat: chatContent });
 };

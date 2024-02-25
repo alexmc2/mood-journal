@@ -67,7 +67,6 @@ export const POST = async (
         createdAt: new Date(),
       };
 
-      // Insert the embedding into the 'documents' table. This will insert the embedding directly into Supabase.
       const { error } = await client.from('documents').insert([
         {
           content: doc.pageContent,
@@ -116,7 +115,6 @@ export const POST = async (
         createdAt: new Date(),
       };
 
-      // Insert the bot's response embedding into the 'documents' table. This will insert the embedding directly into Supabase.
       const { error } = await client.from('documents').insert([
         {
           content: doc.pageContent,
@@ -144,12 +142,8 @@ export const GET = async () => {
   const chats = await prisma.chat.findMany({
     where: {
       userId: user.id,
-      messages: {
-        some: {
-          text: {
-            not: '',
-          },
-        },
+      NOT: {
+        summary: null,
       },
     },
     include: {

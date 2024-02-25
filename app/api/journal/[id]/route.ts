@@ -112,7 +112,7 @@ export const PATCH = async (
           updatedAt: new Date(), 
         };
 
-        // Update embeddings in Supabase
+
         const { error } = await client.from('documents').insert({
           content: updatedEntry.content,
           embedding: embedding,

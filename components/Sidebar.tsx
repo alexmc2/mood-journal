@@ -6,9 +6,6 @@ import { useSelectedLayoutSegments } from 'next/navigation';
 import { Transition } from '@headlessui/react';
 import { getBreakpoint } from '../utils/utils';
 import { newEntry } from '@/utils/api';
-
-import Logo from './Logo';
-
 import Link from 'next/link';
 import HomeIcon from './icons/home';
 import HistoryIcon from './icons/history';
@@ -17,7 +14,7 @@ import { ChatIcon } from './icons/chat';
 import newEntryIcon from './icons/newEntry';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-
+import { useUser } from '@clerk/nextjs';
 
 export default function Sidebar() {
   const sidebar = useRef<HTMLDivElement>(null);
@@ -32,7 +29,7 @@ export default function Sidebar() {
   const router = useRouter();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-
+  const { isSignedIn } = useUser();
 
   const links = [
     { name: 'Home', href: '/home', icon: HomeIcon },
@@ -74,15 +71,18 @@ export default function Sidebar() {
     };
   }, [breakpoint]);
 
-
   // New journal entry link
-
   const handleOnClick = async () => {
-    if (!isButtonDisabled) {
-      setIsButtonDisabled(true); // Disable the button
-      const { data } = await newEntry();
-      router.push(`/journal/${data.id}`);
-      setTimeout(() => setIsButtonDisabled(false), 4000);
+    if (!isSignedIn) {
+      router.push(`/please-login?action=new_entry`);
+    } else {
+      if (!isButtonDisabled) {
+        setIsButtonDisabled(true); // Disable the button
+        const { data } = await newEntry();
+        router.push(`/journal/${data.id}`);
+        // Enable the button again after 4 seconds. Protects against spamming the button if it doesn't respond immediately, creating multiple new entries
+        setTimeout(() => setIsButtonDisabled(false), 4000);
+      }
     }
   };
 
@@ -104,11 +104,33 @@ export default function Sidebar() {
   };
 
   const handleChatClick = async () => {
-    if (!isButtonDisabled) {
-      setIsButtonDisabled(true); // Disable the button
-      let newChatId = await generateNewChatId();
-      router.replace(`/chat/${newChatId}`);
-      setTimeout(() => setIsButtonDisabled(false), 4000);
+    if (!isSignedIn) {
+      router.push(`/please-login?action=new_chat`);
+    } else {
+      if (!isButtonDisabled) {
+        setIsButtonDisabled(true); // Disable the button
+        let newChatId = await generateNewChatId();
+        router.replace(`/chat/${newChatId}`);
+        setTimeout(() => setIsButtonDisabled(false), 4000);
+      }
+    }
+  };
+
+  // Handler for "Journal Entries" button
+  const handleJournalClick = async () => {
+    if (!isSignedIn) {
+      router.push('/please-login?action=journals');
+    } else {
+      router.push('/journal');
+    }
+  };
+
+  // Handler for "History" button
+  const handleHistoryClick = async () => {
+    if (!isSignedIn) {
+      router.push('/please-login?action=history');
+    } else {
+      router.push('/history');
     }
   };
 
@@ -159,11 +181,9 @@ export default function Sidebar() {
               <path d="M10.7 18.7l1.4-1.4L7.8 13H20v-2H7.8l4.3-4.3-1.4-1.4L4 12z" />
             </svg>
           </button>
-
-        
         </div>
 
-        {/* Links */}
+        {/* Links
         <div className="space-y-8 " onClick={() => setSidebarOpen(false)}>
           <div>
             <ul className="mt-3">
@@ -201,6 +221,100 @@ export default function Sidebar() {
                       />
                       {sidebarExpanded && <span>{link.name}</span>}
                     </button>
+                  ) : (
+                    // Other links
+                    <Link href={link.href}>
+                      <div
+                        className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                          sidebarExpanded
+                            ? 'justify-start pl-4'
+                            : 'justify-center'
+                        }`}
+                      >
+                        <link.icon
+                          className={`${sidebarExpanded ? 'mr-2' : ''}`}
+                          color="black"
+                        />
+                        {sidebarExpanded && <span>{link.name}</span>}
+                      </div>
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div> */}
+        {/* Links */}
+        <div className="space-y-8 " onClick={() => setSidebarOpen(false)}>
+          <div>
+            <ul className="mt-3">
+              {links.map((link) => (
+                <li key={link.name} className="my-4 ">
+                  {link.name === 'New Chat' ? (
+                    // 'CHAT' button
+                    <div
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                        sidebarExpanded
+                          ? 'justify-start pl-4'
+                          : 'justify-center'
+                      }`}
+                      onClick={handleChatClick}
+                    >
+                      <link.icon
+                        className={`${sidebarExpanded ? 'mr-2' : ''}`}
+                        color="black"
+                      />
+                      {sidebarExpanded && <span>{link.name}</span>}
+                    </div>
+                  ) : link.name === 'New Entry' ? (
+                    // 'NEW ENTRY' button
+                    // 'NEW ENTRY' button
+                    <button
+                      className={`flex items-center btn text-lg btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                        sidebarExpanded
+                          ? 'justify-start pl-4'
+                          : 'justify-center'
+                      }`}
+                      onClick={handleOnClick}
+                    >
+                      <link.icon
+                        className={`${sidebarExpanded ? 'mr-2' : ''}`}
+                        color="black"
+                      />
+                      {sidebarExpanded && <span>{link.name}</span>}
+                    </button>
+                  ) : link.name === 'Journal Entries' ? (
+                    // 'JOURNAL ENTRIES' button
+                    <div
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                        sidebarExpanded
+                          ? 'justify-start pl-4'
+                          : 'justify-center'
+                      }`}
+                      onClick={handleJournalClick}
+                    >
+                      <link.icon
+                        className={`${sidebarExpanded ? 'mr-2' : ''}`}
+                        color="black"
+                      />
+                      {sidebarExpanded && <span>{link.name}</span>}
+                    </div>
+                  ) : link.name === 'History' ? (
+                    // 'HISTORY' button
+                    <div
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                        sidebarExpanded
+                          ? 'justify-start pl-4'
+                          : 'justify-center'
+                      }`}
+                      onClick={handleHistoryClick}
+                    >
+                      <link.icon
+                        className={`${sidebarExpanded ? 'mr-2' : ''}`}
+                        color="black"
+                      />
+                      {sidebarExpanded && <span>{link.name}</span>}
+                    </div>
                   ) : (
                     // Other links
                     <Link href={link.href}>

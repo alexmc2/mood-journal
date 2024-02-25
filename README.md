@@ -8,7 +8,7 @@ Mood Journal is a web application designed to help users track their emotional w
 
 ## Features
 
-- **Journal Entries**: Users can create and manage journal entries to track their mood and thoughts. The application integrates TinyMCE as the rich text editor, offering enhanced formatting options for a better journaling experience. Upon save, an AI analysis is invoked, summarising the journal entry and attributing a sentiment score. These can be used to chart sentiment scores over time.
+- **Journal Entries**: Users can create and manage journal entries to track their mood and thoughts. The application integrates TinyMCE as the rich text editor, offering enhanced formatting options for a better journaling experience. Upon save, an AI analysis is invoked, summarising the journal entry and attributing a sentiment score. These are used to chart sentiment scores over time.
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708659945/Screenshot_from_2024-02-23_03-44-11_bbcqml.png)
 
@@ -38,6 +38,10 @@ Mood Journal is a web application designed to help users track their emotional w
 
 - **Authentication**: Utilises Clerk for user authentication.
 
+- **Security**: All sensitive content such as chat messages and journal entries is encrypted using the Prisma field-level encryption extension. This encryption process is initiated on the server-side and ensures that all sensitive information is securely encrypted before being stored in the database.
+
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708891452/Screenshot_from_2024-02-25_20-04-03_syet6z.png)
+
 ## Implementation Overview
 
 The Mood Journal app includes an AI chatbot that interacts with users by providing insights based on their journal entries and chat history. This README section outlines the development of the application, focusing on the challenges encountered and the solutions implemented.
@@ -50,7 +54,7 @@ The initial chatbot version faced issues with memory and token limits, causing c
 
 **Rich Text Editor Integration**: To enhance the user experience, the decision to integrate a rich text editor was made, moving beyond basic text input to a more interactive and engaging interface. This upgrade, however, introduced several technical challenges. I experimented with various rich text editors, including Lexical Editor, before deciding on TinyMCE for its ease of use, generous free tier, and relative ease of integration.
 
-Saving and retrieving journal entries from the database, along with running AI analysis on these entries, proved significantly more complex with a rich text editor than with the original basic text input. The original app configuration, centered around a straightforward text area, allowed for a more direct and less complicated data handling and storage process. In contrast, the rich text editor required a more nuanced approach to manage the content's rich formatting and the subsequent AI analysis effectively.
+Saving and retrieving journal entries from the database, along with running AI analysis on these entries, proved significantly more complex with a rich text editor than with the original basic text input. The original app configuration, centered around a straightforward text area, allowed for a more direct and less complicated data handling and storage process. In contrast, the rich text editor required a more nuanced approach to manage the internal state and subsequent AI analysis effectively.
 
 Preventing data loss when the user navigated away from the editor page also proved to be a challenge. A manual save button was initially implemented because the original autosave function triggered too many unnecessary API calls for the corresponding AI analysis. However, the issue of potential data loss when users navigated away from the page still needed to be addressed. Two main solutions were explored: a modal pop-up warning users of unsaved changes and an additional autosave feature for the journal content only. Each solution had its own set of challenges, especially in the context of Next.js 14's app router, which lacks the router.events available in the pages router. This complicated the implementation of a navigation interruption mechanisms and required integrating a custom unsavedChangesContext and a link component to invoke the modal pop-up.
 

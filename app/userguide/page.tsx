@@ -88,7 +88,7 @@ const UserGuide = () => {
               <li>
                 <strong>Start a New Chat:</strong> Click on "New Chat" from the
                 sidebar. This generates a new chat session where you can
-                converse with our OpenAI-powered chatbot. The chatbot offers
+                converse with an OpenAI-powered chatbot. The chatbot offers
                 insights and support based on your journal entries and mood
                 trends.
               </li>

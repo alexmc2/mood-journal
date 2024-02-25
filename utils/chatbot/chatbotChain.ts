@@ -73,7 +73,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         (doc) =>
           `Similarity Match (${doc.metadata.updatedAt}): ${doc.pageContent}`
       )
-      .join('\n');
+      .join('\n\n');
 
     console.log('formattedRelevantDocs', formattedRelevantDocs);
 
@@ -91,7 +91,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     const relevantPastChats = await vectorStore.similaritySearch(
       sanitizedMessage,
-      3,
+      4,
       metadataFilter2 || metadataFilter3
     );
 
@@ -107,7 +107,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         (doc) =>
           `Similarity Match (${doc.metadata.createdAt}): ${doc.pageContent}`
       )
-      .join('\n');
+      .join('\n\n');
 
     console.log('formattedRelevantPastChats', formattedRelevantPastChats);
 
@@ -142,6 +142,8 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     const chatHistory = await fetchChatHistory(userId, chatId);
 
+    console.log('chatHistory:', chatHistory);
+
     const chatHistoryString = (chatHistory ?? [])
       .map((message, index) => {
         const label =
@@ -150,6 +152,11 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         return `${index + 1}. [${label}] ${message.content}`;
       })
       .join('\n\n'); // Increase separation for better readability
+
+
+      // recent sentiment scores for prompt
+
+
 
     const chatModel = new ChatOpenAI({
       modelName: 'gpt-3.5-turbo-0125',
@@ -184,7 +191,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       // Final instruction to the AI for generating a response based on all provided context
       [
         'system',
-        'Consider the above conversation and additional context in your response if it is relevant. Offer support, guidance, or advice that could help the user. Ask questions to encourage reflection, and show interest in what the user has to say.',
+        'Consider the above conversation and additional context in your response if it is relevant. Offer guidance or advice that could help the user. Match the user\'s... Ask questions to encourage reflection, and show interest in what the user has to say. Do not be repetitive in your responses.',
       ],
     ]);
 

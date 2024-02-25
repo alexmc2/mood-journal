@@ -1,14 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppProvider } from '@/app/providers/app-provider';
 import { UserButton } from '@clerk/nextjs';
+import { useUser, SignInButton, SignUpButton } from '@clerk/nextjs';
 
 import ThemeToggle from '@/components/theme-toggle';
 
 export default function Header() {
   const { sidebarOpen, setSidebarOpen } = useAppProvider();
+  const { isSignedIn } = useUser();
   // const [searchModalOpen, setSearchModalOpen] = useState<boolean>(false);
+
+  useEffect(() => { }, []);
 
   return (
     <header className="sticky top-0  bg-blue-900  z-40">
@@ -42,8 +46,7 @@ export default function Header() {
           {/* Header: Right side */}
           <div className="flex items-center space-x-3">
             <div>
-             
-{/* 
+              {/* 
               <SearchModal
                 isOpen={searchModalOpen}
                 setIsOpen={setSearchModalOpen}
@@ -53,7 +56,23 @@ export default function Header() {
 
             {/*  Divider */}
             <hr className="w-px h-6 bg-slate-200 dark:bg-slate-700 border-none" />
-            <UserButton />
+            {/* Conditionally render sign-in and sign-up buttons if the user is not signed in */}
+            {!isSignedIn ? (
+              <>
+                <SignInButton redirectUrl="/new-user">
+                  <button className="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded transition duration-500">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton redirectUrl="/new-user">
+                  <button className="ml-2 bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded transition duration-500">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </>
+            ) : (
+              <UserButton /> // Show UserButton if the user is signed in
+            )}
           </div>
         </div>
       </div>
