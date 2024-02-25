@@ -20,7 +20,7 @@ export default function NewUser() {
         console.log(
           'User setup failed or not authenticated, redirecting to sign-in'
         );
-        window.location.href = '/sign-in';
+        router.push('/sign-in');
       }
     }
 
