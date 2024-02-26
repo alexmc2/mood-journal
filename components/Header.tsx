@@ -15,7 +15,7 @@ export default function Header() {
   useEffect(() => { }, []);
 
   return (
-    <header className="sticky top-0  bg-blue-900  z-40">
+    <header className="sticky top-0  bg-slate-900 z-40">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 ">
           {/* Header: Left side */}
@@ -23,7 +23,7 @@ export default function Header() {
             {/* Hamburger button */}
 
             <button
-              className="text-slate-500 hover:text-slate-600 lg:hidden"
+              className="text-blue-200 hover:text-blue-400 lg:hidden"
               aria-controls="sidebar"
               aria-expanded={sidebarOpen}
               onClick={() => {

@@ -142,8 +142,12 @@ export const GET = async () => {
   const chats = await prisma.chat.findMany({
     where: {
       userId: user.id,
-      NOT: {
-        summary: null,
+      messages: {
+        some: {
+          text: {
+            not: '',
+          },
+        },
       },
     },
     include: {

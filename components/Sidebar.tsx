@@ -138,7 +138,7 @@ export default function Sidebar() {
     <div className={`min-w-fit  ${sidebarExpanded ? 'sidebar-expanded' : ''} `}>
       {/* Sidebar backdrop (mobile only) */}
       <Transition
-        className="fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto"
+        className="fixed inset-0 bg-slate-900 bg-opacity-40 z-40 lg:hidden lg:z-auto"
         show={sidebarOpen}
         enter="transition-opacity ease-out duration-200"
         enterFrom="opacity-0"
@@ -183,68 +183,6 @@ export default function Sidebar() {
           </button>
         </div>
 
-        {/* Links
-        <div className="space-y-8 " onClick={() => setSidebarOpen(false)}>
-          <div>
-            <ul className="mt-3">
-              {links.map((link) => (
-                <li key={link.name} className="my-4 ">
-                  {link.name === 'New Chat' ? (
-                    // 'CHAT' button
-                    <div
-                      className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
-                        sidebarExpanded
-                          ? 'justify-start pl-4'
-                          : 'justify-center'
-                      }`}
-                      onClick={handleChatClick}
-                    >
-                      <link.icon
-                        className={`${sidebarExpanded ? 'mr-2' : ''}`}
-                        color="black"
-                      />
-                      {sidebarExpanded && <span>{link.name}</span>}
-                    </div>
-                  ) : link.name === 'New Entry' ? (
-                    // 'NEW ENTRY' button
-                    <button
-                      className={`flex items-center btn text-lg btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
-                        sidebarExpanded
-                          ? 'justify-start pl-4'
-                          : 'justify-center'
-                      }`}
-                      onClick={handleOnClick}
-                    >
-                      <link.icon
-                        className={`${sidebarExpanded ? 'mr-2' : ''}`}
-                        color="black"
-                      />
-                      {sidebarExpanded && <span>{link.name}</span>}
-                    </button>
-                  ) : (
-                    // Other links
-                    <Link href={link.href}>
-                      <div
-                        className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
-                          sidebarExpanded
-                            ? 'justify-start pl-4'
-                            : 'justify-center'
-                        }`}
-                      >
-                        <link.icon
-                          className={`${sidebarExpanded ? 'mr-2' : ''}`}
-                          color="black"
-                        />
-                        {sidebarExpanded && <span>{link.name}</span>}
-                      </div>
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div> */}
-        {/* Links */}
         <div className="space-y-8 " onClick={() => setSidebarOpen(false)}>
           <div>
             <ul className="mt-3">

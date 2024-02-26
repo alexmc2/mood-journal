@@ -87,9 +87,65 @@ export const analyse = async (content: string) => {
 };
 
 //chat summary code for sidebar
+// const chatParser = StructuredOutputParser.fromZodSchema(
+//   z.object({
+//     summary: z.string().describe('a quick summary of the chat.'),
+//   })
+// );
+
+// const getChatSummaryPrompt = async (chatContent: string) => {
+//   const format_instructions = chatParser.getFormatInstructions();
+
+//   const prompt = new PromptTemplate({
+//     template: `
+// Summarize the following chat conversation concisely, focusing on the main topics discussed. Ensure the summary is clear, concise, and directly addresses the chat content without including unnecessary details.
+
+// Example Summaries: Challenges faced over the day, Difficult discussion with a friend, Planning for the weekend.
+
+// Format Instructions:
+// {format_instructions}
+
+// Chat Content:
+// {chat}
+// `,
+//     inputVariables: ['chat'],
+//     partialVariables: { format_instructions },
+//   });
+
+//   return await prompt.format({ chat: chatContent });
+// };
+
+// export const chatSummary = async (chatContent: string) => {
+//   if (!chatContent || chatContent.trim() === '') {
+//     return {
+//       summary: 'No chat content available.',
+//     };
+//   }
+
+//   const input = await getChatSummaryPrompt(chatContent);
+//   const model = new OpenAI({
+//     temperature: 0,
+//     modelName: 'gpt-3.5-turbo-0125',
+//   });
+//   const output = await model.invoke(input);
+
+//   try {
+//     return chatParser.parse(output);
+//   } catch (e) {
+//     const fixParser = OutputFixingParser.fromLLM(
+//       new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo-0125' }),
+//       chatParser
+//     );
+//     const fix = await fixParser.parse(output);
+//     return fix;
+//   }
+// };
+
+//chat summary code for sidebar
 const chatParser = StructuredOutputParser.fromZodSchema(
   z.object({
     summary: z.string().describe('a quick summary of the chat.'),
+    subject: z.string().describe('the main subject of the chat.'),
   })
 );
 
@@ -97,17 +153,8 @@ const getChatSummaryPrompt = async (chatContent: string) => {
   const format_instructions = chatParser.getFormatInstructions();
 
   const prompt = new PromptTemplate({
-    template: `
-Summarize the following chat conversation concisely, focusing on the main topics discussed. Ensure the summary is clear, concise, and directly addresses the chat content without including unnecessary details.
-
-Example Summaries: Challenges faced over the day, Difficult discussion with a friend, Planning for the weekend. 
-
-Format Instructions:
-{format_instructions}
-
-Chat Content:
-{chat}
-`,
+    template:
+      'Summarize the following chat conversation. Follow the instructions and format your response to match the format instructions, no matter what! \n{format_instructions}\n{chat}',
     inputVariables: ['chat'],
     partialVariables: { format_instructions },
   });
@@ -119,25 +166,22 @@ export const chatSummary = async (chatContent: string) => {
   if (!chatContent || chatContent.trim() === '') {
     return {
       summary: 'No chat content available.',
+      subject: 'N/A',
     };
   }
 
   const input = await getChatSummaryPrompt(chatContent);
-  const model = new OpenAI({
-    temperature: 0,
-    modelName: 'gpt-3.5-turbo-0125',
-  });
-  const output = await model.invoke(input);
+  const model = new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo' });
+  const output = await model.call(input);
 
   try {
     return chatParser.parse(output);
   } catch (e) {
     const fixParser = OutputFixingParser.fromLLM(
-      new OpenAI({ temperature: 0, modelName: 'gpt-3.5-turbo-0125' }),
+      new OpenAI({ temperature: 0.4, modelName: 'gpt-3.5-turbo' }),
       chatParser
     );
     const fix = await fixParser.parse(output);
     return fix;
   }
 };
-
