@@ -1,6 +1,13 @@
 'use client';
 
-import { useEffect, useRef, useState, useContext, SetStateAction } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  SetStateAction,
+  use,
+} from 'react';
 import { useAppProvider } from '@/app/providers/app-provider';
 import { useSelectedLayoutSegments } from 'next/navigation';
 import { Transition } from '@headlessui/react';
@@ -15,6 +22,7 @@ import newEntryIcon from './icons/newEntry';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { useUser } from '@clerk/nextjs';
+import { useTheme } from 'next-themes';
 
 export default function Sidebar() {
   const sidebar = useRef<HTMLDivElement>(null);
@@ -30,6 +38,9 @@ export default function Sidebar() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const { isSignedIn } = useUser();
+
+  const { theme } = useTheme();
+  // const iconColor = theme === 'light' ? 'white' : 'black';
 
   const links = [
     { name: 'Home', href: '/home', icon: HomeIcon },
@@ -156,7 +167,7 @@ export default function Sidebar() {
         as="div"
         id="sidebar"
         ref={sidebar}
-        className="flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-slate-900 p-4 transition-all duration-200 ease-in-out"
+        className="flex lg:!flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-[100dvh] overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 dark:bg-slate-900 bg-neutral-100 p-4 transition-all duration-200 ease-in-out"
         enterFrom="-translate-x-full"
         enterTo="translate-x-0"
         leaveFrom="translate-x-0"
@@ -187,11 +198,11 @@ export default function Sidebar() {
           <div>
             <ul className="mt-3">
               {links.map((link) => (
-                <li key={link.name} className="my-4 ">
+                <li key={link.name} className="my-2 ">
                   {link.name === 'New Chat' ? (
                     // 'CHAT' button
                     <div
-                      className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
                         sidebarExpanded
                           ? 'justify-start pl-4'
                           : 'justify-center'
@@ -200,15 +211,13 @@ export default function Sidebar() {
                     >
                       <link.icon
                         className={`${sidebarExpanded ? 'mr-2' : ''}`}
-                        color="black"
                       />
                       {sidebarExpanded && <span>{link.name}</span>}
                     </div>
                   ) : link.name === 'New Entry' ? (
                     // 'NEW ENTRY' button
-                    // 'NEW ENTRY' button
                     <button
-                      className={`flex items-center btn text-lg btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                      className={`flex items-center btn text-lg btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
                         sidebarExpanded
                           ? 'justify-start pl-4'
                           : 'justify-center'
@@ -217,14 +226,13 @@ export default function Sidebar() {
                     >
                       <link.icon
                         className={`${sidebarExpanded ? 'mr-2' : ''}`}
-                        color="black"
                       />
                       {sidebarExpanded && <span>{link.name}</span>}
                     </button>
                   ) : link.name === 'Journal Entries' ? (
                     // 'JOURNAL ENTRIES' button
                     <div
-                      className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
                         sidebarExpanded
                           ? 'justify-start pl-4'
                           : 'justify-center'
@@ -233,14 +241,13 @@ export default function Sidebar() {
                     >
                       <link.icon
                         className={`${sidebarExpanded ? 'mr-2' : ''}`}
-                        color="black"
                       />
                       {sidebarExpanded && <span>{link.name}</span>}
                     </div>
                   ) : link.name === 'History' ? (
                     // 'HISTORY' button
                     <div
-                      className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
                         sidebarExpanded
                           ? 'justify-start pl-4'
                           : 'justify-center'
@@ -249,7 +256,6 @@ export default function Sidebar() {
                     >
                       <link.icon
                         className={`${sidebarExpanded ? 'mr-2' : ''}`}
-                        color="black"
                       />
                       {sidebarExpanded && <span>{link.name}</span>}
                     </div>
@@ -257,7 +263,7 @@ export default function Sidebar() {
                     // Other links
                     <Link href={link.href}>
                       <div
-                        className={`flex items-center text-lg btn btn-md w-full bg-blue-200 hover:bg-blue-400 border-none ${
+                        className={`flex items-center text-lg btn btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
                           sidebarExpanded
                             ? 'justify-start pl-4'
                             : 'justify-center'
@@ -265,7 +271,6 @@ export default function Sidebar() {
                       >
                         <link.icon
                           className={`${sidebarExpanded ? 'mr-2' : ''}`}
-                          color="black"
                         />
                         {sidebarExpanded && <span>{link.name}</span>}
                       </div>

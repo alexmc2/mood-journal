@@ -130,7 +130,7 @@ export default function Menu({ clear }: { clear: () => void }) {
               {chats.map((chat) => (
                 <div
                   key={chat.id}
-                  className="flex flex-row items-center justify-between hover:bg-gray-800 dark:hover:text-inherit hover:text-white py-3 px-3 rounded-lg cursor-pointer"
+                  className="flex flex-row items-center justify-between dark:hover:bg-gray-800  hover:bg-gray-300  hover:text-white py-3 px-3 rounded-lg cursor-pointer"
                   onClick={() => {
                     push(`/chat/${chat.id}`);
                     clear();

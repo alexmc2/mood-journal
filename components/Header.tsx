@@ -15,7 +15,7 @@ export default function Header() {
   useEffect(() => { }, []);
 
   return (
-    <header className="sticky top-0  bg-slate-900 z-40">
+    <header className="sticky top-0  dark:bg-slate-900 bg-neutral-100 z-40">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 ">
           {/* Header: Left side */}
@@ -60,12 +60,12 @@ export default function Header() {
             {!isSignedIn ? (
               <>
                 <SignInButton afterSignInUrl="/new-user">
-                  <button className="bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded transition duration-500">
+                  <button className="bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 text-white dark:text-black font-bold py-2 px-4 rounded transition duration-500">
                     Sign In
                   </button>
                 </SignInButton>
                 <SignUpButton afterSignUpUrl="/new-user">
-                  <button className="ml-2 bg-blue-200 hover:bg-blue-400 text-black font-bold py-2 px-4 rounded transition duration-500">
+                  <button className="ml-2 bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 text-white dark:text-black font-bold py-2 px-4 rounded transition duration-500">
                     Sign Up
                   </button>
                 </SignUpButton>

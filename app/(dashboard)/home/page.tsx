@@ -31,7 +31,7 @@ export default function DashboardPage() {
         />
       </video>
       <div className="z-10 relative px-4 py-12 sm:py-16 md:px-20">
-        <h1 className="text-3xl font-semibold text-slate-800 dark:text-slate-800">
+        <h1 className="text-3xl font-semibold text-white dark:text-slate-800">
           👋 Hi, {isSignedIn && user ? user.firstName || `Stranger` : 'Visitor'}
           {isStranger && isSignedIn && (
             <span className="ml-2 text-lg text-slate-700 ">

@@ -42,6 +42,31 @@
   border: 2px solid #a0a0a0;
 }
 
+/* In your global or component-specific CSS */
+:root {
+  --icon-stroke-light: #000; /* Black for light theme */
+  --icon-stroke-dark: #fff; /* White for dark theme */
+}
+
+[data-theme="light"] {
+  --icon-stroke: var(--icon-stroke-light);
+}
+
+[data-theme="dark"] {
+  --icon-stroke: var(--icon-stroke-dark);
+}
+
+.icon-light-theme {
+  color: var(--icon-color-light);
+}
+
+.icon-dark-theme {
+  color: var(--icon-color-dark);
+}
+
+
+
+
 html {
   font-family: var(--font);
 }

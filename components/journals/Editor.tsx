@@ -88,7 +88,6 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
         onClose(); // Close the modal
       } catch (error) {
         console.error('Error deleting journal:', error);
-       
       }
     }
   };
@@ -196,7 +195,7 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
   const {
     mood = '',
     summary = '',
-    color = '#ffffff',
+    color = '#f8f8f8',
     subject = '',
     negative = false,
     sentimentScore = '',
@@ -293,7 +292,7 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
       </div>
       <div className="order-2 lg:order-2 flex flex-col lg:border-l lg:px-8 dark:border-slate-600 border-slate-300 lg:col-span-1">
         <div
-          className="card shadow-xl flex w-full h-full flex-col gap-4 p-8"
+          className="card shadow-sm flex w-full h-full flex-col gap-4 p-8"
           style={{ backgroundColor: color, color: textColor }}
         >
           <h2 className="text-2xl font-bold items-center justify-between self-center pt-2">

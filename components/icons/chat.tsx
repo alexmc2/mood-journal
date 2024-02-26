@@ -1,3 +1,4 @@
+import { useTheme } from 'next-themes';
 import React from 'react';
 
 interface ChatIconProps {
@@ -8,10 +9,10 @@ interface ChatIconProps {
 export const ChatIcon: React.FC<ChatIconProps> = ({ className, color }) => {
   return (
     <svg
-      className="shrink-0 h-10 w-10"
+      className="shrink-0 h-10 w-10 ${className}"
       viewBox="0 0 24 24"
       fill="none"
-      stroke={color}
+      stroke="currentColor"
       strokeWidth="1.8"
       xmlns="http://www.w3.org/2000/svg"
     >

@@ -34,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        
           <meta property="og:url" content="http://mood-chat.com" />
           <meta property="og:type" content="website" />
           <meta property="og:title" content="Mood Journal" />
@@ -55,7 +56,7 @@ export default function RootLayout({
         </head>
 
       <body
-        className={`${inter.className} font-inter antialiased bg-neutral-100 dark:bg-blue-800 text-slate-600 dark:text-slate-300 no-scrollbar`}
+        className={`${inter.className} font-inter antialiased bg-white dark:bg-blue-800 text-slate-600 dark:text-slate-300 no-scrollbar`}
       >
         <ClerkProvider>
           <Theme>
