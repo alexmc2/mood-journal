@@ -67,7 +67,7 @@ const EntryCard = ({ entry }: { entry: any }) => {
     : 'No analysis available';
   const analysisMood = entry.analysis ? entry.analysis.mood : 'N/A';
   const analysisColor =
-    entry.analysis && entry.analysis.color !== '#FFFFFF'
+    entry.analysis && entry.analysis.color !== '#F8F8F8'
       ? entry.analysis.color
       : null;
 

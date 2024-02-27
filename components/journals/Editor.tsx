@@ -195,7 +195,7 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
   const {
     mood = '',
     summary = '',
-    color = '#f8f8f8',
+    color = '#F8F8F8',
     subject = '',
     negative = false,
     sentimentScore = '',
@@ -295,11 +295,11 @@ const Editor = ({ entry }: { entry: Entry | null }) => {
           className="card shadow-sm flex w-full h-full flex-col gap-4 p-8"
           style={{ backgroundColor: color, color: textColor }}
         >
-          <h2 className="text-2xl font-bold items-center justify-between self-center pt-2">
+          <h2 className="text-2xl font-bold items-center justify-between self-center pt-4">
             Analysis
           </h2>
           <div className="divider"></div>
-          {color === '#ffffff' ? (
+          {color === '#F8F8F8' ? (
             <div className="flex flex-col space-y-4 p-4">
               <p>
                 Press the save button to run the AI analysis on your journal
