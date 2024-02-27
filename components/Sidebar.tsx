@@ -36,6 +36,7 @@ export default function Sidebar() {
     !sidebarExpanded && (breakpoint === 'lg' || breakpoint === 'xl');
   const router = useRouter();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+   const [navigateTo, setNavigateTo] = useState(null);
 
   const { isSignedIn } = useUser();
 
@@ -49,6 +50,8 @@ export default function Sidebar() {
     { name: 'History', href: '/history', icon: HistoryIcon },
     { name: 'New Chat', href: '/chat', icon: ChatIcon },
   ];
+
+
 
   // close on click outside sidebar (mobile only and medium screens)
   useEffect(() => {
@@ -196,13 +199,13 @@ export default function Sidebar() {
 
         <div className="space-y-8 " onClick={() => setSidebarOpen(false)}>
           <div>
-            <ul className="mt-3">
+            <ul className="mt-1">
               {links.map((link) => (
                 <li key={link.name} className="my-2 ">
                   {link.name === 'New Chat' ? (
                     // 'CHAT' button
                     <div
-                      className={`flex items-center text-lg btn btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-100 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-300 border-none text-slate-600 dark:text-slate-800 ${
                         sidebarExpanded
                           ? 'justify-start pl-4'
                           : 'justify-center'
@@ -217,7 +220,7 @@ export default function Sidebar() {
                   ) : link.name === 'New Entry' ? (
                     // 'NEW ENTRY' button
                     <button
-                      className={`flex items-center btn text-lg btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
+                      className={`flex items-center btn text-lg btn-md w-full bg-blue-100 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-300 border-none text-slate-600 dark:text-slate-800 ${
                         sidebarExpanded
                           ? 'justify-start pl-4'
                           : 'justify-center'
@@ -232,7 +235,7 @@ export default function Sidebar() {
                   ) : link.name === 'Journal Entries' ? (
                     // 'JOURNAL ENTRIES' button
                     <div
-                      className={`flex items-center text-lg btn btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-100 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-300 border-none text-slate-600 dark:text-slate-800 ${
                         sidebarExpanded
                           ? 'justify-start pl-4'
                           : 'justify-center'
@@ -247,7 +250,7 @@ export default function Sidebar() {
                   ) : link.name === 'History' ? (
                     // 'HISTORY' button
                     <div
-                      className={`flex items-center text-lg btn btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
+                      className={`flex items-center text-lg btn btn-md w-full bg-blue-100 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-300 border-none text-slate-600 dark:text-slate-800 ${
                         sidebarExpanded
                           ? 'justify-start pl-4'
                           : 'justify-center'
@@ -263,7 +266,7 @@ export default function Sidebar() {
                     // Other links
                     <Link href={link.href}>
                       <div
-                        className={`flex items-center text-lg btn btn-md w-full bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 border-none text-white dark:text-slate-800 ${
+                        className={`flex items-center text-lg btn btn-md w-full bg-blue-100 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-300 border-none text-slate-600 dark:text-slate-800 ${
                           sidebarExpanded
                             ? 'justify-start pl-4'
                             : 'justify-center'

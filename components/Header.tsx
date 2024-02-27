@@ -10,9 +10,14 @@ import ThemeToggle from '@/components/theme-toggle';
 export default function Header() {
   const { sidebarOpen, setSidebarOpen } = useAppProvider();
   const { isSignedIn } = useUser();
-  // const [searchModalOpen, setSearchModalOpen] = useState<boolean>(false);
 
-  useEffect(() => { }, []);
+  // useEffect hook to log the user's sign-in status whenever it changes
+  useEffect(() => {
+    console.log(`User is ${isSignedIn ? 'signed in' : 'not signed in'}.`);
+  }, [isSignedIn]);
+
+  //TODO, search functionality
+  // const [searchModalOpen, setSearchModalOpen] = useState<boolean>(false);
 
   return (
     <header className="sticky top-0  dark:bg-slate-900 bg-neutral-100 z-40">
@@ -23,7 +28,7 @@ export default function Header() {
             {/* Hamburger button */}
 
             <button
-              className="text-blue-200 hover:text-blue-400 lg:hidden"
+              className="dark:text-blue-200 text-blue-600 hover:text-blue-400 lg:hidden"
               aria-controls="sidebar"
               aria-expanded={sidebarOpen}
               onClick={() => {
@@ -56,19 +61,21 @@ export default function Header() {
 
             {/*  Divider */}
             <hr className="w-px h-6 bg-slate-200 dark:bg-slate-700 border-none" />
-            {/* Conditionally render sign-in and sign-up buttons if the user is not signed in */}
+
             {!isSignedIn ? (
               <>
-                <SignInButton afterSignInUrl="/new-user">
-                  <button className="bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 text-white dark:text-black font-bold py-2 px-4 rounded transition duration-500">
-                    Sign In
-                  </button>
-                </SignInButton>
-                <SignUpButton afterSignUpUrl="/new-user">
-                  <button className="ml-2 bg-blue-400 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-400 text-white dark:text-black font-bold py-2 px-4 rounded transition duration-500">
-                    Sign Up
-                  </button>
-                </SignUpButton>
+                <div className="flex justify-center items-center space-x-2">
+                  <SignInButton mode="redirect" afterSignInUrl="/new-user">
+                    <div className="cursor-pointer bg-blue-100 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-300 border-none text-slate-600 dark:text-slate-800 font-bold py-2 px-4 rounded transition duration-500">
+                      Sign In
+                    </div>
+                  </SignInButton>
+                  <SignUpButton mode="redirect" afterSignUpUrl="/new-user">
+                    <div className="cursor-pointer bg-blue-100 hover:bg-blue-200 dark:bg-blue-200 dark:hover:bg-blue-300 border-none text-slate-600 dark:text-slate-800 font-bold py-2 px-4 rounded transition duration-500">
+                      Sign Up
+                    </div>
+                  </SignUpButton>
+                </div>
               </>
             ) : (
               <UserButton /> // Show UserButton if the user is signed in

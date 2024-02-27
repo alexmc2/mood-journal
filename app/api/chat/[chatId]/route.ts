@@ -107,7 +107,7 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
     data: {
       chatId: chatId,
       text: answer,
-      userId: null, // No userId for chatbot messages
+      userId: user.id, 
       isUser: false,
       createdAt: new Date(),
     },

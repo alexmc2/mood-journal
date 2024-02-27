@@ -1,6 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function PleaseLogin() {
   const searchParams = useSearchParams();
@@ -21,8 +22,7 @@ export default function PleaseLogin() {
       message = 'Please sign in to view your journals.';
       break;
     case 'history':
-      message =
-        'Please sign in to view your sentiment history chart.';
+      message = 'Please sign in to view your sentiment history chart.';
       break;
     default:
       break;

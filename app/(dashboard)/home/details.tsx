@@ -19,7 +19,7 @@ export function UserDetails() {
 
   return (
     <div
-      className="bg-white/95  shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg xl:min-h-[55vh] xl:max-h-[55vh]"
+      className="bg-white/90  shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg xl:min-h-[55vh] xl:max-h-[55vh]"
       style={{
         boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)`,
       }}
@@ -114,7 +114,7 @@ export function Motivation() {
 
   return (
     <div
-      className="bg-white/95 shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg text-center xl:min-h-[55vh] xl:max-h-[55vh] lg:px-8 px-0 py-8"
+      className="bg-white/90 shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg text-center xl:min-h-[55vh] xl:max-h-[55vh] lg:px-8 px-0 py-8"
       style={{ boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)` }}
     >
       <div className="p-8 xl:grid place-items-center">
@@ -132,7 +132,7 @@ export function Motivation() {
 export function Welcome() {
   return (
     <div
-      className="bg-white/95  shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg lg:p-6 px-2"
+      className="bg-white/90  shadow-xl dark:bg-blue-900/95 overflow-hidden sm:rounded-lg lg:p-6 px-2"
       style={{
         boxShadow: `0px 20px 24px -4px rgba(16, 24, 40, 0.08)`,
       }}

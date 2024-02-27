@@ -1,4 +1,4 @@
-import Link from '@/components/link/Link'
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAppProvider } from '@/app/providers/app-provider';
 
