@@ -186,7 +186,7 @@ export default function ChatComponent({
           onScroll={(isAtBottom: boolean) => updateIsAtBottomState(isAtBottom)}
         >
           <div
-            className=" messages w-full mx-auto h-full mb-4 overflow-y-auto flex flex-col gap-8 pt-10 max-[900px]:pt-20 scroll-smooth  "
+            className=" messages w-full mx-auto h-full mb-4 overflow-y-auto flex flex-col gap-8 pt-10 max-[900px]:pt-20 scroll-smooth scroll-hidden "
             ref={scrollRef}
           >
             {messages.map((message) => (

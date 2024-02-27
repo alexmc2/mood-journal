@@ -33,7 +33,7 @@ export default function DashboardPage() {
       </video>
       <div className="z-10 relative px-4 py-12 sm:py-10 md:px-20 ">
         <h1 className="text-center sm:text-left md:text-4xl lg:text-5xl text-3xl font-semibold text-slate-200 dark:text-slate-800 ">
-          Hi, {isSignedIn && user ? user.firstName || `Stranger` : 'Visitor!'}
+          Hi, {isSignedIn && user ? user.firstName || `Stranger` : 'Visitor'}
           {isStranger && isSignedIn && (
             // <span className="block sm:inline ml-2 text-center sm:text-left md:text-2xl lg:text-3xl text-xl font-semibold text-slate-200 dark:text-slate-800 ">
             //   (Click on profile image to update your details)

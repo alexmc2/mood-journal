@@ -36,7 +36,7 @@ export default function Sidebar() {
     !sidebarExpanded && (breakpoint === 'lg' || breakpoint === 'xl');
   const router = useRouter();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-   const [navigateTo, setNavigateTo] = useState(null);
+  const [navigateTo, setNavigateTo] = useState(null);
 
   const { isSignedIn } = useUser();
 
@@ -51,7 +51,10 @@ export default function Sidebar() {
     { name: 'New Chat', href: '/chat', icon: ChatIcon },
   ];
 
-
+  // useEffect hook to log the user's sign-in status whenever it changes
+  useEffect(() => {
+    console.log(`User is ${isSignedIn ? 'signed in' : 'not signed in'}.`);
+  }, [isSignedIn]);
 
   // close on click outside sidebar (mobile only and medium screens)
   useEffect(() => {
