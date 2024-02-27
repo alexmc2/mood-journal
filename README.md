@@ -1,10 +1,10 @@
-# Mood Journal
+# Mood Chat
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708660386/Screenshot_from_2024-02-23_03-52-53_vsx82z.png)
 
 ## Overview
 
-Mood Journal is a web application designed to help users track their emotional well-being through journaling. It features a Langchain-powered chatbot that interacts with users, providing insights based on their journal entries and previous conversations.
+Mood Chat is a web application designed to help users track their emotional well-being through journaling. It features a Langchain-powered chatbot that interacts with users, providing insights based on their journal entries and previous conversations.
 
 ## Features
 
@@ -22,11 +22,11 @@ Mood Journal is a web application designed to help users track their emotional w
 
 - **AI Chatbot**: An AI-powered chatbot offers personalised interactions, using users' journals and chat history for context-aware responses.
 
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1709038949/Screenshot_from_2024-02-27_13-02-06_ghzh60.png)
+
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708492528/Screenshot_from_2024-02-21_05-15-18_otmliv.png)
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009633/Screenshot_from_2024-02-15_15-06-39_k60ji9.png)
-
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009828/Screenshot_from_2024-02-15_15-09-54_xakevr.png)
+![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1709040595/Screenshot_from_2024-02-27_13-29-40_emccks.png)
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708010037/Screenshot_from_2024-02-15_15-13-15_l0m0x7.png)
 
@@ -44,7 +44,7 @@ Mood Journal is a web application designed to help users track their emotional w
 
 ## Implementation Overview
 
-The Mood Journal app includes an AI chatbot that interacts with users by providing insights based on their journal entries and chat history. This README section outlines the development of the application, focusing on the challenges encountered and the solutions implemented.
+The Mood Chat app includes an AI chatbot that interacts with users by providing insights based on their journal entries and chat history. This README section outlines the development of the application, focusing on the challenges encountered and the solutions implemented.
 
 **LangChain Integration**: The biggest challenge was integrating LangChain for personalised chat experiences, especially managing user-specific chat history in a serverless environment like Next.js. LangChain's documentation mainly covers local chat memory persistence, which isn't directly applicable to serverless architectures. Due to limited examples of LangChain memory in production, developing a functional chat memory solution required navigating through a significant learning curve.
 
@@ -60,7 +60,7 @@ Preventing data loss when the user navigated away from the editor page also prov
 
 The modal pop-up solution, while initially promising, was found to be overly aggressive in interrupting user navigation, often at the cost of user experience. It was challenging to finely tune this approach to differentiate between significant unsaved changes and minor, inconsequential alterations.
 
-The autosave feature, while ultimately selected as the preferred solution, also presented its own challenges, particularly in terms of integration with TinyMCE as a controlled component. This required leveraging the useRef and useState hooks for real-time content tracking and state management, ensuring that changes within the TinyMCE editor are accurately captured and reflected in the application's state. 
+The autosave feature, while ultimately selected as the preferred solution, also presented its own challenges, particularly in terms of integration with TinyMCE as a controlled component. This required leveraging the useRef and useState hooks for real-time content tracking and state management, ensuring that changes within the TinyMCE editor are accurately captured and reflected in the application's state.
 
 **Database** The app uses Supabase with the Pgvector extension for data storage. It stores vector representations of chat messages and journal entries using OpenAI embeddings. This setup ensures the chatbot can access relevant historical data for meaningful interactions. Recent chat history is retrieved as text from the database and used to maintain continuity in ongoing chats.
 

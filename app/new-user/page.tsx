@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+// The user is redirected to this page after signing in.
+// This page calls the /api/user endpoint to check if the user exists in the database.
 export default function NewUser() {
   const router = useRouter();
 
@@ -34,7 +36,7 @@ export default function NewUser() {
           <div className="w-full max-w-[900px]  px-2 card bg-black/50 ">
             <div className="card-body ">
               <h1 className="text-3xl md:text-5xl pb-4  text-white ">
-                MOOD JOURNAL
+                Mood Chat
               </h1>
 
               <div>

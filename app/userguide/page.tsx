@@ -6,9 +6,9 @@ const UserGuide = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <div>
-        <title>User Guide | Mood Journal</title>
+        <title>User Guide | Mood Chat</title>
       </div>
-      {/* Back to Mood Journal button */}
+      {/* Back to Mood Chat button */}
       <div className="pt-6 px-5 w-full flex justify-start">
         <Link href="/home" passHref>
           <div className="mb-2 flex items-center text-blue-500 hover:text-blue-700 font-semibold">
@@ -27,7 +27,7 @@ const UserGuide = () => {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to Mood Journal
+            Back to Mood Chat
           </div>
         </Link>
       </div>
@@ -35,14 +35,14 @@ const UserGuide = () => {
       <div className="flex-grow flex items-center justify-center">
         <div className="max-w-4xl mx-auto p-5">
           <div className="bg-white p-8 rounded-lg shadow-lg prose">
-            <h1 className="text-center pt-6">How to Use Mood Journal</h1>
+            <h1 className="text-center pt-6">How to Use Mood Chat</h1>
 
             <p>
-              Welcome to Mood Journal, your personal digital space for emotional
+              Welcome to Mood Chat, your personal digital space for emotional
               well-being and self-reflection. The app combines the simplicity of
               journaling with the power of AI to offer insights into your mood
               patterns and emotional health. Here’s how to make the most out of
-              Mood Journal:
+              Mood Chat:
             </p>
 
             <h2>Getting Started</h2>
@@ -105,10 +105,10 @@ const UserGuide = () => {
             <ul>
               <li>
                 <strong>Track Your Mood:</strong> Visit the "History" section to
-                view visual charts of your mood over time. This
-                feature allows you to identify patterns, triggers, and
-                improvements in your emotional well-being. You can also access
-                your journal entries directly from the chart.
+                view visual charts of your mood over time. This feature allows
+                you to identify patterns, triggers, and improvements in your
+                emotional well-being. You can also access your journal entries
+                directly from the chart.
               </li>
               <br />
               <li>

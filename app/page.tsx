@@ -22,7 +22,7 @@ export default async function Home() {
           <div className="w-full max-w-[900px]  px-2 card bg-slate-900/95 ">
             <div className="card-body">
               <h1 className="text-3xl md:text-5xl pb-4  text-white">
-                MOOD JOURNAL
+                Mood Chat
               </h1>
               {/* <p className="md:text-4xl text-3xl text-white/90 mb-8">Track your mood</p> */}
               <div>

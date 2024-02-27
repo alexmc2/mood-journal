@@ -139,10 +139,10 @@ export function Welcome() {
     >
       <div className="p-8">
         <h3 className="text-2xl leading-6 font-semibold text-gray-600 dark:text-slate-100 text-center py-6">
-          Welcome to Mood Journal!
+          Welcome to Mood Chat!
         </h3>
         <p className="mt-4 text-gray-600 dark:text-slate-100 text-lg">
-          Mood Journal is your personal space to reflect on your day, track your
+          Mood Chat is your personal space to reflect on your day, track your
           mood, and discover insights about your emotional well-being. Here's
           how you can get started:
         </p>
@@ -162,8 +162,8 @@ export function Welcome() {
           <br />
           <li>
             <strong>Visualise Your Mood:</strong> Explore your mood patterns
-            over time with your history sentiment chart, helping you
-            understand your emotional cycles better.
+            over time with your history sentiment chart, helping you understand
+            your emotional cycles better.
           </li>
         </ul>
         <br />
@@ -172,7 +172,7 @@ export function Welcome() {
           <a href="/userguide" className="text-blue-500">
             User Guide
           </a>{' '}
-          for more information on how to use Mood Journal.
+          for more information on how to use Mood Chat.
         </p>
       </div>
     </div>
