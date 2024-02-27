@@ -10,6 +10,8 @@ import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { client } from '@/utils/chatbot/supabaseClient';
 
+export const maxDuration = 300;
+
 export const GET = async (request: Request | NextRequest, { params }: any) => {
   console.log('Params:', params);
   console.log(request.url);
@@ -107,7 +109,7 @@ export const POST = async (request: Request | NextRequest, { params }: any) => {
     data: {
       chatId: chatId,
       text: answer,
-      userId: user.id, 
+      userId: user.id,
       isUser: false,
       createdAt: new Date(),
     },
