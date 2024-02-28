@@ -14,8 +14,6 @@ Mood Chat is a web application designed to help users track their emotional well
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708009292/Screenshot_from_2024-02-15_15-01-19_pvfykk.png)
 
-![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1707957964/Screenshot_from_2024-02-15_00-45-32_tdruzl.png)
-
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708660127/Screenshot_from_2024-02-23_03-47-28_yn9xyw.png)
 
 ![Screenshot1](https://res.cloudinary.com/drbz4rq7y/image/upload/v1708725010/Screenshot_from_2024-02-23_21-49-34_v6feuo.png)

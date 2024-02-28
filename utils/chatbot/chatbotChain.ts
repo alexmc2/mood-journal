@@ -75,7 +75,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     console.log('formattedRelevantDocs', formattedRelevantDocs);
 
-    // Long term chat memory. 
+    // Long term chat memory.
 
     const metadataFilter2 = {
       userId: userId,
@@ -108,7 +108,6 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     console.log('formattedRelevantPastChats', formattedRelevantPastChats);
 
-
     const fetchChatHistory = async (userId: string, chatId: any) => {
       let { data: chatHistory, error } = await client
         .from('documents')
@@ -116,7 +115,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         .eq('userId', userId)
         .eq('chatId', chatId)
         .order('createdAt', { ascending: false }) // Order by createdAt in descending order
-        .limit(8);
+        .limit(6);
 
       if (error) {
         console.error('Error fetching chat history:', error);
@@ -147,13 +146,11 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
         // Example of adding a simple structure enhancement
         return `${index + 1}. [${label}] ${message.content}`;
       })
-      .join('\n\n'); 
-
-
+      .join('\n\n');
 
     const chatModel = new ChatOpenAI({
       modelName: 'gpt-3.5-turbo-0125',
-      temperature: 0.9,
+      temperature: 0.8,
       verbose: true,
       streaming: true,
     });
@@ -174,9 +171,9 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     const historyAwarePrompt = ChatPromptTemplate.fromMessages([
       [
         'system',
-        `Adopt the position of a wise and empathic friend and respond directly to the user's last message: \n\n HUMAN: ${sanitizedMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat. AI has access to historical chats and relevant journal entries to provide additional context.`,
+        `Adopt the position of a wise and empathic friend and respond directly to the user's last message: \n\n HUMAN: {sanitizedMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat.`,
       ],
-      ['system', chatHistoryString],
+      ['system', `${chatHistoryString}`],
       [
         'system',
         `Additional context:\n\nUser journal entries: \n\n${formattedRelevantDocs}\n\nSimilar past chats: \n\n${formattedRelevantPastChats}`,
@@ -184,7 +181,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       // Final instruction to the AI for generating a response based on all provided context
       [
         'system',
-        "Consider the above conversation and additional context in your response if it is relevant. Consider the user's current mood as inferred from their recent journal entries or chat messages and respond in a way that matches this mood, for example, contemplative, playful, serious, or reflective. Offer guidance or advice that could help the user. Ask questions to encourage reflection, and show genuine interest in the user. Avoid excessive repetition, no matter what!",
+        "Consider the above conversation and additional context in your response if it is relevant. Consider the user's current mood as inferred from their recent journal entries or chat messages and respond in a way that matches this mood. For example, contemplative, playful, serious, or reflective. Offer guidance or advice that could help the user. Ask questions to encourage reflection, and show genuine interest in the user. Avoid excessive repetition, no matter what!",
         // "Consider the user's current mood as inferred from their recent journal entries or chat history and respond in a way that matches this mood, whether it be uplifting, contemplative, or supportive. Offer guidance or advice that is relevant and thoughtful, encouraging reflection where appropriate. Show genuine interest and avoid repetition.",
       ],
     ]);
@@ -206,7 +203,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     ]);
 
     const response = await chain.invoke({
-      chatHistory: chatHistory,
+      chatHistory: chatHistoryString,
       sanitizedMessage: sanitizedMessage,
       callbacks: [tracer],
     });

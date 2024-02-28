@@ -99,6 +99,7 @@ model Message {
   isUser Boolean  // Indicates if the message is from a user
 
   text String     @db.Text /// @encrypted
+
   embedding Unsupported("vector(1536)")?
 
 

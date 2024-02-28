@@ -1,4 +1,4 @@
-import { CodeMessage, parseCode } from '@/utils/utils';
+import { CodeMessage, parseCode } from '@/utils/code';
 import { Logo } from './assets/Icons';
 
 import { useState, useEffect } from 'react';
@@ -21,7 +21,6 @@ export default function Message({
 }: MessageProps) {
   console.log('Message component props:', { id, isUser, text });
 
-
   // Ensure text is a string before parsing
   const textString = typeof text === 'string' ? text : String(text);
   const { codesArr, withoutCodeArr } = parseCode(textString);
@@ -29,14 +28,10 @@ export default function Message({
     return codesArr[index] ? [item, codesArr[index]] : [item];
   });
 
-
-
   return (
     <div
       className={`${!isUser ? 'py-1' : 'py-1 '} h-fit ${
-        !isUser
-          ? 'dark:bg-blue-800 bg-white'
-          : 'dark:bg-blue-800 bg-white'
+        !isUser ? 'dark:bg-blue-800 bg-white' : 'dark:bg-blue-800 bg-white'
       }`}
     >
       <div className="flex flex-row gap-6 w-[50%] max-[900px]:w-[98%]  mx-auto items-start ">
@@ -47,7 +42,7 @@ export default function Message({
         ) : (
           <span className="">{Logo}</span>
         )}
-        <span className="leading-8 w-[97%]">
+        <span className="leading-8 w-[97%]" >
           {isUser ? (
             <>
               {result.flat().map((item: any, index: number) => {
@@ -119,12 +114,9 @@ export function Skeleton() {
 function TypeOnce({
   children,
   isNewMessage,
-  
-  
 }: {
   children: string;
   isNewMessage: boolean;
-  
 }) {
   if (isNewMessage) {
     // Typing effect for new messages
@@ -149,4 +141,3 @@ function TypeOnce({
     return <div style={{ whiteSpace: 'pre-wrap' }}>{children}</div>;
   }
 }
-

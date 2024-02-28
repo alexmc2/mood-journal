@@ -185,3 +185,18 @@ export const chatSummary = async (chatContent: string) => {
     return fix;
   }
 };
+
+
+//TODO: add Json schema to messages 
+// export const JsonMessageSchema = z.object({
+//   id: z.string(),
+//   type: z.enum(['text', 'code']),
+//   content: z.string(),
+//   language: z.string().optional(),
+//   question: z.string().optional(),
+//   answer: z.string().optional(),
+// });
+
+// export const JsonMessagesArraySchema = z.array(JsonMessageSchema);
+
+// export type JSONMessage = z.infer<typeof JsonMessageSchema>;

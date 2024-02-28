@@ -20,7 +20,7 @@ const inter = Inter({
 
 export const metadata = {
   title: 'Mood Chat',
-  description: 'AI-Powered Mood Tracking Journal',
+  description: 'AI-enhanced journal and chat app',
   imageUrl:
     'https://res.cloudinary.com/drbz4rq7y/image/upload/v1708799841/Screenshot_from_2024-02-24_18-33-22_vuuw8j.png',
   url: 'http://mood-chat.com',

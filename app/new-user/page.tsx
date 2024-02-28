@@ -36,7 +36,7 @@ export default function NewUser() {
           <div className="w-full max-w-[900px]  px-2 card bg-black/50 ">
             <div className="card-body ">
               <h1 className="text-3xl md:text-5xl pb-4  text-white ">
-                Mood Chat
+                MOOD CHAT
               </h1>
 
               <div>

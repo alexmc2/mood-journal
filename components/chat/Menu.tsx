@@ -132,8 +132,12 @@ export default function Menu({ clear }: { clear: () => void }) {
                   key={chat.id}
                   className="flex flex-row items-center justify-between dark:hover:bg-gray-800  hover:bg-gray-300  hover:text-white py-3 px-3 rounded-lg cursor-pointer"
                   onClick={() => {
-                    push(`/chat/${chat.id}`);
-                    clear();
+                    if (chat.id === currentChatId) {
+                      clear();
+                    } else {
+                      push(`/chat/${chat.id}`);
+                      clear();
+                    }
                   }}
                 >
                   <span>{chat.firstMessageSummary}</span>

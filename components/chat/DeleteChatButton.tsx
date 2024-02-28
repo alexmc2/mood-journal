@@ -4,7 +4,13 @@ import { Button } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 
-export default function DeleteChatButton({ chatId, onOpenDeleteModal }: { chatId: any, onOpenDeleteModal: any }) {
+export default function DeleteChatButton({
+  chatId,
+  onOpenDeleteModal,
+}: {
+  chatId: any;
+  onOpenDeleteModal: any;
+}) {
   const [visible, setVisible] = useState(false);
 
   const lightThemeStrokeColor = '#000000'; //black for light theme
@@ -18,7 +24,6 @@ export default function DeleteChatButton({ chatId, onOpenDeleteModal }: { chatId
   const svgStrokeColor =
     theme === 'dark' ? darkThemeStrokeColor : lightThemeStrokeColor;
 
- 
   return (
     <>
       <Button
@@ -44,3 +49,8 @@ export default function DeleteChatButton({ chatId, onOpenDeleteModal }: { chatId
     </>
   );
 }
+
+const randomTestObject = {
+  randomKey: 'random',
+  value: 'random',
+};
