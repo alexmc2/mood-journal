@@ -65,11 +65,11 @@ const EntryCard = ({ entry }: { entry: any }) => {
   const analysisSummary = entry.analysis
     ? truncateText(entry.analysis.summary, maxLength)
     : 'No analysis available';
+
   const analysisMood = entry.analysis ? entry.analysis.mood : 'N/A';
   const analysisColor =
-    entry.analysis && entry.analysis.color !== '#F8F8F8'
-      ? entry.analysis.color
-      : null;
+    entry.analysis && entry.analysis.color ? entry.analysis.color : '#F8F8F8';
+
 
   const cardStyle = analysisColor ? { backgroundColor: analysisColor } : {};
 

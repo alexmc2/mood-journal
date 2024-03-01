@@ -30,16 +30,11 @@ const tracer = new LangChainTracer({
   client: langsmithClient,
 });
 
-function sanitizeInput(input: string) {
-  // Escape template literals by replacing `$` with `\$`
-  const sanitized = input.replace(/\$\{/g, '\\${');
 
-  return sanitized;
-}
 
 export const qa = async (chatId: any, newMessage: string, userId: string) => {
   try {
-    const sanitizedMessage = sanitizeInput(newMessage);
+
 
     const metadataFilter = {
       userId: userId,
@@ -59,7 +54,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     // Fetch journals relevant to conversation
     const relevantDocs = await vectorStore.similaritySearch(
-      sanitizedMessage,
+      newMessage,
       3,
       metadataFilter
     );
@@ -88,7 +83,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     };
 
     const relevantPastChats = await vectorStore.similaritySearch(
-      sanitizedMessage,
+      newMessage,
       3,
       metadataFilter2 || metadataFilter3
     );
@@ -156,7 +151,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     });
     const memory = new BufferMemory({
       returnMessages: true,
-      inputKey: 'sanitizedMessage',
+      inputKey: 'newMessage',
       outputKey: 'output',
       memoryKey: 'chatHistory',
     });
@@ -165,13 +160,13 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     console.log('Loading memory with chatHistory:', chatHistory);
     memory.loadMemoryVariables({
       chatHistory: chatHistory,
-      sanitizedMessage: sanitizedMessage,
+      newMessage: newMessage,
     });
 
     const historyAwarePrompt = ChatPromptTemplate.fromMessages([
       [
         'system',
-        `Adopt the position of a wise and empathic friend and respond directly to the user's last message: \n\n HUMAN: {sanitizedMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat.`,
+        `Adopt the position of a wise and empathic friend and respond directly to the user's last message: \n\n HUMAN: {newMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat.`,
       ],
       ['system', `${chatHistoryString}`],
       [
@@ -190,11 +185,11 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     const chain = RunnableSequence.from([
       {
-        sanitizedMessage: (initialInput) => initialInput.sanitizedMessage,
+        newMessage: (initialInput) => initialInput.newMessage,
         memory: () => memory.loadMemoryVariables({}),
       },
       {
-        sanitizedMessage: (previousOutput) => previousOutput.sanitizedMessage,
+        newMessage: (previousOutput) => previousOutput.newMessage,
         chatHistory: (previousOutput) => previousOutput.memory.chatHistory,
       },
       historyAwarePrompt,
@@ -204,12 +199,12 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     const response = await chain.invoke({
       chatHistory: chatHistoryString,
-      sanitizedMessage: sanitizedMessage,
+      newMessage: newMessage,
       callbacks: [tracer],
     });
 
     await memory.saveContext(
-      { sanitizedMessage: sanitizedMessage },
+      { newMessage: newMessage },
       {
         output: response,
       }
