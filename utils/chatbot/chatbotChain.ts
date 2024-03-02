@@ -30,12 +30,8 @@ const tracer = new LangChainTracer({
   client: langsmithClient,
 });
 
-
-
 export const qa = async (chatId: any, newMessage: string, userId: string) => {
   try {
-
-
     const metadataFilter = {
       userId: userId,
       type: 'journal',
@@ -156,19 +152,10 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       memoryKey: 'chatHistory',
     });
 
-    // Debugging memory loading
-    console.log('Loading memory with chatHistory:', chatHistory);
-    memory.loadMemoryVariables({
-      chatHistory: chatHistory,
-      newMessage: newMessage,
-    });
-
     const historyAwarePrompt = ChatPromptTemplate.fromMessages([
-      [
-        'system',
-        `Adopt the position of a wise and empathic friend and respond directly to the user's last message: \n\n HUMAN: {newMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat.`,
-      ],
-      ['system', `${chatHistoryString}`],
+      ['system', `Adopt the position of a wise and empathic friend.`],
+
+      ['system', `Chat history: \n\n${chatHistoryString}`],
       [
         'system',
         `Additional context:\n\nUser journal entries: \n\n${formattedRelevantDocs}\n\nSimilar past chats: \n\n${formattedRelevantPastChats}`,
@@ -176,7 +163,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       // Final instruction to the AI for generating a response based on all provided context
       [
         'system',
-        "Consider the above conversation and additional context in your response if it is relevant. Consider the user's current mood as inferred from their recent journal entries or chat messages and respond in a way that matches this mood. For example, contemplative, playful, serious, or reflective. Offer guidance or advice that could help the user. Ask questions to encourage reflection, and show genuine interest in the user. Avoid excessive repetition, no matter what!",
+        "Continue the conversation from the last message and respond directly to the user's last message: \n\n HUMAN: {newMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat. Consider the additional context in your response if it is relevant. Consider the user's current mood as inferred from their last message or recent journal entries and respond in a way that matches this mood. For example, contemplative, playful, serious, or reflective. Offer guidance or advice that could help the user. Ask questions to encourage reflection, and show genuine interest in the user. Avoid excessive repetition, no matter what!",
         // "Consider the user's current mood as inferred from their recent journal entries or chat history and respond in a way that matches this mood, whether it be uplifting, contemplative, or supportive. Offer guidance or advice that is relevant and thoughtful, encouraging reflection where appropriate. Show genuine interest and avoid repetition.",
       ],
     ]);
@@ -185,12 +172,18 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
 
     const chain = RunnableSequence.from([
       {
-        newMessage: (initialInput) => initialInput.newMessage,
-        memory: () => memory.loadMemoryVariables({}),
+        newMessage: (initialInput) => {
+          const { newMessage, chatHistory } = initialInput; // Declare and destructure 'initialInput'
+          return newMessage;
+        },
+        memory: (initialInput) => {
+          const { chatHistory } = initialInput; // Declare and destructure 'initialInput'
+          return memory.loadMemoryVariables({ chatHistory }); // Ensure chatHistory is correctly loaded from initial input
+        },
       },
       {
         newMessage: (previousOutput) => previousOutput.newMessage,
-        chatHistory: (previousOutput) => previousOutput.memory.chatHistory,
+        chatHistory: (previousOutput) => previousOutput.chatHistory,
       },
       historyAwarePrompt,
       chatModel,
@@ -198,8 +191,8 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     ]);
 
     const response = await chain.invoke({
-      chatHistory: chatHistoryString,
       newMessage: newMessage,
+      memory: chatHistory,
       callbacks: [tracer],
     });
 
