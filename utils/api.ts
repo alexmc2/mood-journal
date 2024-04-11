@@ -167,6 +167,7 @@ export const deleteChat = async (chatId: string) => {
       throw new Error('Failed to delete chat');
     }
     const data = await response.json();
+
     return data;
   } catch (error) {
     console.error('Error in deleteChat:', error);
