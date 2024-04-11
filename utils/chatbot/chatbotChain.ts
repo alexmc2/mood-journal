@@ -140,7 +140,8 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
       .join('\n\n');
 
     const chatModel = new ChatOpenAI({
-      modelName: 'gpt-3.5-turbo-0125',
+      // modelName: 'gpt-3.5-turbo-0125',
+      modelName: 'gpt-4-turbo',
       temperature: 0.8,
       verbose: true,
       streaming: true,
@@ -168,21 +169,24 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     //   ],
     // ]);
 
-       const historyAwarePrompt = ChatPromptTemplate.fromMessages([
-         ['system', `You are a helpful chatbot who will answer any question that you are asked, directly and precisely.`],
+    const historyAwarePrompt = ChatPromptTemplate.fromMessages([
+      [
+        'system',
+        `You are a helpful chatbot who will answer any question that you are asked, directly and precisely.`,
+      ],
 
-         ['system', `Chat history: \n\n${chatHistoryString}`],
-         [
-           'system',
-           `Additional context:\n\nUser journal entries: \n\n${formattedRelevantDocs}\n\nSimilar past chats: \n\n${formattedRelevantPastChats}`,
-         ],
-         // Final instruction to the AI for generating a response based on all provided context
-         [
-           'system',
-           "Continue the conversation from the last message and respond directly to the user's last message: \n\n HUMAN: {newMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat. Consider the additional context in your response if it is relevant. ",
-           // "Consider the user's current mood as inferred from their recent journal entries or chat history and respond in a way that matches this mood, whether it be uplifting, contemplative, or supportive. Offer guidance or advice that is relevant and thoughtful, encouraging reflection where appropriate. Show genuine interest and avoid repetition.",
-         ],
-       ]);
+      ['system', `Chat history: \n\n${chatHistoryString}`],
+      [
+        'system',
+        `Additional context:\n\nUser journal entries: \n\n${formattedRelevantDocs}\n\nSimilar past chats: \n\n${formattedRelevantPastChats}`,
+      ],
+      // Final instruction to the AI for generating a response based on all provided context
+      [
+        'system',
+        "Continue the conversation from the last message and respond directly to the user's last message: \n\n HUMAN: {newMessage} \n\n Offer relevant and practical insights or guidance based on the content and flow of the chat. Consider the additional context in your response if it is relevant. ",
+        // "Consider the user's current mood as inferred from their recent journal entries or chat history and respond in a way that matches this mood, whether it be uplifting, contemplative, or supportive. Offer guidance or advice that is relevant and thoughtful, encouraging reflection where appropriate. Show genuine interest and avoid repetition.",
+      ],
+    ]);
 
     // Using LCEL
 
