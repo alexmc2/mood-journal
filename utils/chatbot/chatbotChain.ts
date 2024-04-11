@@ -142,7 +142,7 @@ export const qa = async (chatId: any, newMessage: string, userId: string) => {
     const chatModel = new ChatOpenAI({
       // modelName: 'gpt-3.5-turbo-0125',
       modelName: 'gpt-4-turbo',
-      temperature: 0.8,
+      temperature: 1,
       verbose: true,
       streaming: true,
     });
